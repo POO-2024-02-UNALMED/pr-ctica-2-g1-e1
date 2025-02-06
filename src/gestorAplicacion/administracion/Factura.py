@@ -2,12 +2,12 @@ from datetime import datetime
 
 
 class Factura:
-    metodosDePago = {
-        "efectivo": "Efectivo",
-        "tarjetaCredito": "Tarjeta de Crédito",
-        "tarjetaDebito": "Tarjeta de Débito",
-        "Transferencia": "Transferencia",
-    }
+    metodosDePago = [
+        "Transferencia",
+        "Tarjeta de Credito",
+        "Tarjeta de Debito",
+        "Efectivo",
+    ]
     _cantidadFacturas = []
 
     def __init__(
@@ -39,6 +39,9 @@ class Factura:
         self._cantidadFacturas.append(self)
 
     # Definiendo Getters y Setters
+    def getId(self):
+        return self._idFactura
+
     def getNombreUsuario(self) -> str:
         return self._nombreUsuario
 

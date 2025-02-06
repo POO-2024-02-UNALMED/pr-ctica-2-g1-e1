@@ -1,5 +1,9 @@
+from gestorAplicacion.operacion.individuos.Pasajero import Pasajero
+
+
 class Maleta:
     _maletas = []
+    _MAX_PESO_MALETA = [500, 1500, 3000, 5000]
 
     def __init__(self, propietario: object = None, peso: int = 0):
         self._idMaleta = len(Maleta._maletas) + 1
@@ -13,8 +17,8 @@ class Maleta:
     def getPropietario(self):
         return self.propietario
 
-    def setPropietario(self, value):
-        self.propietario = value
+    def setPropietario(self, pasajero: Pasajero):
+        self.propietario = pasajero
 
     def getPeso(self):
         return self.peso
@@ -23,14 +27,24 @@ class Maleta:
         self.peso = value
 
     # Metodos de Instancia
-    def mostrarDetalles(self):
-        pass
+    def mostrarDetalles(self) -> str:
+        return f"""
+    Maleta Nro: {self.getIdMaleta()}
+        Propietario: {self.propietario.getNombre()}
+        Peso: {self.peso} kg
+    """
 
-    def asociarPropietario(self):
-        pass
-
-    def comprobarLimitePeso(self):
-        pass
+    def comprobarLimitePeso(self, peso: int) -> str:
+        if peso > Maleta._MAX_PESO_MALETA[3]:
+            return "El peso de la maleta supera el límite máximo."
+        elif peso > Maleta._MAX_PESO_MALETA[2]:
+            return "El peso de la maleta está en el rango pesado."
+        elif peso > Maleta._MAX_PESO_MALETA[1]:
+            return "El peso de la maleta está en el rango medio."
+        elif peso > Maleta._MAX_PESO_MALETA[0]:
+            return "El peso de la maleta está en el rango ligero."
+        else:
+            return "El peso de la maleta está en el rango extra ligero."
 
     # Metodos Estaticos
     @staticmethod
