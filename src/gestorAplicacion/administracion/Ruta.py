@@ -1,7 +1,7 @@
 from Red import Red
 from datetime import datetime
 from gestorAplicacion.operacion.individuos.Chofer import Chofer
-
+from gestorAplicacion.operacion.logistica.Bus import Bus
 
 class Ruta(Red):
     _rutas = []
@@ -10,35 +10,28 @@ class Ruta(Red):
     _DIFICULTAD_ALTA = 300  # Km
     _DIFICULTAD_MUY_ALTA = 500  # Km
 
-    def __init__(
-        self,
-        idRuta: int,
-        busAsociado: object = None,
-        choferAsociado: Chofer = None,
-        fechaSalida: datetime = None,
-        fechaLlegada: datetime = None,
-        lugarInicio: str = "",
-        lugarFin: str = "",
-        distancia: float = 0.0,
-        tiempoEstimado: float = 0.0,
-        estado: bool = False,
-    ):
-        self._idRuta = idRuta
-        self._busAsociado = busAsociado
-        self._choferAsociado = choferAsociado
+    def __init__(self, busAsociado: Bus = None, choferAsociado: Chofer = None,
+                 fechaSalida: datetime = None, fechaLlegada: datetime = None,
+                 lugarInicio: str = "", lugarFin: str = "", distancia: float = 0.0,
+                 tiempoEstimado: float = 0.0):
+        self._idRuta = len(Ruta._rutas)
+        self.setBusAsociado(busAsociado)
+        self.setChoferAsociado(choferAsociado)
         self._fechaSalida = fechaSalida
         self._fechaLlegada = fechaLlegada
         self._lugarInicio = lugarInicio
         self._lugarFin = lugarFin
         self._distancia = distancia
-        self._tiempoEstimado = tiempoEstimado
-        self._estado = estado
+        self._tiempoEstimado = (fechaLlegada - fechaSalida).total_seconds() / 3600 # Horas
+
+        # Agregando la ruta a las lista de rutas.
+        Ruta.anadirRuta(self)
 
     # Definir Getters y Setters
     def getIdRuta(self) -> int:
         return self._idRuta
 
-    def getBusAsociado(self) -> object:
+    def getBusAsociado(self) -> Bus:
         return self._busAsociado
 
     def getChoferAsociado(self) -> Chofer:
@@ -62,23 +55,24 @@ class Ruta(Red):
     def getTiempoEstimado(self) -> float:
         return self._tiempoEstimado
 
-    def getEstado(self) -> bool:
-        return self._estado
-
     def setIdRuta(self, idRuta: int):
         self._idRuta = idRuta
 
-    def setBusAsociado(self, busAsociado: object):
-        self._busAsociado = busAsociado
+    def setBusAsociado(self, busAsociado: Bus):
+        if isinstance(busAsociado, Bus):
+            self._busAsociado = busAsociado
 
     def setChoferAsociado(self, choferAsociado: Chofer):
-        self._choferAsociado = choferAsociado
+        if isinstance(choferAsociado, Chofer):
+            self._choferAsociado = choferAsociado
 
     def setFechaSalida(self, fechaSalida: datetime):
         self._fechaSalida = fechaSalida
+        self._tiempoEstimado = (self._fechaLlegada - self._fechaSalida).total_seconds() / 3600
 
     def setFechaLlegada(self, fechaLlegada: datetime):
         self._fechaLlegada = fechaLlegada
+        self._tiempoEstimado = (self._fechaLlegada - self._fechaSalida).total_seconds() / 3600
 
     def setLugarInicio(self, lugarInicio: str):
         self._lugarInicio = lugarInicio
@@ -92,20 +86,20 @@ class Ruta(Red):
     def setTiempoEstimado(self, tiempoEstimado: float):
         self._tiempoEstimado = tiempoEstimado
 
-    def setEstado(self, estado: bool):
-        self._estado = estado
-
     # Métodos de Clase
     @classmethod
     def getRutas(cls) -> list:
         return cls._rutas
 
     @classmethod
-    def setRutas(cls, rutas):
-        cls._rutas = rutas
+    def setRutas(cls, rutas: list):
+        cls._rutas = []
+        for ruta in rutas:
+            cls.anadirRuta(ruta)
 
     @classmethod
-    def anadirRutas(cls, ruta):
-        cls._rutas.append(ruta)
+    def anadirRuta(cls, ruta):
+        if isinstance(ruta, Ruta):
+            cls._rutas.append(ruta)
     
     #Metodos de Instancia

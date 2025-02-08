@@ -3,13 +3,8 @@ class Contabilidad:
     _ventas: list = []
     _transacionesReembolsadas: list = []
 
-    def __init__(
-        self,
-        ingresos: float = 0.0,
-        costosOperativos: float = 0.0,
-        ventas: list = [],
-        transacionesReembolsadas: list = [],
-    ):
+    def __init__(self, ingresos: float = 0.0, costosOperativos: float = 0.0, ventas: list = [],
+                 transacionesReembolsadas: list = []):
         self._ingresos = ingresos
         self._costosOperativos = costosOperativos
         self._ventas = ventas
@@ -86,13 +81,11 @@ class Contabilidad:
         tarifas: float = cls.calcularTarifas(factura)
         descuentos: float = cls.calcularDescuentos(factura)
         montoFinal: float = factura.getValor() - tarifas + descuentos
-        return f"""
-            Desglose de Reembolso:\n
-            Monto Base: ${factura.getValor()}
-            Tarifas Administrativas: ${tarifas}
-            Descuentos Aplicados: ${descuentos}
-            Monto Final Deesmbolso: ${montoFinal}
-            """
+        return f""" Desglose de Reembolso:\n
+                    Monto Base: ${factura.getValor()}
+                    Tarifas Administrativas: ${tarifas}
+                    Descuentos Aplicados: ${descuentos}
+                    Monto Final Deesmbolso: ${montoFinal}"""
 
     @classmethod
     def calcularValorTiquete(cls, ruta: object) -> float:

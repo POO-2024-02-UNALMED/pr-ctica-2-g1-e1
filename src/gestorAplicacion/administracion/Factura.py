@@ -1,29 +1,16 @@
 from datetime import datetime
-
+from gestorAplicacion.administracion.Ruta import Ruta
+from gestorAplicacion.operacion.logistica.Asiento import Asiento
 
 class Factura:
-    metodosDePago = [
-        "Transferencia",
-        "Tarjeta de Credito",
-        "Tarjeta de Debito",
-        "Efectivo",
-    ]
+    metodosDePago = ("Transferencia", "Tarjeta de Credito", "Tarjeta de Debito", "Efectivo")
     _cantidadFacturas = []
 
-    def __init__(
-        self,
-        nombreUsuario: str = "",
-        idUsuario: int = 0,
-        valor: float = 0.0,
-        numAsientosAsignados: int = 0,
-        asientosAsignados: list = [],
-        fecha: datetime = datetime.now(),
-        cantidadMaletas: int = 0,
-        rutaElegida: object = None,
-        origen: str = "",
-        destino: str = "",
-        metodoPago: str = None,
-    ):
+    def __init__(self, nombreUsuario: str = "", idUsuario: int = 0, valor: float = 0.0,
+                 numAsientosAsignados: int = 0, asientosAsignados: list[Asiento] = [],
+                 fecha: datetime = datetime.now(), cantidadMaletas: int = 0,
+                 rutaElegida: Ruta = None, origen: str = "", destino: str = "",
+                 metodoPago: str = None):
         self._idFactura = len(Factura._cantidadFacturas) + 1
         self._nombreUsuario = nombreUsuario
         self._idUsuario = idUsuario
@@ -54,7 +41,7 @@ class Factura:
     def getNumAsientosAsignados(self) -> int:
         return self._numAsientosAsignados
 
-    def getAsientosAsignados(self) -> list:
+    def getAsientosAsignados(self) -> list[Asiento]:
         return self._asientosAsignados
 
     def getFecha(self) -> datetime:
@@ -63,7 +50,7 @@ class Factura:
     def getCantidadMaletas(self) -> int:
         return self._cantidadMaletas
 
-    def getRutaElegida(self) -> object:
+    def getRutaElegida(self) -> Ruta:
         return self._rutaElegida
 
     def getOrigen(self) -> str:
@@ -93,8 +80,11 @@ class Factura:
     def setNumAsientosAsignados(self, numAsientosAsignados: int):
         self._numAsientosAsignados = numAsientosAsignados
 
-    def setAsientosAsignados(self, asientosAsignados: list):
-        self._asientosAsignados = asientosAsignados
+    def setAsientosAsignados(self, asientosAsignados: list[Asiento]):
+        self._asientosAsignados = []
+        for asiento in asientosAsignados:
+            if isinstance(asiento, Asiento):
+                self._asientosAsignados.append(asiento)
 
     def setFecha(self, fecha: datetime):
         self._fecha = fecha
@@ -102,8 +92,11 @@ class Factura:
     def setCantidadMaletas(self, cantidadMaletas: int):
         self._cantidadMaletas = cantidadMaletas
 
-    def setRutaElegida(self, rutaElegida: object):
-        self._rutaElegida = rutaElegida
+    def setRutaElegida(self, rutaElegida: Ruta):
+        if rutaElegida is None:
+            self._rutaElegida = None
+        if isinstance(rutaElegida, Ruta):
+            self._rutaElegida = rutaElegida
 
     def setOrigen(self, origen: str):
         self._origen = origen

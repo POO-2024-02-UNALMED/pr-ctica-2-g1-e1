@@ -2,18 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class Red(ABC):
-    destinos = {
-        "BOGOTA": "BOGOTA",
-        "MEDELLIN": "MEDELLIN",
-        "BARRANQUILLA": "BARRANQUILLA",
-        "CALI": "CALI",
-        "PEREIRA": "PEREIRA",
-        "TUNJA": "TUNJA",
-        "VILLAVICENCIO": "VILLAVICENCIO",
-        "CARTAGENA": "CARTAGENA",
-        "IBAGUE": "IBAGUE",
-        "PASTO": "PASTO",
-    }
+    paradas = ["BOGOTA", "MEDELLIN", "BARRANQUILLA", "CALI", "PEREIRA", "TUNJA",
+               "VILLAVICENCIO", "CARTAGENA", "IBAGUE", "PASTO"]
 
-    def __init__(self):
-        pass
+    def Parada(i: int):
+        # Devuelve la parada en la posición i-ésima.
+        return Red.paradas[i]

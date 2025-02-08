@@ -1,51 +1,39 @@
-from datetime import datetime
-import random as rand
 from gestorAplicacion.administracion.Ruta import Ruta
 from gestorAplicacion.administracion.Empresa import Empresa
 from gestorAplicacion.operacion.individuos.Pasajero import Pasajero
 from gestorAplicacion.operacion.logistica.Asiento import Asiento
+from gestorAplicacion.operacion.logistica.Maleta import Maleta
 
+from datetime import datetime, timedelta
+import random as rand
 
 class Bus:
     # Esto nos dira la cantidad maxima de equipaje que soporta cada bus ¡¡Peso en Kg!!
-    _PESO_MAXIMO = {"LIGERO": 500, "MEDIO": 750, "PESADO": 1000, "EXTRA_PESADO": 1250}
-    _COSTO_REPARACIONES = {
-        "RUEDA_PINCHADA": 100000,
-        "SOPORTE_MOTOR": 1500000,
-        "SOPORTE_TIPO_COMBUSTIBLE": 50000,
-        "LLANTA_DANADA": 100000,
-        "RETROVISOR_DANADO": 50000,
-        "TAPA_LLANTA_DANADA": 50000,
-    }
+    _PESO_MAXIMO = [500, 750, 1000, 1250]
+    _COSTO_REPARACIONES = [("RUEDA_PINCHADA", 100000), ("SOPORTE_MOTOR", 1500000),
+                           ("SOPORTE_TIPO_COMBUSTIBLE", 50000), ("LLANTA_DANADA", 100000),
+                           ("RETROVISOR_DANADO", 50000), ("TAPA_LLANTA_DANADA", 50000)]
     _buses = []
 
     # Este es el constructor de la clase, donde inicializamos los atributos
-    def __init__(
-        self,
-        placa: str = "",
-        cantidadAsientos: int = 20,
-        asientos: list = [],
-        kilometrosRecorridos: float = 0.0,
-        rutasFuturas: list = [],
-        empresa: Empresa = None,
-        equipaje: list = [],
-        consumo: float = 0.0,
-        pesoMaximo: float = 0.0,
-        estado: str = "Perfecto Estado",
-    ):
+    def __init__(self, placa: str = "", cantidadAsientos: int = 20, asientos: list[Asiento] = [],
+                 kilometrosRecorridos: float = 0.0, rutasFuturas: list[Ruta] = [],
+                 empresa: Empresa = None, equipaje: list[Maleta] = [], consumo: float = 0.0,
+                 pesoMaximo: float = 0.0, estado: str = "Perfecto Estado"):
         self.placa = placa
         self._cantidadAsientos = cantidadAsientos
-        self._asientos = asientos
+        self.setAsientos(asientos)
         self._kilometrosRecorridos = kilometrosRecorridos
-        self._rutasFuturas = rutasFuturas
-        self.empresa = empresa
-        self._equipaje = equipaje
+        self.setRutasFuturas(rutasFuturas)
+        self.setEmpresa(empresa)
+        self.setEquipaje(equipaje)
         self._consumo = consumo
-        self._pesoMaximo = pesoMaximo
+        self.setPesoMaximo(pesoMaximo)
         self._estado = estado
+
         # Agregamos el bus a la lista de buses
         if self.empresa is not None:
-            self.empresa.agregarBus(self)
+            self._empresa.agregarBus(self)
 
     def getCantidadAsientos(self):
         return self._cantidadAsientos
@@ -53,8 +41,11 @@ class Bus:
     def getAsientos(self):
         return self._asientos
 
-    def setAsientos(self, value: list):
-        self._asientos = value
+    def setAsientos(self, asientos: list[Asiento]):
+        self._asientos = []
+        for asiento in asientos:
+            if isinstance(asiento, Asiento) and asiento not in self._asientos:
+                self._asientos.append(asiento)
 
     def getKilometrosRecorridos(self):
         return self._kilometrosRecorridos
@@ -65,14 +56,25 @@ class Bus:
     def getRutasFuturas(self):
         return self._rutasFuturas
 
-    def setRutasFuturas(self, value: list):
-        self._rutasFuturas = value
+    def setRutasFuturas(self, rutas: list[Ruta]) -> list[Ruta]:
+        self._rutasFuturas = []
+        rutasNoAnadidas = []
+        for ruta in rutas:
+            if isinstance(ruta, Ruta):
+                if not self.anadirRuta(ruta):
+                    rutasNoAnadidas.append(ruta)
+
+        # Devolviendo las rutas que no pudieron ser añadidas.
+        return rutasNoAnadidas
 
     def getEquipaje(self):
         return self._equipaje
 
-    def setEquipaje(self, value: list):
-        self._equipaje = value
+    def setEquipaje(self, maletas: list[Maleta]):
+        self._equipaje = []
+        for maleta in maletas:
+            if isinstance(maleta, Maleta):
+                self._equipaje.append(maleta)
 
     def getConsumo(self):
         return self._consumo
@@ -83,13 +85,22 @@ class Bus:
     def getPesoMaximo(self):
         return self._pesoMaximo
 
-    def setPesoMaximo(self, value: float):
-        self._pesoMaximo = value
+    def setPesoMaximo(self, pesoMaximo: float):
+        if pesoMaximo in Bus.PesoMaximo:
+            self._pesoMaximo = pesoMaximo
+
+    def getEmpresa(self) -> Empresa:
+        return self._empresa
+
+    def setEmpresa(self, empresa: Empresa):
+        if isinstance(empresa, Empresa):
+            self._empresa = empresa
 
     # Métodos de Clase
     @classmethod
     def anadirBus(cls, bus: "Bus"):
-        cls._buses.append(bus)
+        if isinstance(bus, Bus) and bus not in Bus._buses:
+            Bus._buses.append(bus)
 
     def cantidadBuses(cls) -> int:
         return len(cls._buses)
@@ -98,66 +109,111 @@ class Bus:
         return cls._buses
 
     # Métodos de Instancia
-    def isDisponbile(self, fechaInicio: datetime, fechaLlegada: datetime) -> str:
-        # Determina si el bus está disponible para el rango de fechas especificado.
-        # Determina si el rango [fecha inicial, fecha final] se cruza con los horarios
-        # de las rutas que el bus debe cumplir.
-        #
-        # Parámetros:
-        # - fechaInicial: LocalDateTime,
-        # Comienzo del rango horario
-        # - fechaFinal: LocalDateTime,
-        # Conclusión del rango horario
-        #
-        # Retorna:
-        # - disponibilidad: Boolean,
-        # Valor que especifica si el bus está disponible en ese rango horario.
-        #
-
-        for ruta in self._rutasFuturas:
-
-            if not (
-                fechaLlegada < ruta.getFechaSalida()
-                or fechaInicio > ruta.getFechaLlegada()
-            ):
-                return "El bus no está disponible en esa fecha."
-        return "El bus está disponible en esa fecha."
-
-    def anadirRutaFutura(self, rutaNueva: Ruta) -> str:
-        # Agrega una nueva ruta al bus.
-        #
-        # Parámetros:
-        # - ruta: Ruta,
-        # La ruta que se quiere agregar al bus.
-        #
-        # Retorna:
-        # - resultado: Boolean,
-        # Indica si la ruta se agregó correctamente.
-        #
-        if rutaNueva in self._rutasFuturas:
-            return "Está ruta ya se encuentra en los futuros viajes."
-        for ruta in self._rutasFuturas:
-            if not (
-                rutaNueva.getFechaLlegada() + datetime.timedelta(hours=1)
-                < ruta.getFechaSalida()
-                or rutaNueva.getFechaSalida() - datetime.timedelta(hours=1)
-                > ruta.getFechaLlegada()
-            ):
-                return "No se puede añadir está ruta por su fecha de salida o llegada."
-        return "Está ruta ha sido añadida exitosamente."
-
-    def quitarRutaFutura(self, ruta: "Ruta") -> str:
-        """Remueve la ruta especificada en caso de estar presente en una ruta del bus.
-                 *
-        Parámetros:
-        - ruta: Ruta,
-        Ruta a ser añadida.
+    def isDisponbile(self, fechaInicio: datetime, fechaFinal: datetime) -> bool:
         """
+        Determina si el rango [fecha inicial, fecha final] se cruza con los horarios
+        de las rutas que el bus debe cumplir.
+
+        Parámetros:
+            - fechaInicio: datetime,
+                Comienzo del rango horario
+            - fechaFinal: datetime,
+                Conclusión del rango horario
+
+        Retorna:
+            - disponibilidad: bool,
+                Valor que especifica si el bus está disponible en ese rango horario.
+        """
+
+        # Verificación de errores.
+        if fechaInicio > fechaFinal:
+            return False
+
+        # Se busca si alguna de las rutas futuras
+        # colisiona con el horario establecido.
+        for ruta in self._rutasFuturas:
+            if ((fechaInicio < ruta.getFechaLlegada() + timedelta(days = 1)) and
+                (fechaFinal > ruta.getFechaSalida() - timedelta(days = 1))):
+                return False
+
+        # Si no colisiona con nada, devuelve que está disponible.
+        return True
+
+    def anadirRuta(self, nuevaRuta: Ruta) -> bool:
+        """
+        Busca si se puede agregar la ruta en las ya establecidas para el bus,
+        mostrando una advertencia si la ruta no puede ser añadida.
+
+        Parámetros:
+            - nuevaRuta: Ruta,
+                Ruta a ser añadida.
+ 
+        Retorna:
+            - asignado: bool,
+                Indica si se pudo añadir la ruta.
+        """
+
+        # Verificación de errores.
+        if not isinstance(nuevaRuta, Ruta): return False
+
+        # Viendo si la ruta ya existe en la lista.
+        if nuevaRuta in self._rutasFuturas:
+            return False
+
+        # Viendo si la nueva ruta tiene un horario compartido con una ya asignada. 
+        for ruta in self._rutasFuturas:
+            if not (nuevaRuta.getFechaLlegada() + datetime.timedelta(hours = 1) < ruta.getFechaSalida() or
+                    nuevaRuta.getFechaSalida() - datetime.timedelta(hours = 1) > ruta.getFechaLlegada()):
+                return False
+
+        # Asignando el bus.
+        nuevaRuta.setBusAsociado(self)
+        self._rutasFuturas.append(nuevaRuta)
+        return True
+
+    def quitarRuta(self, ruta: Ruta):
+        """
+        Remueve la ruta especificada en caso de estar presente en una ruta del bus.
+
+        Parámetros:
+            - ruta: Ruta,
+                Ruta a ser añadida.
+        """
+
+        # Quitando la ruta si hace parte de las asignadas.
         if ruta in self._rutasFuturas:
             self._rutasFuturas.remove(ruta)
             ruta.setBusAsociado(None)
-            return "Se ha quitado la ruta con exito."
-        return "Esta ruta no se encuentra en los futuros viajes."
+
+    def hallarHueco(self, duracion: int) -> datetime:
+        """
+        Mira en el horario del bus a ver si encuentra un hueco de la duración especificada.
+
+        Parámetros:
+            - lapso: int,
+                Tiempo que se necesita al bus.
+
+        Retorna:
+            - fecha: datetime,
+                Fecha en la cual puede iniciar la actividad a reclutarlo.
+        """
+
+        # Viendo si tiene rutas.
+        if self._rutasFuturas == []:
+            return datetime.now() + timedelta(hours = 1)
+
+        # Viendo si hay un hueco ahora. 
+        if datetime.now() < self._rutasFuturas[0].getFechaSalida() - timedelta(hours = duracion + 2):
+            return self._rutasFuturas[0].getFechaSalida() - timedelta(duracion + 2)
+
+        # Viendo las colisiones con rutas asignadas.
+        rutas = self._rutasFuturas
+        for i in range(len(rutas) - 1):
+            if rutas[i].getFechaLlegada() < rutas[i].getFechaSalida() - timedelta(hours = duracion + 2):
+                return rutas[i].getFechaLlegada() + timedelta(hours = 1)
+
+        # Si colisiona con todo el horario, se asigna una hora después del último lapso.
+        return rutas[len(rutas) - 1].getFechaLleada() + timedelta(hours = 1)
 
     def asignarPasajero(self, pasajero: "Pasajero") -> str:
         if len(self.getAsientos()) < self._cantidadAsientos:
