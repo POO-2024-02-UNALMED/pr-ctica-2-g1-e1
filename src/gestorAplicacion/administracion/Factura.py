@@ -110,13 +110,57 @@ class Factura:
     # Métodos de clase
     # Métodos de Instancia
     def verificarBusAsociado(self):
-        pass
-
+        bus = self.ruta_elegida.get_bus_asociado()
+        if bus is not None:
+            mensaje = "Existe un Bus Asociado a la ruta de la factura, Su solicitud seguira en proceso"
+        else:
+            mensaje = "Lo sentimos pero no existe bus Asociado a la ruta de dicha factura, por lo cual el reembolso no puede ser efectivo"
+        
+        return mensaje
+    
     def verificarRutaAsociada(self):
-        pass
+        bus = self.ruta_elegida.get_bus_asociado()
+        mensaje = ""
 
-    def verificarMaletaBusAsociado(self) -> bool:
-        pass
+        asientos_bus = bus.get_asientos()
+        for asiento in asientos_bus:
+            if asiento.get_usuario().get_nombre() == self.usuario_nombre:
+                mensaje = "El usuario ya tiene una reserva asociada a esta ruta"
+                ruta_elegida = self.get_ruta_elegida()
+                fecha_salida = ruta_elegida.get_fecha_salida()
+                if datetime.now() < fecha_salida:
+                    print("El asiento liberado puede ser reservado nuevamente, Su reembolso sigue en proceso")
+                else:
+                    print("Es demasiado tarde Para Hacer la reservacion, Proximamente el Bus saldra a su debida Ruta.")
+            else:
+                mensaje = "Lo sentimos, El usuario no tiene una reserva asociada a esta ruta"
+        
+        return mensaje
+    
+
+    def verificarMaletaBusAsociado(self, nums_maleta):
+        bus = self.ruta_elegida.get_bus_asociado()
+        verificacion = False
+        for maleta in bus.get_equipaje():
+            if maleta.get_id_maleta() == nums_maleta:
+                verificacion = True
+                break
+        return verificacion
+    
+    def eliminarMaletaBusAsociado(self, nums_maletas):
+        bus = self.ruta_elegida.get_bus_asociado()
+        mensaje = ""
+        
+        for integer in nums_maletas:
+            for maleta in bus.get_equipaje():
+                if maleta.get_id_maleta() == integer:
+                    bus.get_equipaje().remove(maleta)
+                    mensaje = f"La maleta con el numero de identificacion {integer} ha sido eliminada del equipaje del bus"
+                    break 
+            else:
+                mensaje = f"No se pudo hacer el reembolso, La maleta con el numero de identificacion {integer} no existe en el bus asociado a la factura"
+        
+        return mensaje
 
     def imprimirFactura(self) -> str:
         return f"""
