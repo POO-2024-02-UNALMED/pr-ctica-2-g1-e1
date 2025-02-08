@@ -87,6 +87,9 @@ class Pasajero(Persona):
         print(
             f"Soy el pasajero {self.getNombre()} tengo {self.getEdad()} años y mi ID es {self.getId()}"
         )
+    def revertirPasajes(self):
+        bus = self.factura.get_ruta_elegida().get_bus_asociado()
+        bus.asignar_pasajero(self)
 
     def eliminarPasaje(self, factura: Factura) -> str:
         facturas = self.getFacturas()
