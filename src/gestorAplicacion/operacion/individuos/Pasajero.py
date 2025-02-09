@@ -112,7 +112,7 @@ class Pasajero(Persona):
         ratio = 86400.0 / 10.0  # 10 segundos reales = 1 día
 
         # Calculo la diferencia con la fecha de inicio del programa
-        nowTime = datetime.datetime.now()  # Obtengo el tiempo exacto de solicitud
+        nowTime = datetime.now()  # Obtengo el tiempo exacto de solicitud
 
         # Diferencia en segundos reales
         segundosReales = (nowTime - horaZero).total_seconds()
