@@ -1,15 +1,11 @@
+from  gestorAplicacion.administracion.Factura import Factura
 class Contabilidad:
     _costoCompensacion: int = 10
     _ventas: list = []
     _transacionesReembolsadas: list = []
 
-    def __init__(
-        self,
-        ingresos: float = 0.0,
-        costosOperativos: float = 0.0,
-        ventas: list = [],
-        transacionesReembolsadas: list = [],
-    ):
+    def __init__(self, ingresos: float = 0.0, costosOperativos: float = 0.0, ventas: list = [],
+                 transacionesReembolsadas: list = []):
         self._ingresos = ingresos
         self._costosOperativos = costosOperativos
         self._ventas = ventas
@@ -69,30 +65,48 @@ class Contabilidad:
     def calcularCostoCompensacion(cls, numeroPasajeros: int) -> float:
         return cls._costoCompensacion * numeroPasajeros
 
-    @classmethod
-    def calcularTarifas(cls, factura: object) -> float:
-        pass
+    @staticmethod
+    def calcularTarifas(factura):
+        tarifa_base = 5.0  
+        porcentaje_reembolso = 0.02 * factura.get_valor()  # 2% descuento
+        tarifa_por_metodo = 2.0 if factura.get_metodo_pago() == Factura.MetodoPagos.TarjetadeCredito else 0.0
+
+        return tarifa_base + porcentaje_reembolso + tarifa_por_metodo
+
+    @staticmethod
+    def calcularDescuentos(factura):
+        descuento = 0.0
+        apariciones = 0
+        
+        for f in Contabilidad.get_ventas():
+            if f.get_id_usuario() == factura.get_id_usuario():
+                apariciones += 1
+
+        if apariciones > 10:
+            descuento += 0.1  # 10% descuento
+
+        if factura.get_metodo_pago() == Factura.MetodoPagos.Transferencia:
+            descuento += 0.05  #  5% adicional descuento
+
+        return descuento
+
+    @staticmethod
+    def montoReembolso(factura):
+        tarifas = Contabilidad.calcularTarifas(factura)  
+        descuentos = Contabilidad.calcularDescuentos(factura)  
+        monto_final = factura.getValor() - tarifas + descuentos
+        return monto_final
 
     @classmethod
-    def calcularDescuentos(cls, factura: object) -> float:
-        pass
-
-    @classmethod
-    def montoReembolso(cls, factura: object) -> float:
-        pass
-
-    @classmethod
-    def calcularDesglose(cls, factura: object) -> str:
+    def generarDesglose(cls, factura: object) -> str:
         tarifas: float = cls.calcularTarifas(factura)
         descuentos: float = cls.calcularDescuentos(factura)
         montoFinal: float = factura.getValor() - tarifas + descuentos
-        return f"""
-            Desglose de Reembolso:\n
-            Monto Base: ${factura.getValor()}
-            Tarifas Administrativas: ${tarifas}
-            Descuentos Aplicados: ${descuentos}
-            Monto Final Deesmbolso: ${montoFinal}
-            """
+        return f""" Desglose de Reembolso:\n
+                    Monto Base: ${factura.getValor()}
+                    Tarifas Administrativas: ${tarifas}
+                    Descuentos Aplicados: ${descuentos}
+                    Monto Final Deesmbolso: ${montoFinal}"""
 
     @classmethod
     def calcularValorTiquete(cls, ruta: object) -> float:

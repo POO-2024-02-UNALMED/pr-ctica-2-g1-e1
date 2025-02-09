@@ -1,16 +1,13 @@
-import random as random
+from Bus import Bus
+from gestorAplicacion.operacion.individuos.Pasajero import Pasajero
 
+import random as random
 
 class Asiento:
     _asientos = []
 
-    def __init__(
-        self,
-        bus: object = None,
-        estado: bool = True,
-        usuario: object = None,
-        integridad: str = "Perfecto Estado",
-    ):
+    def __init__(self, bus: Bus = None, estado: bool = True, usuario: Pasajero = None,
+                 integridad: str = "Perfecto Estado"):
         self._idAsiento = Asiento.cantidadAsientos + 1
         self._bus = bus
         self._estado = estado
@@ -21,13 +18,13 @@ class Asiento:
     def getIdAsiento(self) -> int:
         return self._idAsiento
 
-    def getBus(self) -> object:
+    def getBus(self) -> Bus:
         return self._bus
 
     def getEstado(self) -> bool:
         return self._estado
 
-    def getUsuario(self) -> object:
+    def getUsuario(self) -> Pasajero:
         return self._usuario
 
     def getIntegridad(self) -> str:
@@ -36,14 +33,16 @@ class Asiento:
     def setIdAsiento(self, idAsiento: int):
         self._idAsiento = idAsiento
 
-    def setBus(self, bus: object):
-        self._bus = bus
+    def setBus(self, bus: Bus):
+        if isinstance(bus, Bus):
+            self._bus = bus
 
     def setEstado(self, estado: bool):
         self._estado = estado
 
-    def setUsuario(self, usuario: object):
-        self._usuario = usuario
+    def setUsuario(self, usuario: Pasajero):
+        if isinstance(usuario, Pasajero):
+            self._usuario = usuario
 
     def setIntegridad(self, integridad: str):
         self._integridad = integridad
@@ -63,14 +62,8 @@ class Asiento:
 
     # Métodos de Instancia
     def danoAleatorio(self) -> str:
-        danos = [
-            "Desgaste",
-            "Roto",
-            "Rasgado",
-            "Manchado",
-            "Hundido",
-            "Mecanismo Reclinable Dañado",
-        ]
+        danos = ["Desgaste", "Roto", "Rasgado", "Manchado",
+                 "Hundido", "Mecanismo Reclinable Dañado"]
         return random.choice(danos)
 
     def consultarDisponibilidad(self):

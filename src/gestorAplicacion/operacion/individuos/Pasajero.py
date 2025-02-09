@@ -1,23 +1,16 @@
 from Persona import Persona
 from gestorAplicacion.administracion.Factura import Factura
-from datetime import datetime
 from gestorAplicacion.administracion.Ruta import Ruta
+from gestorAplicacion.operacion.logistica.Maleta import Maleta
 
+from datetime import datetime
 
 class Pasajero(Persona):
     _pasajeroRegistrados = []
 
-    def __init__(
-        self,
-        nombre: str = "",
-        edad: int = 0,
-        id: int = 0,
-        maletas: list = [],
-        wallet: float = 0.0,
-        facturas: list = [],
-        numReembolsoDisp: int = 0,
-        acompanante: object = None,
-    ):
+    def __init__(self, nombre: str = "", edad: int = 0, id: int = 0, maletas: list = [],
+                 wallet: float = 0.0, facturas: list = [], numReembolsoDisp: int = 0,
+                 acompanante: Persona = None):
         super.__init__(nombre, edad, id)
         self._maletas = maletas
         self._wallet = wallet
@@ -28,7 +21,7 @@ class Pasajero(Persona):
             Pasajero._pasajeroRegistrados.append(self)
 
     # Defiendo Getters y Setters ¡¡Los getters y Setters de nombre, edad y id ya se heredaron por Persona!!
-    def getMaletas(self) -> list:
+    def getMaletas(self) -> list[Maleta]:
         return self._maletas
 
     def getWallet(self) -> float:
@@ -43,8 +36,11 @@ class Pasajero(Persona):
     def getAcompanante(self) -> object:
         return self._acompanante
 
-    def setMaletas(self, maletas: list):
-        self._maletas = maletas
+    def setMaletas(self, maletas: list[Maleta]):
+        self._maletas = []
+        for maleta in maletas:
+            if isinstance(maleta, Maleta):
+                self._maletas.append(maleta)
 
     def setWallet(self, wallet: float):
         self._wallet = wallet
@@ -55,7 +51,7 @@ class Pasajero(Persona):
     def setNumReembolsoDisp(self, numReembolsoDisp: int):
         self._numReembolsoDisp = numReembolsoDisp
 
-    def setAcompanante(self, acompanante: object):
+    def setAcompanante(self, acompanante: Persona):
         self._acompanante = acompanante
         Pasajero._pasajeroRegistrados.append(self)
 
@@ -83,10 +79,12 @@ class Pasajero(Persona):
         return None
 
     # Metodo de Instacia
-    def mostrarDatos(self):
-        print(
-            f"Soy el pasajero {self.getNombre()} tengo {self.getEdad()} años y mi ID es {self.getId()}"
-        )
+    def mostrarDatos(self) -> str:
+        return f"Soy el pasajero {self.getNombre()} tengo {self.getEdad()} años y mi ID es {self.getId()}"
+
+    def revertirPasajes(self):
+        bus = self.factura.get_ruta_elegida().get_bus_asociado()
+        bus.asignar_pasajero(self)
 
     def eliminarPasaje(self, factura: Factura) -> str:
         facturas = self.getFacturas()
@@ -94,9 +92,7 @@ class Pasajero(Persona):
             facturas.remove(factura)
             return f"Pasajero {self.getNombre()} ha eliminado su factura {factura.getIdFactura()}"
 
-    def solicitarReembolso(
-        self, idPasajeroUser: int, idFacturaUser: int, horaZero: datetime
-    ) -> list:
+    def solicitarReembolso(self, idPasajeroUser: int, idFacturaUser: int, horaZero: datetime) -> list:
         """
         Procesa una solicitud de reembolso.
 
@@ -173,9 +169,7 @@ class Pasajero(Persona):
         else:
             return "El acompañante debe ser mayor de edad."
 
-    def comprarTiquete(
-        self, rutaSeleccionada: Ruta, metodoPago: int, horaZero: datetime
-    ):
+    def comprarTiquete(self, rutaSeleccionada: Ruta, metodoPago: int, horaZero: datetime):
         pass
 
     def aceptarCambio(self) -> bool:
