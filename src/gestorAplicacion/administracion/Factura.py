@@ -129,9 +129,9 @@ class Factura:
                 ruta_elegida = self.get_ruta_elegida()
                 fecha_salida = ruta_elegida.get_fecha_salida()
                 if datetime.now() < fecha_salida:
-                    print("El asiento liberado puede ser reservado nuevamente, Su reembolso sigue en proceso")
+                    return("El asiento liberado puede ser reservado nuevamente, Su reembolso sigue en proceso")
                 else:
-                    print("Es demasiado tarde Para Hacer la reservacion, Proximamente el Bus saldra a su debida Ruta.")
+                    return("Es demasiado tarde Para Hacer la reservacion, Proximamente el Bus saldra a su debida Ruta.")
             else:
                 mensaje = "Lo sentimos, El usuario no tiene una reserva asociada a esta ruta"
         

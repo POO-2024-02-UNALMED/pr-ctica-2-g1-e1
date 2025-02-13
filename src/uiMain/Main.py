@@ -18,7 +18,7 @@ class VentanaInicio(tk.Tk):
     def configurar_menu(self):
         menu_bar = Menu(self)
 
-        menu_inicio = Menu(menu_bar, tearoff=0)
+        menu_inicio = Menu(menu_bar, tearoff=0 )
         menu_inicio.add_command(
             label="Descripción del sistema", command=self.mostrar_descripcion,background=""
         )
@@ -94,6 +94,30 @@ class VentanaInicio(tk.Tk):
         self.destroy()
         VentanaPrincipal()
 
+class FieldFrame(tk.Frame):
+    def __init__(self, parent, tituloCriterios, criterios, tituloValores, valores=None, habilitado=None):
+        super().__init__(parent, bd=2, relief="solid")
+        self.criterios = criterios
+        self.valores = valores if valores else ["" for _ in criterios]
+        self.habilitado = habilitado if habilitado else [True for _ in criterios]
+        
+        tk.Label(self, text=tituloCriterios, font=("Arial", 10, "bold")).grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(self, text=tituloValores, font=("Arial", 10, "bold")).grid(row=0, column=1, padx=5, pady=5)
+        
+        self.entries = {}
+        for i, criterio in enumerate(criterios):
+            tk.Label(self, text=criterio).grid(row=i+1, column=0, padx=5, pady=5, sticky="w")
+            entry = tk.Entry(self)
+            entry.grid(row=i+1, column=1, padx=5, pady=5, sticky="ew")
+            entry.insert(0, self.valores[i])
+            if not self.habilitado[i]:
+                entry.config(state="disabled")
+            self.entries[criterio] = entry
+        
+        self.columnconfigure(1, weight=1)
+    
+    def getValue(self, criterio):
+        return self.entries[criterio].get() if criterio in self.entries else None
 
 class VentanaPrincipal(tk.Tk):
     def __init__(self):
@@ -104,42 +128,54 @@ class VentanaPrincipal(tk.Tk):
         self.geometry(f"{screen_width}x{screen_height}")
         self.configurar_menu()
         self.crear_widgets()
-
+    
     def configurar_menu(self):
         menu_bar = Menu(self, font="Arial")
-
+        
         menu_archivo = Menu(menu_bar, tearoff=0)
         menu_archivo.add_command(label="Aplicación", command=self.mostrar_info)
         menu_archivo.add_separator()
         menu_archivo.add_command(label="Salir", command=self.cerrar_sesion)
-
+        
         menu_procesos = Menu(menu_bar, tearoff=0)
         menu_procesos.add_command(label="Funcionalidad 1")
         menu_procesos.add_command(label="Funcionalidad 2")
-
+        menu_procesos.add_command(label="Funcionalidad 3", command=self.mostrar_reembolsos)
+        
         menu_ayuda = Menu(menu_bar, tearoff=0)
         menu_ayuda.add_command(label="Acerca de", command=self.mostrar_autores)
-
+        
         menu_bar.add_cascade(label="Archivo", menu=menu_archivo)
         menu_bar.add_cascade(label="Procesos y Consultas", menu=menu_procesos)
         menu_bar.add_cascade(label="Ayuda", menu=menu_ayuda)
-
+        
         self.config(menu=menu_bar)
-
+    
     def crear_widgets(self):
-        tk.Label(self, text="Ventana Principal", font=("Arial", 18)).pack(pady=20)
-
+        self.frame_contenido = tk.Frame(self, bg="white", bd=2, relief="solid")
+        self.frame_contenido.pack(expand=True, fill="both", padx=10, pady=10)
+    
+    def mostrar_reembolsos(self):
+        for widget in self.frame_contenido.winfo_children():
+            widget.destroy()
+        
+        tk.Label(self.frame_contenido, text="Bienvenido al Sistema de Reembolsos de Tickets", font=("Arial", 16)).pack(pady=10)
+        
+        criterios = ["Nombre en factura", "Número de documento", "Número de factura", "Número de maletas"]
+        formulario = FieldFrame(self.frame_contenido, "Criterio", criterios, "Valor")
+        formulario.pack(pady=10, padx=10, expand=True, fill="both")
+    
     def mostrar_info(self):
-        messagebox.showinfo("Información", "Esta es la ventana principal del sistema.")
-
+        messagebox.showinfo("Información", "El proyecto se centra en crear una herramienta con la cual se establezca una comunicación entre los usuarios de una terminal de buses y las empresas de dicha terminal de manera que se sistematice los procesos más comunes que involucran a ambos.")
+    
     def mostrar_autores(self):
-        messagebox.showinfo("Autores", "Desarrollado por el equipo de la práctica 2.")
-
+        messagebox.showinfo("Autores", "Desarrollado por un equipo de desarrolladores integrado por. Salcedo Rodriguez Santiago Abelardo  , Cardona Ramirez Luis Mario, Rincon Stiven Brandon, Ceron Quintero David Fernando, Moreano Urresty Juan Camilo.")
+    
     def cerrar_sesion(self):
         self.destroy()
         VentanaInicio()
 
-
 if __name__ == "__main__":
     app = VentanaInicio()
     app.mainloop()
+
