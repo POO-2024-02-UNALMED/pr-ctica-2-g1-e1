@@ -6,6 +6,8 @@ import random
 from datetime import timedelta
 
 class Empresa:
+    _empresas = []
+
     def __init__(self, nombre: str = "", empleados: list = [],
                  buses: list = [], rutas: list = [], dineroEmpresa: float = 0.0,
                  transaccionEmpresa: list = []):
@@ -14,6 +16,8 @@ class Empresa:
         self.setBuses(buses)
         self.setRutas(rutas)
         self._dineroEmpresa = dineroEmpresa
+
+        Empresa._empresas.append(self)
 
     # Definiendo Getters y Setters
     def getNombre(self) -> str:
@@ -54,6 +58,16 @@ class Empresa:
 
     def setDineroEmpresa(self, dineroEmpresa: float):
         self._dineroEmpresa = dineroEmpresa
+
+    @classmethod
+    def getEmpresas(cls):
+        return cls._empresas
+    
+    @classmethod
+    def setEmpresas(cls, empresas):
+        cls._empresas = []
+        for empresa in empresas:
+            cls._empresas.append(empresa)
 
     # Metodos de Instacia
     def agregarEmpleado(self, empleado: Chofer):

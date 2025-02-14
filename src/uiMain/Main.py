@@ -1,10 +1,9 @@
 import tkinter as tk
-from tkinter import Menu, messagebox
-from tkinter import PhotoImage
-
+from tkinter import Menu, messagebox, PhotoImage, ttk
+from gestorAplicacion.administracion.Contabilidad import Contabilidad
+from gestorAplicacion.administracion.Empresa import Empresa
 
 class VentanaInicio(tk.Tk):
-
     def __init__(self):
         super().__init__()
         screen_width = self.winfo_screenwidth()
@@ -141,6 +140,7 @@ class VentanaPrincipal(tk.Tk):
         menu_procesos.add_command(label="Funcionalidad 1")
         menu_procesos.add_command(label="Funcionalidad 2")
         menu_procesos.add_command(label="Funcionalidad 3", command=self.mostrar_reembolsos)
+        menu_procesos.add_command(label = "Funcionalidad 4", command = self.creacionRuta)
         
         menu_ayuda = Menu(menu_bar, tearoff=0)
         menu_ayuda.add_command(label="Acerca de", command=self.mostrar_autores)
@@ -175,7 +175,19 @@ class VentanaPrincipal(tk.Tk):
         self.destroy()
         VentanaInicio()
 
+    def creacionRuta(self):
+        # Implementación de la funcionalidad 4.
+        self.title("Creación de una nueva ruta.")
+
+        # Limpiando la pantalla.
+        for widget in self.frame_contenido.winfo_children():
+            widget.destroy()
+
+        # Escoger una empresa.
+        empresas = Empresa.getEmpresas()
+        #valorDefault = tk.StringVar(value = "Empresa")
+        combo = ttk.Combobox(self, values = [empresa.getNombre() for empresa in empresas])
+
 if __name__ == "__main__":
     app = VentanaInicio()
     app.mainloop()
-
