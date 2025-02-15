@@ -1,7 +1,7 @@
 from Persona import Persona
 from gestorAplicacion.administracion.Factura import Factura
 from gestorAplicacion.administracion.Ruta import Ruta
-from gestorAplicacion.operacion.logistica.Maleta import Maleta
+from ..logistica.Maleta import Maleta
 
 from datetime import datetime
 

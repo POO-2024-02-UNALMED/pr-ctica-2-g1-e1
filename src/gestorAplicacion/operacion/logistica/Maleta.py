@@ -1,4 +1,4 @@
-from gestorAplicacion.operacion.individuos.Pasajero import Pasajero
+from ..individuos.Pasajero import Pasajero
 
 class Maleta:
     _maletas = []

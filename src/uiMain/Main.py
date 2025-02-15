@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
-from gestorAplicacion.administracion.Contabilidad import Contabilidad
-from gestorAplicacion.administracion.Empresa import Empresa
+from ..gestorAplicacion.administracion.Contabilidad import Contabilidad
+from ..gestorAplicacion.administracion.Empresa import Empresa
 
 class VentanaInicio(tk.Tk):
     def __init__(self):

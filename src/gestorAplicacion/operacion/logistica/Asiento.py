@@ -1,5 +1,5 @@
 from Bus import Bus
-from gestorAplicacion.operacion.individuos.Pasajero import Pasajero
+from ..individuos.Pasajero import Pasajero
 
 import random as random
 

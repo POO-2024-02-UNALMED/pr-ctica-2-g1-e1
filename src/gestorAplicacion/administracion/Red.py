@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 class Red(ABC):
     paradas = ["BOGOTA", "MEDELLIN", "BARRANQUILLA", "CALI", "PEREIRA", "TUNJA",
                "VILLAVICENCIO", "CARTAGENA", "IBAGUE", "PASTO"]

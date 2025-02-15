@@ -1,6 +1,6 @@
-from gestorAplicacion.operacion.individuos.Chofer import Chofer
-from gestorAplicacion.operacion.logistica.Bus import Bus
-from gestorAplicacion.administracion.Ruta import Ruta
+from ..operacion.individuos.Chofer import Chofer
+from ..operacion.logistica.Bus import Bus
+from Ruta import Ruta
 
 import random
 from datetime import timedelta

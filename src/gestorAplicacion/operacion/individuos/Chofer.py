@@ -1,5 +1,5 @@
 from Persona import Persona
-from gestorAplicacion.operacion.logistica.Bus import Bus
+from ..logistica.Bus import Bus
 from gestorAplicacion.administracion.Empresa import Empresa
 
 from datetime import datetime, timedelta

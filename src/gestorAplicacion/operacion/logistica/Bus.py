@@ -1,8 +1,8 @@
 from gestorAplicacion.administracion.Ruta import Ruta
 from gestorAplicacion.administracion.Empresa import Empresa
-from gestorAplicacion.operacion.individuos.Pasajero import Pasajero
-from gestorAplicacion.operacion.logistica.Asiento import Asiento
-from gestorAplicacion.operacion.logistica.Maleta import Maleta
+from ..individuos.Pasajero import Pasajero
+from Asiento import Asiento
+from Maleta import Maleta
 
 from datetime import datetime, timedelta
 import random as rand
