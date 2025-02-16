@@ -197,12 +197,12 @@ class VentanaPrincipal(tk.Tk):
         frameSeleccion.pack(side = "left", fill = "y", padx = 5, pady = 5)
 
         # Función para una selección dinámica.
-        # Cada que se selecciona una opción en un ComboBox se cambia el texto en el Entry.
+            # Cada que se selecciona una opción en un ComboBox se cambia el texto en el Entry.
         def cambio(event, entrada: tk.Entry, combo: ttk.Combobox):
             entrada.delete(0, "end")
             entrada.insert(0, combo.get())
-        # Cada que se escriba un texto en el Entry, se muestran las opciones en el ComboBox
-        # que empiecen con ese texto.
+            # Cada que se escriba un texto en el Entry, se muestran las opciones en el ComboBox
+            # que empiecen con ese texto.
         def filtro(var, index, mode, combo: ttk.Combobox,
                    opciones: list[str], string: tk.StringVar):
             texto = string.get()
@@ -210,7 +210,7 @@ class VentanaPrincipal(tk.Tk):
             # Se muestran solo las opciones que inicien con el texto en el ComboBox.
             nuevasOpciones = []
             for opcion in opciones:
-                if opcion[0 : len(texto)] == texto:
+                if opcion[0 : len(texto)].lower() == texto.lower():
                     nuevasOpciones.append(opcion)
             combo['values'] = nuevasOpciones
 
@@ -233,30 +233,69 @@ class VentanaPrincipal(tk.Tk):
         comboEmpresa.pack(side = "left", padx = 10, pady = 10)
 
             # Entry de empresas.
-        string = tk.StringVar()
-        string.trace_add("write", lambda var, index, mode: filtro(var, index, mode, combo = comboEmpresa,
-                                                                  opciones = empresas, string = string))
-        entradaEmpresa = tk.Entry(frameEmpresa, textvariable = string)
+        stringEmpresa = tk.StringVar()
+        stringEmpresa.trace_add("write", lambda var, index, mode:
+                                filtro(var, index, mode, combo = comboEmpresa,
+                                opciones = empresas, string = stringEmpresa))
+        entradaEmpresa = tk.Entry(frameEmpresa, textvariable = stringEmpresa)
         entradaEmpresa.pack(side = "right", padx = 10, pady = 10)
 
         # Escoger paradas.
-            # Frame.
-        frameParadas = tk.Frame(frameSeleccion)
+            # Frames.
+        frameParadas       = tk.Frame(frameSeleccion)
+        frameParadaSalida  = tk.Frame(frameParadas)
+        frameParadaLlegada = tk.Frame(frameParadas)
         frameParadas.pack(side = "top", fill = "x", padx = 5, pady = 5)
 
             # Título.
         tk.Label(frameParadas, text = "Selecciona las paradas", font = ("Arial", 8),
                  bg = "lightgray" ).pack(side = "top", fill = "x", pady = 5)
 
-            # 
+            # Posicionando los frames.
+        frameParadaSalida.pack(side = "top", fill = "x", padx = 5, pady = 5)
+        frameParadaLlegada.pack(side = "top", fill = "x", padx = 5, pady = 5)
+
+            # ComboBox de Paradas.
         #paradas = Red.Paradas
         paradas = ["BOGOTA", "MEDELLIN", "BARRANQUILLA", "CALI", "PEREIRA", "TUNJA"]
-        comboParadaSalida  = ttk.Combobox(frameParadas, values = paradas,
-                                          textvariable = tk.StringVar(value = "Salida"))
-        comboParadaLlegada = ttk.Combobox(frameParadas, values = paradas,
-                                          textvariable = tk.StringVar(value = "Llegada"))
 
-        self.title("Sistema - Ventana Principal")
+                # Salida
+        comboParadaSalida  = ttk.Combobox(frameParadaSalida, values = paradas,
+                                          textvariable = tk.StringVar(value = "Salida"))
+        comboParadaSalida.bind("<<ComboboxSelected>>", lambda x: cambio(x, entradaParadaSalida, comboParadaSalida))
+        comboParadaSalida.pack(side = "left", padx = 10, pady = 10)
+
+                # Llegada
+        comboParadaLlegada = ttk.Combobox(frameParadaLlegada, values = paradas,
+                                          textvariable = tk.StringVar(value = "Llegada"))
+        comboParadaLlegada.bind("<<ComboboxSelected>>", lambda x: cambio(x, entradaParadaLlegada, comboParadaLlegada))
+        comboParadaLlegada.pack(side = "left", padx = 10, pady = 10)
+
+            # Entry de Paradas.
+                # Salida.
+        stringParadaSalida = tk.StringVar()
+        stringParadaSalida.trace_add("write", lambda var, index, mode:
+                                     filtro(var, index, mode, combo = comboParadaSalida,
+                                     opciones = paradas, string = stringParadaSalida))
+        entradaParadaSalida = tk.Entry(frameParadaSalida, textvariable = stringParadaSalida)
+        entradaParadaSalida.pack(side = "right", padx = 10, pady = 10)
+
+                # Llegada.
+        stringParadaLlegada = tk.StringVar()
+        stringParadaLlegada.trace_add("write", lambda var, index, mode:
+                                     filtro(var, index, mode, combo = comboParadaLlegada,
+                                     opciones = paradas, string = stringParadaLlegada))
+        entradaParadaLlegada = tk.Entry(frameParadaLlegada, textvariable = stringParadaLlegada)
+        entradaParadaLlegada.pack(side = "right", padx = 10, pady = 10)
+
+        # Mapa de Colombia.
+        mapa = PhotoImage(file = "src/uiMain/Imagenes/Mapa Colombia.png", palette = 4)
+        #mapa.subsample(x = 100000000, y = 100000000)
+        labelMapa = tk.Label(frame, text = "Mapa", font = ("Arial", 20), fg = "black", bg = "white")
+        labelMapa.config(image = mapa, compound = "bottom")
+        labelMapa.pack(padx = 10, pady = 10)
+
+        #self.title("Sistema - Ventana Principal")
 
 if __name__ == "__main__":
     app = VentanaInicio()
