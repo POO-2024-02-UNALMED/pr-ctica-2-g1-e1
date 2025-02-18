@@ -9,8 +9,8 @@ class Pasajero(Persona):
     _pasajeroRegistrados = []
 
     def __init__(self, nombre: str = "", edad: int = 0, id: int = 0, maletas: list = [],
-                 wallet: float = 0.0, facturas: list = [], numReembolsoDisp: int = 0,
-                 acompanante: Persona = None):
+                wallet: float = 0.0, facturas: list = [], numReembolsoDisp: int = 0,
+                acompanante: Persona = None):
         super.__init__(nombre, edad, id)
         self._maletas = maletas
         self._wallet = wallet
@@ -77,7 +77,6 @@ class Pasajero(Persona):
             if pasajero.getNombre() == nombre:
                 return pasajero
         return None
-
     # Metodo de Instacia
     def mostrarDatos(self) -> str:
         return f"Soy el pasajero {self.getNombre()} tengo {self.getEdad()} años y mi ID es {self.getId()}"

@@ -27,3 +27,7 @@ class FieldFrame(tk.Frame):
     
     def getValue(self, criterio):
         return self.entries[criterio].get() if criterio in self.entries else None
+    def limpiarCampos(self):
+        """Limpia el contenido de todos los campos de entrada."""
+        for entry in self.entries.values():
+            entry.delete(0, tk.END)  # Borra el contenido del Entry

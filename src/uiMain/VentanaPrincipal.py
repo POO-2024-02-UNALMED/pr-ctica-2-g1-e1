@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import FieldFrame as FF
 import VentanaInicio as VI
-
+from ..gestorAplicacion.operacion.individuos.Pasajero import Pasajero
 
 
 class VentanaPrincipal(tk.Tk):
@@ -43,15 +43,85 @@ class VentanaPrincipal(tk.Tk):
         self.frameContenido.pack(expand=True, fill="both", padx=10, pady=10)
 
     def mostrarReembolsos(self):
+
         for widget in self.frameContenido.winfo_children():
             widget.destroy()
-
-        tk.Label(self.frameContenido, text="Bienvenido al Sistema de Reembolsos de Tickets",
+        FrPrincipal= tk.Frame(self.frameContenido)
+        tk.Label(FrPrincipal, text="Bienvenido al Sistema de Reembolsos de Tickets",
                  font=("Arial", 16)).pack(pady=10)
 
         criterios = ["Nombre en factura", "Número de documento", "Número de factura", "Número de maletas"]
-        formulario = FF.FieldFrame(self.frameContenido, "Criterio", criterios, "Valor")
-        formulario.pack(pady=10, padx=10, expand=True, fill="both")
+        formulario = FF.FieldFrame(FrPrincipal, "Criterio", criterios, "Valor")
+
+        def analizarParametros(Parametros):
+            ordenEsperado1 = ["Nombre en factura", "Número de documento", "Número de factura", "Número de maletas"]
+            ordenActual = [campo for campo, entry in formulario.campos_entry.items()]  # Obtén los nombres de los campos en el orden actual
+
+            if ordenActual == ordenEsperado1:
+                validacionReembolso(Parametros)
+
+        def validacionReembolso(parametros):
+            """
+            Valida los reembolsos buscando al pasajero por nombre y número de documento.
+
+            """
+            nombrePasajero = None
+            numeroDocumento = None
+
+            for campo, valor in parametros:
+                if campo == "Nombre en factura":
+                    nombrePasajero = valor
+                elif campo == "Número de documento":
+                    numeroDocumento = valor
+
+            if nombrePasajero and numeroDocumento:
+                pasajero = Pasajero.BuscarPasajero(nombrePasajero, numeroDocumento)
+                if pasajero:
+                    return "pinga"
+                else:
+                    print("Pasajero no encontrado.") # cambiar por exepcion
+            else:
+                print("Error: No se encontraron el nombre o el número de documento del pasajero.")# cambiar por exepcion
+
+        def borrarCampos():
+            """Limpia los campos del formulario."""
+            formulario.limpiarCampos()
+        def obtenerParametros():
+            """Recopila los parámetros del formulario, valida los tipos y los almacena en una lista."""
+            parametros = []
+            for campo, entry in formulario.entries.items():
+                valor = entry.get()
+                if not valor:  # Verifica si el valor está vacío
+                    print(f"Error: El campo '{campo}' no puede estar vacío.") # cambiar por exepcion
+                    return  # Sale de la función si un campo está vacío
+                try:
+                    if campo == "Nombre en factura":
+                        if not isinstance(valor, str):
+                            raise ValueError("El nombre en factura debe ser una cadena de texto.")
+                    elif campo == "Número de documento":
+                        int(valor)  # Intenta convertir a entero, lanza ValueError si falla
+                    elif campo == "Número de factura":
+                        int(valor)
+                    elif campo == "Número de maletas":
+                        int(valor)
+                    parametros.append((campo, valor))  # Agrega la tupla (campo, valor) a la lista
+                except ValueError as e: # cambiar por exepcion
+                    print(f"Error en el campo '{campo}': {e}") #Indica el error y el campo donde ocurrió 
+                    return #Sale de la funcion para evitar agregar datos incorrectos.
+            messagebox.showinfo("Proceso", "Su validación está en proceso.")
+            analizarParametros(parametros)
+
+        FrPrincipal.pack(pady=10, padx=10, expand=True, fill="both")
+        formulario.pack(pady=10, padx=10, expand=False, fill="both")
+
+        frame_botones = tk.Frame(FrPrincipal)
+        frame_botones.pack(pady=20)  # Centra verticalmente el frame contenedor
+
+        btnAceptar = tk.Button(frame_botones, text="Aceptar", command=obtenerParametros)
+        btnAceptar.pack(side=tk.LEFT, padx=10)
+
+        btnBorrar = tk.Button(frame_botones, text="Borrar", command=borrarCampos)
+        btnBorrar.pack(side=tk.LEFT, padx=10) 
 
     def mostrarInfo(self):
         messagebox.showinfo("Información", "El proyecto se centra en crear una herramienta con la cual se establezca una comunicación entre los usuarios de una terminal de buses y las empresas de dicha terminal de manera que se sistematice los procesos más comunes que involucran a ambos.")
