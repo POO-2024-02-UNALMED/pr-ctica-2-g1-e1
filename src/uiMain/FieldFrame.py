@@ -25,8 +25,16 @@ class FieldFrame(tk.Frame):
         
         self.columnconfigure(1, weight=1)
     
-    def getValue(self, criterio):
+    def getValue(self, criterio: str):
         return self.entries[criterio].get() if criterio in self.entries else None
+
+    def getEntries(self):
+        """
+        Devuelve todas los inputs puestos.
+        """
+
+        return [self.getValue(criterio) for criterio in self.criterios]
+
     def limpiarCampos(self):
         """Limpia el contenido de todos los campos de entrada."""
         for entry in self.entries.values():

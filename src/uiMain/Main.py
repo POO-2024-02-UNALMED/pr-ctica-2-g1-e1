@@ -6,10 +6,6 @@ import VentanaInicio as VI
 #from ..gestorAplicacion.administracion.Empresa import Empresa
 #from ..gestorAplicacion.administracion.Red import Red
 
-
-
-
-
 if __name__ == "__main__":
     app = VI.VentanaInicio()
     app.mainloop()

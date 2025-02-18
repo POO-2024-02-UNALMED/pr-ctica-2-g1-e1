@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import FieldFrame as FF
 import VentanaInicio as VI
-from ..gestorAplicacion.operacion.individuos.Pasajero import Pasajero
-
+#from ..gestorAplicacion.operacion.individuos.Pasajero import Pasajero
+#from ..gestorAplicacion.administracionEmpresa import Empresa
+#from Excepciones.InexistenciaExcepcion import InexistenciaExcepcion
 
 class VentanaPrincipal(tk.Tk):
     def __init__(self):
@@ -86,6 +87,7 @@ class VentanaPrincipal(tk.Tk):
         def borrarCampos():
             """Limpia los campos del formulario."""
             formulario.limpiarCampos()
+
         def obtenerParametros():
             """Recopila los parámetros del formulario, valida los tipos y los almacena en una lista."""
             parametros = []
@@ -133,6 +135,30 @@ class VentanaPrincipal(tk.Tk):
         self.destroy()
         VI.VentanaInicio()
 
+    @staticmethod
+    def verificacionExistencia(conjunto: list, busqueda):# -> InexistenciaExcepcion:
+        """
+        Se busca la existencia de un elemento en un conjunto.
+
+        Parámetros:
+            - conjunto: list[Object],
+                Conjunto donde se hará la búsqueda.
+            - busqueda:
+                Elemento a buscar en el conjunto.
+
+        Retorna:
+            - existencia: bool.
+                ¿Existe el elemento en el conjunto?. En caso de no existir,
+                se genera un InexistenciaEception error.
+        """
+
+        # Realizando la búsqueda.
+        for elemento in conjunto:
+            if elemento == busqueda:
+                return None
+        else:
+            return InexistenciaExcepcion("No existe el objeto buscado en la lista.")
+
     def creacionRuta(self):
         # Teniendo el control de la pantalla.
         frame = self.frameContenido
@@ -145,10 +171,11 @@ class VentanaPrincipal(tk.Tk):
         # Creación del título.
         self.title("Creación de una nueva ruta.")
         fondo = tk.Frame(frame, height = 10, width = 15, bg = "lightgray", bd = 2, relief = "solid")
-        fondo.pack(side = "top", anchor = "c", padx = 10, pady = 10)
+        fondo.pack(fill = "x", side = "top", anchor = "c", padx = 10, pady = 10)
         tk.Label(fondo, text = "Creación de una nueva ruta.", font = ("Arial", 16),
                  bg = "lightgray" ).pack(pady = 15)
 
+        """ Idea original.
         # Creando la sección de elegir los elementos.
         frameSeleccion = tk.Frame(frame, bg = "lightgray")
         frameSeleccion.pack(side = "left", fill = "y", padx = 5, pady = 5)
@@ -250,6 +277,45 @@ class VentanaPrincipal(tk.Tk):
         #mapa.subsample(x = 100000000, y = 100000000)
         labelMapa = tk.Label(frame, text = "Mapa", font = ("Arial", 20), fg = "black", bg = "white")
         labelMapa.config(image = mapa, compound = "bottom")
-        labelMapa.pack(padx = 10, pady = 10)
+        labelMapa.pack(padx = 10, pady = 10)"""
+
+        # Frame izquierdo
+        frameResultado = tk.Frame(frame, bg = "white")
+        frameResultado.pack(side = "left", fill = "y")
+
+        # Búsqueda:
+        frameBusqueda = tk.Frame(frameResultado, bg = "white")
+        frameBusqueda.pack(side = "top", pady = 10, padx = 10)
+            # Criterios y Frame de Búsqueda.
+        criterios = ["Empresa", "Lugar origen", "Lugar destino"]
+        formulario = FF.FieldFrame(frameBusqueda, "Criterio", criterios, "Valor")
+        formulario.pack(side = "left", padx = 10, pady = 10)
+
+            # Definición de los valores aceptables.
+        #empresas = Empresa.getEmpresas()
+        empresas = ["RapidoOchoa", "Bolivariano", "Cootran"]
+        #paradas = Red.Paradas
+        paradas = ["BOGOTA", "MEDELLIN", "BARRANQUILLA", "CALI", "PEREIRA", "TUNJA"]
+
+        # Aquí tengo que arrojar el error en caso de no existir la ciudad.
+            # Ingresando los datos para hacer una búsqueda.
+        def funcionalidad4():
+            inputs = formulario.getEntries()
+            textoResultado.insert(0.0, "Cargando los datos para:")
+            for i in range(len(inputs)):
+                textoResultado.insert(2 * i + 1.0, formulario.criterios[i] + ": ")
+                textoResultado.insert(2 * i + 2.0, inputs[i] + "\n")
+
+            # Botones.
+        frameBotones = tk.Frame(frameBusqueda, bg = "black", height = 20, width = 10)
+        frameBotones.pack(side = "right")
+        botonInputs  = tk.Button(frameBotones, text = "Buscar", command = funcionalidad4)
+        bototnBorrar = tk.Button(frameBotones, text = "Borrar", command = formulario.limpiarCampos)
+        botonInputs.pack(side = "top", padx = 10, pady = 10)
+        bototnBorrar.pack(side = "bottom", padx = 10, pady = 10)
+
+        # Resultado.
+        textoResultado = tk.Text(frameResultado)
+        textoResultado.pack(side = "top", fill = "x")
 
         #self.title("Sistema - Ventana Principal")
