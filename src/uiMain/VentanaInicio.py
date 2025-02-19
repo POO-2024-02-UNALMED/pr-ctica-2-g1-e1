@@ -1,3 +1,4 @@
+from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import VentanaPrincipal as VP
@@ -67,23 +68,88 @@ class VentanaInicio(tk.Tk):
         # P5 - Hoja de vida de desarrolladores (solo lectura)
         p5 = tk.Frame(p2, bg="white")
         p5.pack(expand=True, fill="both", padx=5, pady=5)
-        hojaDeVida = tk.Label(
-            p5,
-            text="Aquí se mostrará la hoja de vida de los desarrolladores",
-            wraplength=300,
-            justify="left",
-        )
-        hojaDeVida.pack(expand=True, fill="both")
+        botonHojaDeVida = tk.Button(p5)
+        botonHojaDeVida.pack(expand=True, fill="both")
+        
+        tituloHojaDeVida = tk.Label(botonHojaDeVida,text="Biografia",font=("Times New Roman",50))
+        tituloHojaDeVida.pack()
+
+        
+              
+        nombreHojaDeVida = tk.Label(botonHojaDeVida,text="Nombre:"+" "+"Juan Camilo Moreano",font=("Times New Roman",25))
+        nombreHojaDeVida.pack(side="top",pady=10)
+        
+        
+        fechaNaHojaDeVida = tk.Label(botonHojaDeVida,text="Fecha de nacimiento:"+" "+"5 de junio de 2002",font=("Times New Roman",25))
+        fechaNaHojaDeVida.pack(side="top",pady=10)
+        
+        
+        
+        descripcionHojaDeVida = tk.Label(botonHojaDeVida,text="Descripcion:"" "+"realizar descripcion",font=("Times New Roman",25))
+        descripcionHojaDeVida.pack(side="top",pady=10)
+        
+        cambiarHojaDevida = tk.Label(botonHojaDeVida,text="Click sobre la biografia para cambiar de autor",font=("Cursiva",15),fg="blue")
+        cambiarHojaDevida.pack(side="bottom",pady=10)
+        
 
         # P6 - Fotos de desarrolladores
+        # Cargar las imágenes y redimensionarlas
+        def load_image(path, width, height):
+            image = Image.open(path)
+            image = image.resize((width, height), Image.LANCZOS)
+            return ImageTk.PhotoImage(image)
+
+        # Tamaño deseado para las imágenes
+        image_width = 150
+        image_height = 150
+
+        # Cargar las imágenes redimensionadas
+        imagen1 = load_image(
+            r"src\uiMain\Imagenes\foto1.png",
+            image_width,
+            image_height,
+        )
+        imagen2 = load_image(
+            r"src\uiMain\Imagenes\foto2.png",
+            image_width,
+            image_height,
+        )
+        imagen3 = load_image(
+            r"src\uiMain\Imagenes\foto3.png",
+            image_width,
+            image_height,
+        )
+        imagen4 = load_image(
+            r"src\uiMain\Imagenes\foto4.png",
+            image_width,
+            image_height,
+        )
+
         p6 = tk.Frame(p2, bg="lightblue")
         p6.pack(expand=True, fill="both", padx=5, pady=5)
-        for i in range(2):
-            for j in range(2):
-                tk.Label(p6, text=f"Foto {i*2+j+1}", bg="white", relief="solid").grid(
-                    row=i, column=j, padx=5, pady=5, sticky="nsew")
-                p6.columnconfigure(j, weight=1)
-            p6.rowconfigure(i, weight=1)
+
+        # Crear y posicionar etiquetas manualmente
+        foto1 = tk.Label(p6, image=imagen1, bg="white", relief="solid")
+        foto1.image = imagen1  # Evitar que se elimine la imagen
+        foto1.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
+        foto2 = tk.Label(p6, image=imagen2, bg="white", relief="solid")
+        foto2.image = imagen2
+        foto2.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+
+        foto3 = tk.Label(p6, image=imagen3, bg="white", relief="solid")
+        foto3.image = imagen3
+        foto3.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+
+        foto4 = tk.Label(p6, image=imagen4, bg="white", relief="solid")
+        foto4.image = imagen4
+        foto4.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
+
+        # Configurar pesos de filas y columnas para distribuir correctamente
+        p6.columnconfigure(0, weight=1, uniform="group1")
+        p6.columnconfigure(1, weight=1, uniform="group1")
+        p6.rowconfigure(0, weight=1, uniform="group1")
+        p6.rowconfigure(1, weight=1, uniform="group1")
 
     def cambiarImagen(self, event):
         self.imgLabel.config(text="Imagen cambiada")
