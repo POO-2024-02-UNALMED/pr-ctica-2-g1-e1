@@ -1,6 +1,6 @@
 from datetime import datetime
 from Ruta import Ruta
-from ..operacion.logistica.Asiento import Asiento
+from Asiento import Asiento
 
 class Factura:
     metodosDePago = ("Transferencia", "Tarjeta de Credito", "Tarjeta de Debito", "Efectivo")

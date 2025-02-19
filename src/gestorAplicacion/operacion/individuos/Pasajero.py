@@ -1,8 +1,8 @@
 from Persona import Persona
-from gestorAplicacion.administracion.Factura import Factura
-from gestorAplicacion.administracion.Ruta import Ruta
-from ..logistica.Maleta import Maleta
-#from ...administracion.Contabilidad import Contabilidad
+from Factura import Factura
+from Ruta import Ruta
+from Maleta import Maleta
+from Contabilidad import Contabilidad
 from datetime import datetime
 
 class Pasajero(Persona):

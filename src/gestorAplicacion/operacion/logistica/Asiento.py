@@ -1,5 +1,5 @@
 from Bus import Bus
-from ..individuos.Pasajero import Pasajero
+from Pasajero import Pasajero
 
 import random as random
 

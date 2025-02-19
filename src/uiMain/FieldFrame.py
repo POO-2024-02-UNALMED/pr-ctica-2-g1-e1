@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 
-
-
 class FieldFrame(tk.Frame):
     def __init__(self, parent, tituloCriterios, criterios, tituloValores, valores=None, habilitado=None):
         super().__init__(parent, bd=2, relief="solid")

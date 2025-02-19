@@ -1,4 +1,5 @@
 from  Factura import Factura
+
 class Contabilidad:
     _costoCompensacion: int = 10
     _ventas: list = []

@@ -1,6 +1,6 @@
 from Persona import Persona
-from ..logistica.Bus import Bus
-from gestorAplicacion.administracion.Empresa import Empresa
+from Bus import Bus
+from Empresa import Empresa
 
 from datetime import datetime, timedelta
 

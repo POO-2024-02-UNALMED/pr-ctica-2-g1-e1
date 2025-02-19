@@ -1,4 +1,4 @@
-from ..individuos.Pasajero import Pasajero
+from Pasajero import Pasajero
 
 class Maleta:
     _maletas = []

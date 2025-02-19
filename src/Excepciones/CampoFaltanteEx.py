@@ -1,4 +1,5 @@
+from ErrorAplicacion import ErrorAplicacion
 
-class CampoFaltanteEx(Exception):
+class CampoFaltanteEx(ErrorAplicacion):
     def __init__(self):
             super().__init__()

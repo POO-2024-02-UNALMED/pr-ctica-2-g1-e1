@@ -3,9 +3,9 @@ from tkinter import Menu, messagebox, PhotoImage, ttk
 import FieldFrame as FF
 import VentanaInicio as VI
 import datetime 
-#from ..gestorAplicacion.operacion.individuos.Pasajero import Pasajero
-#from ..gestorAplicacion.administracionEmpresa import Empresa
-#from Excepciones.InexistenciaExcepcion import InexistenciaExcepcion
+from Pasajero import Pasajero
+from Empresa import Empresa
+from InexistenciaExcepcion import InexistenciaExcepcion
 
 class VentanaPrincipal(tk.Tk):
     def __init__(self):
@@ -153,7 +153,7 @@ class VentanaPrincipal(tk.Tk):
         VI.VentanaInicio()
 
     @staticmethod
-    def verificacionExistencia(conjunto: list, busqueda):# -> InexistenciaExcepcion:
+    def verificacionExistencia(conjunto: list, busqueda) -> InexistenciaExcepcion:
         """
         Se busca la existencia de un elemento en un conjunto.
 

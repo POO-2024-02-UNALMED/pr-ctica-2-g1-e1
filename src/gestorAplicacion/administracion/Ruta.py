@@ -1,7 +1,7 @@
 from Red import Red
 from datetime import datetime
-from ..operacion.individuos.Chofer import Chofer
-from ..operacion.logistica.Bus import Bus
+from Chofer import Chofer
+from Bus import Bus
 
 class Ruta(Red):
     _rutas = []

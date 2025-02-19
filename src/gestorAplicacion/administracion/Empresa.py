@@ -1,5 +1,5 @@
-from ..operacion.individuos.Chofer import Chofer
-from ..operacion.logistica.Bus import Bus
+from Chofer import Chofer
+from Bus import Bus
 from Ruta import Ruta
 
 import random

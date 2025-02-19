@@ -3,7 +3,6 @@ import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import VentanaPrincipal as VP
 
-
 class VentanaInicio(tk.Tk):
     def __init__(self):
         super().__init__()

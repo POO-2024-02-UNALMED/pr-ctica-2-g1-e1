@@ -1,6 +1,6 @@
-from gestorAplicacion.administracion.Ruta import Ruta
-from gestorAplicacion.administracion.Empresa import Empresa
-from ..individuos.Pasajero import Pasajero
+from Ruta import Ruta
+from Empresa import Empresa
+from Pasajero import Pasajero
 from Asiento import Asiento
 from Maleta import Maleta
 
