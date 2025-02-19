@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import FieldFrame as FF
 import VentanaInicio as VI
+import datetime 
 #from ..gestorAplicacion.operacion.individuos.Pasajero import Pasajero
 #from ..gestorAplicacion.administracionEmpresa import Empresa
 #from Excepciones.InexistenciaExcepcion import InexistenciaExcepcion
@@ -15,6 +16,7 @@ class VentanaPrincipal(tk.Tk):
         self.geometry(f"{screenWidth}x{screenHeight}")
         self.configurarMenu()
         self.crearWidgets()
+        self.horaZero= datetime.datetime.now()
     
     def configurarMenu(self):
         menuBar = Menu(self, font="Arial")
@@ -56,7 +58,7 @@ class VentanaPrincipal(tk.Tk):
 
         def analizarParametros(Parametros):
             ordenEsperado1 = ["Nombre en factura", "Número de documento", "Número de factura", "Número de maletas"]
-            ordenActual = [campo for campo, entry in formulario.campos_entry.items()]  # Obtén los nombres de los campos en el orden actual
+            ordenActual = [campo for campo, entry in formulario.entries.items()]  # Obtén los nombres de los campos en el orden actual
 
             if ordenActual == ordenEsperado1:
                 validacionReembolso(Parametros)
@@ -66,24 +68,34 @@ class VentanaPrincipal(tk.Tk):
             Valida los reembolsos buscando al pasajero por nombre y número de documento.
 
             """
+            
             nombrePasajero = None
             numeroDocumento = None
-
+            numeroFactura = None
             for campo, valor in parametros:
                 if campo == "Nombre en factura":
                     nombrePasajero = valor
                 elif campo == "Número de documento":
                     numeroDocumento = valor
-
+                elif campo == "Número de factura":
+                    numeroFactura = valor
+            #try:
             if nombrePasajero and numeroDocumento:
-                pasajero = Pasajero.BuscarPasajero(nombrePasajero, numeroDocumento)
-                if pasajero:
-                    return "pinga"
+                pasajero1 = Pasajero.BuscarPasajero(numeroDocumento, numeroFactura,self.horaZero)
+                if pasajero1:
+                    respuestas= pasajero1.solicitarReembolso()
+                    if respuestas and len(respuestas) == 2:  # Verifica si la respuesta tiene 2 elementos
+                        mensaje_reembolso = respuestas[0]
+                        # Mostrar el mensaje en el frameContenido
+                        tk.Label(self.frameContenido, text=mensaje_reembolso).pack(pady=10)
                 else:
-                    print("Pasajero no encontrado.") # cambiar por exepcion
+                    print("Pasajero no encontrado.") # cambiar por exepcion que mande un warning pasajero no encontrado
+            
+            #except InexistenciaExcepcion as e:
+            #messagebox.showerror("Error", "Pasajero no encontrado.")
             else:
-                print("Error: No se encontraron el nombre o el número de documento del pasajero.")# cambiar por exepcion
-
+                print("Error: No se encontraron el nombre o el número de documento del pasajero.")# cambiar por exepcion de CampoFaltante
+            #messagebox.showerror("Error", "No se encontraron el nombre o el número de documento del pasajero.")
         def borrarCampos():
             """Limpia los campos del formulario."""
             formulario.limpiarCampos()
@@ -93,10 +105,11 @@ class VentanaPrincipal(tk.Tk):
             parametros = []
             for campo, entry in formulario.entries.items():
                 valor = entry.get()
+                #try:
                 if not valor:  # Verifica si el valor está vacío
                     print(f"Error: El campo '{campo}' no puede estar vacío.") # cambiar por exepcion
                     return  # Sale de la función si un campo está vacío
-                try:
+                try: # este try se va
                     if campo == "Nombre en factura":
                         if not isinstance(valor, str):
                             raise ValueError("El nombre en factura debe ser una cadena de texto.")
@@ -107,7 +120,11 @@ class VentanaPrincipal(tk.Tk):
                     elif campo == "Número de maletas":
                         int(valor)
                     parametros.append((campo, valor))  # Agrega la tupla (campo, valor) a la lista
-                except ValueError as e: # cambiar por exepcion
+
+                #except CampoFaltanteEx:
+                #especificar el campo faltante con su respectivo warning :D
+
+                except ValueError as e: # cambiar por exepcion TipoDato
                     print(f"Error en el campo '{campo}': {e}") #Indica el error y el campo donde ocurrió 
                     return #Sale de la funcion para evitar agregar datos incorrectos.
             messagebox.showinfo("Proceso", "Su validación está en proceso.")

@@ -2,7 +2,7 @@ from Persona import Persona
 from gestorAplicacion.administracion.Factura import Factura
 from gestorAplicacion.administracion.Ruta import Ruta
 from ..logistica.Maleta import Maleta
-
+#from ...administracion.Contabilidad import Contabilidad
 from datetime import datetime
 
 class Pasajero(Persona):
@@ -65,17 +65,20 @@ class Pasajero(Persona):
         return len(Pasajero._pasajeroRegistrados)
 
     @staticmethod
-    def buscarPasajeroPorId(id: int) -> "Pasajero":
+    def buscarPasajero(nombre: str = None, id: int = None) -> "Pasajero":
+        """
+        Busca un pasajero por nombre y/o ID.
+        """
         for pasajero in Pasajero._pasajeroRegistrados:
-            if pasajero.getId() == id:
-                return pasajero
-        return None
-
-    @staticmethod
-    def buscarPasajeroPorNombre(nombre: str) -> object:
-        for pasajero in Pasajero._pasajeroRegistrados:
-            if pasajero.getNombre() == nombre:
-                return pasajero
+            if nombre is not None and id is not None:
+                if pasajero.getNombre() == nombre and pasajero.getId() == id:
+                    return pasajero
+            elif nombre is not None:
+                if pasajero.getNombre() == nombre:
+                    return pasajero
+            elif id is not None:
+                if pasajero.getId() == id:
+                    return pasajero
         return None
     # Metodo de Instacia
     def mostrarDatos(self) -> str:
@@ -95,13 +98,6 @@ class Pasajero(Persona):
         """
         Procesa una solicitud de reembolso.
 
-        Args:
-          idPasajeroUser: El ID del pasajero.
-          idFacturaUser: El ID de la factura.
-          horaZero: La fecha y hora de inicio del programa.
-
-        Returns:
-          Una lista con un mensaje y la factura (si el reembolso es válido).
         """
         respuesta = []
         ratio = 86400.0 / 10.0  # 10 segundos reales = 1 día
@@ -116,7 +112,7 @@ class Pasajero(Persona):
         diferenciaZero = segundosReales * ratio
         mensaje = ""
         numReembolsoDispUser = (
-            2  # Asumiendo que el usuario tiene 2 reembolsos disponibles por año
+            2  # usuario tiene 2 reembolsos disponibles por año
         )
 
         # Verificar si la diferencia es mayor a un año (en segundos)
@@ -128,13 +124,14 @@ class Pasajero(Persona):
             respuesta.append(mensaje)
             return respuesta
 
-        facturas = self  # Asumiendo que Contabilidad tiene un método getVentas()
+        facturas = Contabilidad.getVentas() 
         for factura in facturas:
             if factura.getId() == idFacturaUser:
                 if factura.getIdUsuario() == idPasajeroUser:
                     timeCreation = (
                         factura.fecha
-                    )  # Asumiendo que Factura tiene un atributo fecha
+                    )  
+                    
 
                     # Calcular la diferencia entre las fechas
                     diferencia = nowTime - timeCreation
@@ -144,13 +141,13 @@ class Pasajero(Persona):
                         respuesta.append(mensaje)
                     elif (
                         factura.getMetodoPago() == "Efectivo"
-                    ):  # Asumiendo que Factura tiene un atributo metodo_pago
+                    ): 
                         mensaje = "El reembolso no es posible, el metodo de pago utilizado fue en efectivo, un metodo de pago invalido para un reembolso"
                         respuesta.append(mensaje)
                     else:
                         mensaje = "Su solicitud sigue en proceso, valoramos su paciencia y gracias por escojernos"
                         # Actualizar el número de reembolsos disponibles
-                        # numReembolsoDispUser -= 1  # Descomentar si se quiere actualizar el número de reembolsos
+                        numReembolsoDispUser -= 1 
                         respuesta.append(mensaje)
                         respuesta.append(factura)
                         return respuesta
