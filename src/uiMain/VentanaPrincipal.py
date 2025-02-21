@@ -67,7 +67,7 @@ class VentanaPrincipal(tk.Tk):
             """
 
             from Pasajero import Pasajero
-            
+            from Excepciones import InexistenciaExcepcion, CampoFaltanteEx
             nombrePasajero = None
             numeroDocumento = None
             numeroFactura = None
@@ -78,23 +78,27 @@ class VentanaPrincipal(tk.Tk):
                     numeroDocumento = valor
                 elif campo == "Número de factura":
                     numeroFactura = valor
-            #try:
-            if nombrePasajero and numeroDocumento:
-                pasajero1 = Pasajero.BuscarPasajero(numeroDocumento, numeroFactura,self.horaZero)
-                if pasajero1:
-                    respuestas= pasajero1.solicitarReembolso()
-                    if respuestas and len(respuestas) == 2:  # Verifica si la respuesta tiene 2 elementos
-                        mensaje_reembolso = respuestas[0]
-                        # Mostrar el mensaje en el frameContenido
-                        tk.Label(self.frameContenido, text=mensaje_reembolso).pack(pady=10)
+            try:
+                if nombrePasajero and numeroDocumento:
+                    pasajero1 = Pasajero.buscarPasajero(numeroDocumento, numeroFactura)
+                    if pasajero1:
+                        respuestas= pasajero1.solicitarReembolso()
+                        if respuestas and len(respuestas) == 2:  # Verifica si la respuesta tiene 2 elementos
+                            mensaje_reembolso = respuestas[0]
+                            # Mostrar el mensaje en el frameContenido
+                            tk.Label(self.frameContenido, text=mensaje_reembolso).pack(pady=10)
+                    else:
+                        raise InexistenciaExcepcion.InexistenciaExcepcion(valor)
                 else:
-                    print("Pasajero no encontrado.") # cambiar por exepcion que mande un warning pasajero no encontrado
-            
-            #except InexistenciaExcepcion as e:
-            #messagebox.showerror("Error", "Pasajero no encontrado.")
-            else:
-                print("Error: No se encontraron el nombre o el número de documento del pasajero.")# cambiar por exepcion de CampoFaltante
-            #messagebox.showerror("Error", "No se encontraron el nombre o el número de documento del pasajero.")
+                    raise CampoFaltanteEx.CampoFaltanteEx(campo)
+            except InexistenciaExcepcion.InexistenciaExcepcion as e:
+                e.mostrar_advertencia()
+                return
+            except CampoFaltanteEx.CampoFaltanteEx as e:
+                e.mostrar_advertencia()
+                return
+
+
         def borrarCampos():
             """Limpia los campos del formulario."""
             formulario.limpiarCampos()
@@ -102,30 +106,40 @@ class VentanaPrincipal(tk.Tk):
         def obtenerParametros():
             """Recopila los parámetros del formulario, valida los tipos y los almacena en una lista."""
             parametros = []
+            from Excepciones import CampoFaltanteEx, ErrorTipoDatoEx
             for campo, entry in formulario.entries.items():
                 valor = entry.get()
-                #try:
-                if not valor:  # Verifica si el valor está vacío
-                    print(f"Error: El campo '{campo}' no puede estar vacío.") # cambiar por exepcion
-                    return  # Sale de la función si un campo está vacío
-                try: # este try se va
+                try:
+                    if not valor:
+                        raise CampoFaltanteEx.CampoFaltanteEx(campo)  # Lanza la excepción con el campo
+
                     if campo == "Nombre en factura":
                         if not isinstance(valor, str):
-                            raise ValueError("El nombre en factura debe ser una cadena de texto.")
+                            raise ErrorTipoDatoEx(campo, str)
                     elif campo == "Número de documento":
-                        int(valor)  # Intenta convertir a entero, lanza ValueError si falla
+                        try:
+                            int(valor)  # Intenta convertir a entero
+                        except ValueError:
+                            raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
                     elif campo == "Número de factura":
-                        int(valor)
+                        try:
+                            int(valor)
+                        except ValueError:
+                            raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
                     elif campo == "Número de maletas":
-                        int(valor)
-                    parametros.append((campo, valor))  # Agrega la tupla (campo, valor) a la lista
+                        try:
+                            int(valor)
+                        except ValueError:
+                            raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
 
-                #except CampoFaltanteEx:
-                #especificar el campo faltante con su respectivo warning :D
+                    parametros.append((campo, valor))
 
-                except ValueError as e: # cambiar por exepcion TipoDato
-                    print(f"Error en el campo '{campo}': {e}") #Indica el error y el campo donde ocurrió 
-                    return #Sale de la funcion para evitar agregar datos incorrectos.
+                except CampoFaltanteEx as e:
+                    e.mostrar_advertencia()  # Muestra la advertencia usando el método de la excepción
+                    return  # Sale de la función
+                except ErrorTipoDatoEx as e:
+                    e.mostrar_advertencia()
+                    return
             messagebox.showinfo("Proceso", "Su validación está en proceso.")
             analizarParametros(parametros)
 
