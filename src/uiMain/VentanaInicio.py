@@ -103,26 +103,10 @@ class VentanaInicio(tk.Tk):
         image_height = 150
 
         # Cargar las imágenes redimensionadas
-        imagen1 = load_image(
-            r"src\uiMain\Imagenes\foto1.png",
-            image_width,
-            image_height,
-        )
-        imagen2 = load_image(
-            r"src\uiMain\Imagenes\foto2.png",
-            image_width,
-            image_height,
-        )
-        imagen3 = load_image(
-            r"src\uiMain\Imagenes\foto3.png",
-            image_width,
-            image_height,
-        )
-        imagen4 = load_image(
-            r"src\uiMain\Imagenes\foto4.png",
-            image_width,
-            image_height,
-        )
+        imagen1 = load_image("src\\Imagenes\\foto1.png", image_width, image_height)
+        imagen2 = load_image("src\\Imagenes\\foto2.png", image_width, image_height)
+        imagen3 = load_image("src\\Imagenes\\foto3.png", image_width, image_height)
+        imagen4 = load_image("src\\Imagenes\\foto4.png", image_width, image_height)
 
         p6 = tk.Frame(p2, bg="lightblue")
         p6.pack(expand=True, fill="both", padx=5, pady=5)

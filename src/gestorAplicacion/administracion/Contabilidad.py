@@ -1,4 +1,4 @@
-from  Factura import Factura
+#from  Factura import Factura
 
 class Contabilidad:
     _costoCompensacion: int = 10
@@ -67,7 +67,9 @@ class Contabilidad:
         return cls._costoCompensacion * numeroPasajeros
 
     @staticmethod
-    def calcularTarifas(factura):
+    def calcularTarifas(factura: "Factura"):
+        from Factura import Factura
+
         tarifa_base = 5.0  
         porcentaje_reembolso = 0.02 * factura.get_valor()  # 2% descuento
         tarifa_por_metodo = 2.0 if factura.get_metodo_pago() == Factura.MetodoPagos.TarjetadeCredito else 0.0
@@ -75,7 +77,9 @@ class Contabilidad:
         return tarifa_base + porcentaje_reembolso + tarifa_por_metodo
 
     @staticmethod
-    def calcularDescuentos(factura):
+    def calcularDescuentos(factura: "Factura"):
+        from Factura import Factura
+
         descuento = 0.0
         apariciones = 0
         
@@ -99,7 +103,7 @@ class Contabilidad:
         return monto_final
 
     @classmethod
-    def generarDesglose(cls, factura: object) -> str:
+    def generarDesglose(cls, factura: "Factura") -> str:
         tarifas: float = cls.calcularTarifas(factura)
         descuentos: float = cls.calcularDescuentos(factura)
         montoFinal: float = factura.getValor() - tarifas + descuentos
@@ -110,7 +114,7 @@ class Contabilidad:
                     Monto Final Deesmbolso: ${montoFinal}"""
 
     @classmethod
-    def calcularValorTiquete(cls, ruta: object) -> float:
+    def calcularValorTiquete(cls, ruta: "Ruta") -> float:
         pass
 
     # Metodos de Instancia

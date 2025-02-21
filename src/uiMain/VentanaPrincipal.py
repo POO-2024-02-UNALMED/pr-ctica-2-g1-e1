@@ -2,10 +2,7 @@ import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import FieldFrame as FF
 import VentanaInicio as VI
-import datetime 
-from Pasajero import Pasajero
-from Empresa import Empresa
-from InexistenciaExcepcion import InexistenciaExcepcion
+import datetime
 
 class VentanaPrincipal(tk.Tk):
     def __init__(self):
@@ -68,6 +65,8 @@ class VentanaPrincipal(tk.Tk):
             Valida los reembolsos buscando al pasajero por nombre y número de documento.
 
             """
+
+            from Pasajero import Pasajero
             
             nombrePasajero = None
             numeroDocumento = None
@@ -153,7 +152,7 @@ class VentanaPrincipal(tk.Tk):
         VI.VentanaInicio()
 
     @staticmethod
-    def verificacionExistencia(conjunto: list, busqueda) -> InexistenciaExcepcion:
+    def verificacionExistencia(conjunto: list, busqueda) -> "InexistenciaExcepcion":
         """
         Se busca la existencia de un elemento en un conjunto.
 
@@ -169,6 +168,8 @@ class VentanaPrincipal(tk.Tk):
                 se genera un InexistenciaEception error.
         """
 
+        from InexistenciaExcepcion import InexistenciaExcepcion
+
         # Realizando la búsqueda.
         for elemento in conjunto:
             if elemento == busqueda:
@@ -177,6 +178,7 @@ class VentanaPrincipal(tk.Tk):
             return InexistenciaExcepcion("No existe el objeto buscado en la lista.")
 
     def creacionRuta(self):
+        from Empresa import Empresa
         # Teniendo el control de la pantalla.
         frame = self.frameContenido
 

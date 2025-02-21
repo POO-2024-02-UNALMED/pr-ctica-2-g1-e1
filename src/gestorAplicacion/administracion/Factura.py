@@ -1,15 +1,13 @@
 from datetime import datetime
-from Ruta import Ruta
-from Asiento import Asiento
 
 class Factura:
     metodosDePago = ("Transferencia", "Tarjeta de Credito", "Tarjeta de Debito", "Efectivo")
     _cantidadFacturas = []
 
     def __init__(self, nombreUsuario: str = "", idUsuario: int = 0, valor: float = 0.0,
-                 numAsientosAsignados: int = 0, asientosAsignados: list[Asiento] = [],
+                 numAsientosAsignados: int = 0, asientosAsignados: list["Asiento"] = [],
                  fecha: datetime = datetime.now(), cantidadMaletas: int = 0,
-                 rutaElegida: Ruta = None, origen: str = "", destino: str = "",
+                 rutaElegida: "Ruta" = None, origen: str = "", destino: str = "",
                  metodoPago: str = None):
         self._idFactura = len(Factura._cantidadFacturas) + 1
         self._nombreUsuario = nombreUsuario
@@ -41,7 +39,7 @@ class Factura:
     def getNumAsientosAsignados(self) -> int:
         return self._numAsientosAsignados
 
-    def getAsientosAsignados(self) -> list[Asiento]:
+    def getAsientosAsignados(self) -> list["Asiento"]:
         return self._asientosAsignados
 
     def getFecha(self) -> datetime:
@@ -50,7 +48,7 @@ class Factura:
     def getCantidadMaletas(self) -> int:
         return self._cantidadMaletas
 
-    def getRutaElegida(self) -> Ruta:
+    def getRutaElegida(self) -> "Ruta":
         return self._rutaElegida
 
     def getOrigen(self) -> str:
@@ -80,7 +78,9 @@ class Factura:
     def setNumAsientosAsignados(self, numAsientosAsignados: int):
         self._numAsientosAsignados = numAsientosAsignados
 
-    def setAsientosAsignados(self, asientosAsignados: list[Asiento]):
+    def setAsientosAsignados(self, asientosAsignados: list["Asiento"]):
+        from Asiento import Asiento
+
         self._asientosAsignados = []
         for asiento in asientosAsignados:
             if isinstance(asiento, Asiento):
@@ -92,7 +92,9 @@ class Factura:
     def setCantidadMaletas(self, cantidadMaletas: int):
         self._cantidadMaletas = cantidadMaletas
 
-    def setRutaElegida(self, rutaElegida: Ruta):
+    def setRutaElegida(self, rutaElegida: "Ruta"):
+        from Ruta import Ruta
+
         if rutaElegida is None:
             self._rutaElegida = None
         if isinstance(rutaElegida, Ruta):
@@ -136,7 +138,6 @@ class Factura:
                 mensaje = "Lo sentimos, El usuario no tiene una reserva asociada a esta ruta"
         
         return mensaje
-    
 
     def verificarMaletaBusAsociado(self, nums_maleta):
         bus = self.ruta_elegida.get_bus_asociado()
@@ -146,7 +147,7 @@ class Factura:
                 verificacion = True
                 break
         return verificacion
-    
+
     def eliminarMaletaBusAsociado(self, nums_maletas):
         bus = self.ruta_elegida.get_bus_asociado()
         mensaje = ""

@@ -1,16 +1,13 @@
 from Persona import Persona
-from Bus import Bus
-from Empresa import Empresa
-
 from datetime import datetime, timedelta
 
 class Chofer(Persona):
     _choferes = []
 
     def __init__(self, nombre: str = "", edad: int = 0, id: int = 0, sueldo: int = 0,
-                 cantidadHorasConducidas: int = 0, empresa: Empresa = None,
+                 cantidadHorasConducidas: int = 0, empresa: "Empresa" = None,
                  puntajeEficienciaTiempos: int = 0, puntajeConsumoCombustible: int = 0,
-                 puntajeDefinitivo: float = 0, bus: Bus = None, horario: list[tuple[datetime]] = []):
+                 puntajeDefinitivo: float = 0, bus: "Bus" = None, horario: list[tuple[datetime]] = []):
         super().__init__(nombre, edad, id)
         self.setEmpresa(empresa)
         self._sueldo = sueldo
@@ -56,19 +53,23 @@ class Chofer(Persona):
     def setPuntajeDefinitivo(self, puntajeDefinitivo: float):
         self._puntajeDefinitivo = puntajeDefinitivo
 
-    def getEmpresa(self) -> Empresa:
+    def getEmpresa(self) -> "Empresa":
         return self._empresa
     
-    def setEmpresa(self, empresa: Empresa):
+    def setEmpresa(self, empresa: "Empresa"):
+        from Empresa import Empresa
+
         if empresa is None:
             self._empresa = None
         if isinstance(empresa, Empresa):
             self._empresa = empresa
 
-    def getBus(self) -> Bus:
+    def getBus(self) -> "Bus":
         return self._bus
 
-    def setBus(self, bus: Bus):
+    def setBus(self, bus: "Bus"):
+        from Bus import Bus
+
         if bus is None:
             self._bus = None
         if isinstance(bus, Bus):

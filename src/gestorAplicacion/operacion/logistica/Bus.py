@@ -1,9 +1,3 @@
-from Ruta import Ruta
-from Empresa import Empresa
-from Pasajero import Pasajero
-from Asiento import Asiento
-from Maleta import Maleta
-
 from datetime import datetime, timedelta
 import random as rand
 
@@ -16,9 +10,9 @@ class Bus:
     _buses = []
 
     # Este es el constructor de la clase, donde inicializamos los atributos
-    def __init__(self, placa: str = "", cantidadAsientos: int = 20, asientos: list[Asiento] = [],
-                 kilometrosRecorridos: float = 0.0, rutasFuturas: list[Ruta] = [],
-                 empresa: Empresa = None, equipaje: list[Maleta] = [], consumo: float = 0.0,
+    def __init__(self, placa: str = "", cantidadAsientos: int = 20, asientos: list["Asiento"] = [],
+                 kilometrosRecorridos: float = 0.0, rutasFuturas: list["Ruta"] = [],
+                 empresa: "Empresa" = None, equipaje: list["Maleta"] = [], consumo: float = 0.0,
                  pesoMaximo: float = 0.0, estado: str = "Perfecto Estado"):
         self.placa = placa
         self._cantidadAsientos = cantidadAsientos
@@ -41,7 +35,9 @@ class Bus:
     def getAsientos(self):
         return self._asientos
 
-    def setAsientos(self, asientos: list[Asiento]):
+    def setAsientos(self, asientos: list["Asiento"]):
+        from Asiento import Asiento
+
         self._asientos = []
         for asiento in asientos:
             if isinstance(asiento, Asiento) and asiento not in self._asientos:
@@ -53,10 +49,11 @@ class Bus:
     def setKilometrosRecorridos(self, value: float):
         self._kilometrosRecorridos = value
 
-    def getRutasFuturas(self):
+    def getRutasFuturas(self) -> list["Ruta"]:
         return self._rutasFuturas
 
-    def setRutasFuturas(self, rutas: list[Ruta]) -> list[Ruta]:
+    def setRutasFuturas(self, rutas: list["Ruta"]):
+        from Ruta import Ruta
         self._rutasFuturas = []
         rutasNoAnadidas = []
         for ruta in rutas:
@@ -70,10 +67,12 @@ class Bus:
     def getEquipaje(self):
         return self._equipaje
 
-    def setEquipaje(self, maletas: list[Maleta]):
+    def setEquipaje(self, maletas: list["Maleta"]):
+        from Maleta import Maleta
+
         self._equipaje = []
         for maleta in maletas:
-            if isinstance(maleta, Maleta):
+            if isinstance(maleta, "Maleta"):
                 self._equipaje.append(maleta)
 
     def getConsumo(self):
@@ -89,16 +88,19 @@ class Bus:
         if pesoMaximo in Bus.PesoMaximo:
             self._pesoMaximo = pesoMaximo
 
-    def getEmpresa(self) -> Empresa:
+    def getEmpresa(self) -> "Empresa":
         return self._empresa
 
-    def setEmpresa(self, empresa: Empresa):
+    def setEmpresa(self, empresa: "Empresa"):
+        from Empresa import Empresa
+
         if isinstance(empresa, Empresa):
             self._empresa = empresa
 
     # Métodos de Clase
     @classmethod
     def anadirBus(cls, bus: "Bus"):
+        from Bus import Bus
         if isinstance(bus, Bus) and bus not in Bus._buses:
             Bus._buses.append(bus)
 
@@ -139,7 +141,7 @@ class Bus:
         # Si no colisiona con nada, devuelve que está disponible.
         return True
 
-    def anadirRuta(self, nuevaRuta: Ruta) -> bool:
+    def anadirRuta(self, nuevaRuta: "Ruta") -> bool:
         """
         Busca si se puede agregar la ruta en las ya establecidas para el bus,
         mostrando una advertencia si la ruta no puede ser añadida.
@@ -152,6 +154,8 @@ class Bus:
             - asignado: bool,
                 Indica si se pudo añadir la ruta.
         """
+
+        from Ruta import Ruta
 
         # Verificación de errores.
         if not isinstance(nuevaRuta, Ruta): return False
@@ -171,7 +175,7 @@ class Bus:
         self._rutasFuturas.append(nuevaRuta)
         return True
 
-    def quitarRuta(self, ruta: Ruta):
+    def quitarRuta(self, ruta: "Ruta"):
         """
         Remueve la ruta especificada en caso de estar presente en una ruta del bus.
 
@@ -216,6 +220,8 @@ class Bus:
         return rutas[len(rutas) - 1].getFechaLleada() + timedelta(hours = 1)
 
     def asignarPasajero(self, pasajero: "Pasajero") -> str:
+        from Asiento import Asiento
+
         if len(self.getAsientos()) < self._cantidadAsientos:
             asiento = Asiento(
                 self,
@@ -265,4 +271,6 @@ class Bus:
         return self._kilometrosRecorridos * self._consumo
 
     def danoAleatorio(self) -> str:
+        from Bus import Bus
+
         return rand.choice(Bus._COSTO_REPARACIONES)

@@ -1,12 +1,9 @@
-from Bus import Bus
-from Pasajero import Pasajero
-
 import random as random
 
 class Asiento:
     _asientos = []
 
-    def __init__(self, bus: Bus = None, estado: bool = True, usuario: Pasajero = None,
+    def __init__(self, bus: "Bus" = None, estado: bool = True, usuario: "s" = None,
                  integridad: str = "Perfecto Estado"):
         self._idAsiento = Asiento.cantidadAsientos + 1
         self._bus = bus
@@ -18,13 +15,13 @@ class Asiento:
     def getIdAsiento(self) -> int:
         return self._idAsiento
 
-    def getBus(self) -> Bus:
+    def getBus(self) -> "Bus":
         return self._bus
 
     def getEstado(self) -> bool:
         return self._estado
 
-    def getUsuario(self) -> Pasajero:
+    def getUsuario(self) -> "Pasajero":
         return self._usuario
 
     def getIntegridad(self) -> str:
@@ -33,14 +30,18 @@ class Asiento:
     def setIdAsiento(self, idAsiento: int):
         self._idAsiento = idAsiento
 
-    def setBus(self, bus: Bus):
+    def setBus(self, bus: "Bus"):
+        from Bus import Bus
+
         if isinstance(bus, Bus):
             self._bus = bus
 
     def setEstado(self, estado: bool):
         self._estado = estado
 
-    def setUsuario(self, usuario: Pasajero):
+    def setUsuario(self, usuario: "Pasajero"):
+        from Pasajero import Pasajero
+
         if isinstance(usuario, Pasajero):
             self._usuario = usuario
 

@@ -1,10 +1,8 @@
-from Pasajero import Pasajero
-
 class Maleta:
     _maletas = []
     _MAX_PESO_MALETA = [500, 1500, 3000, 5000]
 
-    def __init__(self, propietario: Pasajero = None, peso: int = 0):
+    def __init__(self, propietario: "Pasajero" = None, peso: int = 0):
         self._idMaleta = len(Maleta._maletas) + 1
         self.propietario = propietario
         self.peso = peso
@@ -16,7 +14,9 @@ class Maleta:
     def getPropietario(self):
         return self.propietario
 
-    def setPropietario(self, pasajero: Pasajero):
+    def setPropietario(self, pasajero: "Pasajero"):
+        from Pasajero import Pasajero
+
         if isinstance(pasajero, Pasajero):
             self.propietario = pasajero
 

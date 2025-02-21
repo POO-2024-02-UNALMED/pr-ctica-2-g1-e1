@@ -1,7 +1,3 @@
-from Chofer import Chofer
-from Bus import Bus
-from Ruta import Ruta
-
 import random
 from datetime import timedelta
 
@@ -9,8 +5,8 @@ class Empresa:
     _empresas = []
 
     def __init__(self, nombre: str = "", empleados: list = [],
-                 buses: list = [], rutas: list = [], dineroEmpresa: float = 0.0,
-                 transaccionEmpresa: list = []):
+                 buses: list["Bus"] = [], rutas: list["Ruta"] = [], dineroEmpresa: float = 0.0,
+                 transaccionEmpresa: list[float] = []):
         self._nombre = nombre
         self.setEmpleados(empleados)
         self.setBuses(buses)
@@ -26,28 +22,34 @@ class Empresa:
     def setNombre(self, nombre: str):
         self._nombre = nombre
 
-    def getEmpleados(self) -> list[Chofer]:
+    def getEmpleados(self) -> list["Chofer"]:
         return self._empleados
 
-    def setEmpleados(self, empleados: list[Chofer]):
+    def setEmpleados(self, empleados: list["Chofer"]):
+        from Chofer import Chofer
+
         self._empleados = []
         for empleado in empleados:
-            if empleado not in self._empleados:
+            if empleado not in self._empleados and isinstance(empleado, Chofer):
                 self.agregarEmpleado(empleado)
 
-    def getBuses(self) -> list[Bus]:
+    def getBuses(self) -> list["Bus"]:
         return self._buses
 
-    def setBuses(self, buses: list[Bus]):
+    def setBuses(self, buses: list["Bus"]):
+        from Bus import Bus
+
         self._buses = []
         for bus in buses:
-            if isinstance(bus, Chofer):
+            if isinstance(bus, "Bus"):
                 self._buses.append(bus)
 
-    def getRutas(self) -> list[Ruta]:
+    def getRutas(self) -> list["Ruta"]:
         return self._rutas
 
-    def setRutas(self, rutas: list[Ruta]):
+    def setRutas(self, rutas: list["Ruta"]):
+        from Ruta import Ruta
+
         self._rutas = []
         for ruta in rutas:
             if isinstance(ruta, Ruta) and ruta not in self._rutas:
@@ -70,12 +72,14 @@ class Empresa:
             cls._empresas.append(empresa)
 
     # Metodos de Instacia
-    def agregarEmpleado(self, empleado: Chofer):
+    def agregarEmpleado(self, empleado: "Chofer"):
+        from Chofer import Chofer
+
         if isinstance(empleado, Chofer) and empleado not in self._empleados:
             self._empleados.append(empleado)
             empleado.setEmpresa(self)
 
-    def contratarEmpleado(self, chofer: Chofer = None, sueldo: int = None, horario: list = []):
+    def contratarEmpleado(self, chofer: "Chofer" = None, sueldo: int = None, horario: list = []):
         """
         Agrega un chofer a la nómina.
 
@@ -87,6 +91,8 @@ class Empresa:
             - horario: ArrayList<LocalDateTime[]>,
                 Horario con el que va a iniciar.
         """
+
+        from Chofer import Chofer
 
         # Generando un sueldo en caso de no ser especificado.
         if sueldo is None: sueldo = 1000 + random.randrange(-10, 10) * 10
@@ -103,7 +109,7 @@ class Empresa:
         self.agregarEmpleado(chofer)
         chofer.setSueldo(sueldo)
 
-    def despedirEmpleado(self, empleado: Chofer):
+    def despedirEmpleado(self, empleado: "Chofer"):
         """
         Quita al chofer indicado de la nómina.
 
@@ -117,7 +123,9 @@ class Empresa:
         if empleado.getEmpresa() == self:
             empleado.setEmpresa(None)
 
-    def agregarBus(self, bus: Bus, rutasFuturas: list[Ruta] = []):
+    def agregarBus(self, bus: "Bus", rutasFuturas: list["Ruta"] = []):
+        from Bus import Bus
+
         if bus.getEmpresa() is not None:
             bus.getEmpresa().desvincularBus(bus)
         if isinstance(bus, Bus) and bus not in self._buses:
@@ -125,7 +133,7 @@ class Empresa:
         
         bus.setRutasFuturas(rutasFuturas)
 
-    def comprarBus(self, valor: int, bus: Bus = None, rutasFuturas: list[Ruta] = []) -> str:
+    def comprarBus(self, valor: int, bus: "Bus" = None, rutasFuturas: list["Ruta"] = []) -> str:
         """
         Agrega un bus a las utilidades.
 
@@ -137,6 +145,8 @@ class Empresa:
             - rutasFuturas: ArrayList<Ruta>,
                 Rutas con el que va a iniciar.
         """
+
+        from Bus import Bus
 
         # Verificando si se puede comprar el bus.
         if self._dineroEmpresa >= valor:
@@ -161,7 +171,7 @@ class Empresa:
         else:
             return "No hay suficiente dinero para comprar el bus."
 
-    def desvincularBus(self, bus: Bus):
+    def desvincularBus(self, bus: "Bus"):
         """
         Quita al bus vinculado a la empresa.
  
@@ -179,7 +189,7 @@ class Empresa:
             for ruta in bus.getRutasFuturas():
                 ruta.setBus(None)
 
-    def asignarRuta(self, ruta: Ruta):
+    def asignarRuta(self, ruta: "Ruta"):
         """
         Dado una ruta establecida, se busca el bus que tiene un horario disponible que
         cumpla las horas establecidas por la ruta. Dentro de esto, se escoge el que

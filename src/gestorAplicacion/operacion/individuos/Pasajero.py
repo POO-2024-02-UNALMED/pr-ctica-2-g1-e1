@@ -1,16 +1,13 @@
 from Persona import Persona
-from Factura import Factura
-from Ruta import Ruta
-from Maleta import Maleta
-from Contabilidad import Contabilidad
 from datetime import datetime
 
 class Pasajero(Persona):
     _pasajeroRegistrados = []
 
-    def __init__(self, nombre: str = "", edad: int = 0, id: int = 0, maletas: list = [],
-                wallet: float = 0.0, facturas: list = [], numReembolsoDisp: int = 0,
-                acompanante: Persona = None):
+    def __init__(self, nombre: str = "", edad: int = 0, id: int = 0,
+                 maletas: list["Maleta"] = [], wallet: float = 0.0,
+                 facturas: list["Factura"] = [], numReembolsoDisp: int = 0,
+                 acompanante: Persona = None):
         super.__init__(nombre, edad, id)
         self._maletas = maletas
         self._wallet = wallet
@@ -21,7 +18,7 @@ class Pasajero(Persona):
             Pasajero._pasajeroRegistrados.append(self)
 
     # Defiendo Getters y Setters ¡¡Los getters y Setters de nombre, edad y id ya se heredaron por Persona!!
-    def getMaletas(self) -> list[Maleta]:
+    def getMaletas(self) -> list["Maleta"]:
         return self._maletas
 
     def getWallet(self) -> float:
@@ -36,7 +33,9 @@ class Pasajero(Persona):
     def getAcompanante(self) -> object:
         return self._acompanante
 
-    def setMaletas(self, maletas: list[Maleta]):
+    def setMaletas(self, maletas: list["Maleta"]):
+        from Maleta import Maleta
+
         self._maletas = []
         for maleta in maletas:
             if isinstance(maleta, Maleta):
@@ -88,7 +87,7 @@ class Pasajero(Persona):
         bus = self.factura.get_ruta_elegida().get_bus_asociado()
         bus.asignar_pasajero(self)
 
-    def eliminarPasaje(self, factura: Factura) -> str:
+    def eliminarPasaje(self, factura: "Factura") -> str:
         facturas = self.getFacturas()
         if factura in facturas:
             facturas.remove(factura)
@@ -99,6 +98,9 @@ class Pasajero(Persona):
         Procesa una solicitud de reembolso.
 
         """
+
+        from Contabilidad import Contabilidad
+
         respuesta = []
         ratio = 86400.0 / 10.0  # 10 segundos reales = 1 día
 
@@ -165,7 +167,7 @@ class Pasajero(Persona):
         else:
             return "El acompañante debe ser mayor de edad."
 
-    def comprarTiquete(self, rutaSeleccionada: Ruta, metodoPago: int, horaZero: datetime):
+    def comprarTiquete(self, rutaSeleccionada: "Ruta", metodoPago: int, horaZero: datetime):
         pass
 
     def aceptarCambio(self) -> bool:

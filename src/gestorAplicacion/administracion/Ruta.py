@@ -1,7 +1,5 @@
 from Red import Red
 from datetime import datetime
-from Chofer import Chofer
-from Bus import Bus
 
 class Ruta(Red):
     _rutas = []
@@ -10,7 +8,7 @@ class Ruta(Red):
     _DIFICULTAD_ALTA = 300  # Km
     _DIFICULTAD_MUY_ALTA = 500  # Km
 
-    def __init__(self, busAsociado: Bus = None, choferAsociado: Chofer = None,
+    def __init__(self, busAsociado: "Bus" = None, choferAsociado: "Chofer" = None,
                  fechaSalida: datetime = None, fechaLlegada: datetime = None,
                  lugarInicio: str = "", lugarFin: str = "", distancia: float = 0.0,
                  tiempoEstimado: float = 0.0):
@@ -31,10 +29,10 @@ class Ruta(Red):
     def getIdRuta(self) -> int:
         return self._idRuta
 
-    def getBusAsociado(self) -> Bus:
+    def getBusAsociado(self) -> "Bus":
         return self._busAsociado
 
-    def getChoferAsociado(self) -> Chofer:
+    def getChoferAsociado(self) -> "Chofer":
         return self._choferAsociado
 
     def getFechaSalida(self) -> datetime:
@@ -58,11 +56,13 @@ class Ruta(Red):
     def setIdRuta(self, idRuta: int):
         self._idRuta = idRuta
 
-    def setBusAsociado(self, busAsociado: Bus):
+    def setBusAsociado(self, busAsociado: "Bus"):
+        from Bus import Bus
         if isinstance(busAsociado, Bus):
             self._busAsociado = busAsociado
 
-    def setChoferAsociado(self, choferAsociado: Chofer):
+    def setChoferAsociado(self, choferAsociado: "Chofer"):
+        from Chofer import Chofer
         if isinstance(choferAsociado, Chofer):
             self._choferAsociado = choferAsociado
 
