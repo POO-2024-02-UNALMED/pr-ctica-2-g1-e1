@@ -193,6 +193,8 @@ class VentanaPrincipal(tk.Tk):
 
     def creacionRuta(self):
         from Empresa import Empresa
+        from Red import Red
+
         # Teniendo el control de la pantalla.
         frame = self.frameContenido
 
@@ -326,18 +328,65 @@ class VentanaPrincipal(tk.Tk):
 
             # Definición de los valores aceptables.
         #empresas = Empresa.getEmpresas()
-        empresas = ["RapidoOchoa", "Bolivariano", "Cootran"]
+        empresas = ["Rapido", "Boli", "Ali"]
         #paradas = Red.Paradas
         paradas = ["BOGOTA", "MEDELLIN", "BARRANQUILLA", "CALI", "PEREIRA", "TUNJA"]
+
+        def simplificarPalabra(palabra: str) -> str:
+            # Se quitan todas las tildes y se pone en minúscula una palabra.
+            palabra = palabra.lower()
+
+            palabra = palabra.replace("á", "a")
+            palabra = palabra.replace("é", "e")
+            palabra = palabra.replace("í", "i")
+            palabra = palabra.replace("ó", "o")
+            palabra = palabra.replace("ú", "u")
+
+            return palabra
 
         # Aquí tengo que arrojar el error en caso de no existir la ciudad.
             # Ingresando los datos para hacer una búsqueda.
         def funcionalidad4():
-            inputs = formulario.getEntries()
-            textoResultado.insert(0.0, "Cargando los datos para:")
+            # Borrando todas las entradas
+            textoResultado.delete(1.0, "end")
+
+            # Imprimiendo el proceso.
+            textoResultado.insert(1.0, "Cargando los datos para:\n")
+            inputs = [simplificarPalabra(entrada) for entrada in formulario.getEntries()]
             for i in range(len(inputs)):
-                textoResultado.insert(2 * i + 1.0, formulario.criterios[i] + ": ")
-                textoResultado.insert(2 * i + 2.0, inputs[i] + "\n")
+                textoResultado.insert(2 * i + 2.0, formulario.criterios[i] + ": ")
+                textoResultado.insert(2 * i + 3.0, inputs[i] + "\n")
+
+            # Viendo si las opciones son correctas.
+            error = False
+                # Empresa.
+            for empresa in empresas:
+                if simplificarPalabra(empresa) == inputs[0]:
+                    break
+            else:
+                error = True
+                textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
+            
+                # Lugar inicio.
+            for parada in paradas:
+                if simplificarPalabra(parada) == inputs[1]:
+                    break
+            else:
+                error = True
+                textoResultado.insert("end", "No existe la parada " + inputs[1] + "\n")
+            
+                # Lugar destino.
+            for parada in paradas:
+                if simplificarPalabra(parada) == inputs[2]:
+                    break
+            else:
+                error = True
+                textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
+
+                # Impresión si surge error.
+            if error:
+                textoResultado.insert("end", "Vuelva a intentar")
+                return None
 
             # Botones.
         frameBotones = tk.Frame(frameBusqueda, bg = "black", height = 20, width = 10)
