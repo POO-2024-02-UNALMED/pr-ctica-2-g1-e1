@@ -60,7 +60,7 @@ class Factura:
     def getMetodoPago(self) -> str:
         return self._metodoPago
 
-    def getMetodosDePago(self) -> dict:
+    def getMetodosDePago(self) -> list:
         return Factura.metodosDePago
 
     def getIdFactura(self) -> int:

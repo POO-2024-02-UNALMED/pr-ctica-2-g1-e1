@@ -11,14 +11,12 @@ importacion(os.getcwd())
 
 import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
-from EscritorLector import LlamarBDPasajeros, LlamarBDRuta
+from EscritorLector import LlamarBD
 import VentanaInicio as VI
 from Ruta import Ruta
 from Contabilidad import Contabilidad
 if __name__ == "__main__":
-    Pasajeros, facturas, Contabilidad = LlamarBDPasajeros()
-    Rutas,Buses,Choferes, empresas = LlamarBDRuta()
-    print(Buses)
+    Pasajeros, facturas, Contabilidad ,Rutas, Buses,Choferes, empresas= LlamarBD()
 
     app = VI.VentanaInicio()
     app.mainloop()

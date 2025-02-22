@@ -1,5 +1,14 @@
 import pickle
-
+import datetime as dt
+from Pasajero import Pasajero
+from Ruta import Ruta
+from Maleta import Maleta
+from Factura import Factura
+from Contabilidad import Contabilidad
+from Bus import Bus
+from Chofer import Chofer
+from Empresa import Empresa
+from datetime import datetime, timedelta
 def guardar_datos(datos, nombreArchivo):
     """
     Guarda los datos en un archivo utilizando pickle.
@@ -55,59 +64,54 @@ y luego recuperar, puedes hacerlo de la siguiente manera:
 
 """
 
-def LlamarBDRuta():
-        # rutas_data.py
-    from Ruta import Ruta
-    from Bus import Bus
-    from Chofer import Chofer
-    from Empresa import Empresa
-    from datetime import datetime, timedelta
 
+
+def LlamarBD():
     rutas = []
 
     # Crear objetos Bus
-    bus1 = Bus(placa="ABC-123", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus2 = Bus(placa="DEF-456", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus3 = Bus(placa="GHI-789", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus4 = Bus(placa="JKL-012", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus5 = Bus(placa="MNO-345", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus6 = Bus(placa="PQR-678", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus7 = Bus(placa="STU-901", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus8 = Bus(placa="VWX-234", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus9 = Bus(placa="YZA-567", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus10 = Bus(placa="BCD-890", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus11 = Bus(placa="EFG-123", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus12 = Bus(placa="HIJ-456", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus13 = Bus(placa="KLM-789", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus14 = Bus(placa="NOP-012", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus15 = Bus(placa="QRS-345", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus16 = Bus(placa="TUV-678", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus17 = Bus(placa="WXY-901", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus18 = Bus(placa="ZAB-234", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus19 = Bus(placa="CDE-567", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus20 = Bus(placa="FGH-890", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
+    bus1 = Bus(placa="ABC-123", cantidadAsientos=30,kilometrosRecorridos =1000, consumo= 21.0,pesoMaximo=500, estado="Perfecto Estado")
+    bus2 = Bus(placa="DEF-456", cantidadAsientos=40,kilometrosRecorridos =1052, consumo= 22.0,pesoMaximo=750, estado="Necesita Reparación")
+    bus3 = Bus(placa="GHI-789", cantidadAsientos=35,kilometrosRecorridos =1052, consumo= 23.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus4 = Bus(placa="JKL-012", cantidadAsientos=45, kilometrosRecorridos =1520,consumo= 24.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus5 = Bus(placa="MNO-345", cantidadAsientos=30, kilometrosRecorridos =1520,consumo= 25.0,pesoMaximo=500, estado="Perfecto Estado")
+    bus6 = Bus(placa="PQR-678", cantidadAsientos=40, kilometrosRecorridos =1052,consumo= 26.0,pesoMaximo=750, estado="Necesita Reparación")
+    bus7 = Bus(placa="STU-901", cantidadAsientos=35, kilometrosRecorridos =2000,consumo= 27.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus8 = Bus(placa="VWX-234", cantidadAsientos=45,kilometrosRecorridos =2000, consumo= 28.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus9 = Bus(placa="YZA-567", cantidadAsientos=30, kilometrosRecorridos =2000,consumo= 29.0,pesoMaximo=500, estado="Perfecto Estado")
+    bus10 = Bus(placa="BCD-890", cantidadAsientos=40,kilometrosRecorridos =1200,consumo= 30.0, pesoMaximo=750, estado="Necesita Reparación")
+    bus11 = Bus(placa="EFG-123", cantidadAsientos=35, kilometrosRecorridos =1200,consumo= 31.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus12 = Bus(placa="HIJ-456", cantidadAsientos=45,kilometrosRecorridos =3000,consumo= 32.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus13 = Bus(placa="KLM-789", cantidadAsientos=30,kilometrosRecorridos =3000,consumo= 33.0, pesoMaximo=500, estado="Perfecto Estado")
+    bus14 = Bus(placa="NOP-012", cantidadAsientos=40,kilometrosRecorridos =3000,consumo= 34.0, pesoMaximo=750, estado="Necesita Reparación")
+    bus15 = Bus(placa="QRS-345", cantidadAsientos=35,kilometrosRecorridos =3000,consumo= 35.0, pesoMaximo=1000, estado="Perfecto Estado")
+    bus16 = Bus(placa="TUV-678", cantidadAsientos=45,kilometrosRecorridos =3000,consumo= 36.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus17 = Bus(placa="WXY-901", cantidadAsientos=30,kilometrosRecorridos =1000,consumo= 37.0, pesoMaximo=500, estado="Perfecto Estado")
+    bus18 = Bus(placa="ZAB-234", cantidadAsientos=40,kilometrosRecorridos =1000,consumo= 38.0, pesoMaximo=750, estado="Necesita Reparación")
+    bus19 = Bus(placa="CDE-567", cantidadAsientos=35,kilometrosRecorridos =1000,consumo= 39.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus20 = Bus(placa="FGH-890", cantidadAsientos=45,kilometrosRecorridos =1000,consumo= 40.0, pesoMaximo=1250, estado="En Mantenimiento")
 
     # Crear objetos Chofer
-    chofer1 = Chofer(nombre="Carlos Pérez", edad=40, id=1001)
-    chofer2 = Chofer(nombre="Ana Gómez", edad=35, id=1002)
-    chofer3 = Chofer(nombre="Luis Martínez", edad=45, id=1003)
-    chofer4 = Chofer(nombre="Sofía Díaz", edad=38, id=1004)
-    chofer5 = Chofer(nombre="Andrés Sánchez", edad=42, id=1005)
-    chofer6 = Chofer(nombre="Valentina Torres", edad=39, id=1006)
-    chofer7 = Chofer(nombre="Diego Ramírez", edad=41, id=1007)
-    chofer8 = Chofer(nombre="Isabella Vargas", edad=37, id=1008)
-    chofer9 = Chofer(nombre="Mateo Castro", edad=43, id=1009)
-    chofer10 = Chofer(nombre="Camila Herrera", edad=36, id=1010)
-    chofer11 = Chofer(nombre="Sebastián Rodríguez", edad=44, id=1011)
-    chofer12 = Chofer(nombre="Daniela Jiménez", edad=39, id=1012)
-    chofer13 = Chofer(nombre="Nicolás Silva", edad=40, id=1013)
-    chofer14 = Chofer(nombre="Gabriela Torres", edad=38, id=1014)
-    chofer15 = Chofer(nombre="Alejandro Vargas", edad=41, id=1015)
-    chofer16 = Chofer(nombre="Renata Castro", edad=37, id=1016)
-    chofer17 = Chofer(nombre="Martín Herrera", edad=43, id=1017)
-    chofer18 = Chofer(nombre="Lucía Rodríguez", edad=36, id=1018)
-    chofer19 = Chofer(nombre="Juan Díaz", edad=44, id=1019)
-    chofer20 = Chofer(nombre="Laura Pérez", edad=39, id=1020)
+    chofer1 = Chofer(nombre="Carlos Pérez", edad=40, id=1001,bus=bus20)
+    chofer2 = Chofer(nombre="Ana Gómez", edad=35, id=1002,bus=bus1)
+    chofer3 = Chofer(nombre="Luis Martínez", edad=45, id=1003,bus=bus2)
+    chofer4 = Chofer(nombre="Sofía Díaz", edad=38, id=1004,bus=bus3)
+    chofer5 = Chofer(nombre="Andrés Sánchez", edad=42, id=1005,bus=bus4)
+    chofer6 = Chofer(nombre="Valentina Torres", edad=39, id=1006,bus=bus5)
+    chofer7 = Chofer(nombre="Diego Ramírez", edad=41, id=1007,bus=bus6)
+    chofer8 = Chofer(nombre="Isabella Vargas", edad=37, id=1008,bus=bus7)
+    chofer9 = Chofer(nombre="Mateo Castro", edad=43, id=1009,bus=bus8)
+    chofer10 = Chofer(nombre="Camila Herrera", edad=36, id=1010,bus=bus9)
+    chofer11 = Chofer(nombre="Sebastián Rodríguez", edad=44, id=1011,bus=bus10)
+    chofer12 = Chofer(nombre="Daniela Jiménez", edad=39, id=1012,bus=bus11)
+    chofer13 = Chofer(nombre="Nicolás Silva", edad=40, id=1013,bus=bus12)
+    chofer14 = Chofer(nombre="Gabriela Torres", edad=38, id=1014,bus=bus13)
+    chofer15 = Chofer(nombre="Alejandro Vargas", edad=41, id=1015,bus=bus14)
+    chofer16 = Chofer(nombre="Renata Castro", edad=37, id=1016,bus=bus15)
+    chofer17 = Chofer(nombre="Martín Herrera", edad=43, id=1017,bus=bus16)
+    chofer18 = Chofer(nombre="Lucía Rodríguez", edad=36, id=1018,bus=bus17)
+    chofer19 = Chofer(nombre="Juan Díaz", edad=44, id=1019,bus=bus18)
+    chofer20 = Chofer(nombre="Laura Pérez", edad=39, id=1020,bus=bus19)
 
     # Crear 20 objetos Ruta
     fecha_base = datetime(2023, 11, 15, 8, 0, 0)  # Fecha base para las rutas
@@ -174,18 +178,18 @@ def LlamarBDRuta():
 
     # Creando 4 objetos empresa.
     empresa1 = Empresa("RápidoOchoa", empleados = [chofer1, chofer2, chofer3],
-                       rutas = [ruta1, ruta2, ruta3, ruta4, ruta5, ruta6],
-                       buses = [bus1, bus2, bus3, bus4])
+                        rutas = [ruta1, ruta2, ruta3, ruta4, ruta5, ruta6],
+                        buses = [bus1, bus2, bus3, bus4])
     empresa2 = Empresa("Bolivariano", empleados = [chofer4, chofer5, chofer6, chofer7, chofer8, chofer9, chofer10],
-                       rutas = [ruta7, ruta8, ruta9, ruta10, ruta11, ruta12, ruta13],
-                       buses = [bus5, bus6, bus7, bus8, bus9, bus10, bus11])
+                        rutas = [ruta7, ruta8, ruta9, ruta10, ruta11, ruta12, ruta13],
+                        buses = [bus5, bus6, bus7, bus8, bus9, bus10, bus11])
     empresa3 = Empresa("Brasilia", empleados = [chofer11, chofer12, chofer13, chofer14],
-                       rutas = [ruta14, ruta15, ruta16, ruta17],
-                       buses = [bus12, bus13, bus14, bus15, bus16])
+                        rutas = [ruta14, ruta15, ruta16, ruta17],
+                        buses = [bus12, bus13, bus14, bus15, bus16])
     empresa4 = Empresa("Continental", empleados = [chofer15, chofer16, chofer17, chofer18, chofer19, chofer20],
-                       rutas = [ruta18, ruta19, ruta20],
-                       buses = [bus17, bus18, bus19, bus20])
-    
+                        rutas = [ruta18, ruta19, ruta20],
+                        buses = [bus17, bus18, bus19, bus20])
+
     buses= []
     choferes= []
     empresas = Empresa.getEmpresas()
@@ -197,38 +201,17 @@ def LlamarBDRuta():
         for ruta in empresa.getRutas():
             empresa.asignarRuta(ruta)
 
-    nombreArchivo = 'src/baseDatos/temp/Rutas.pkl'
-    nombreArchivoBus= 'src/baseDatos/temp/Bus.pkl'
-    nombreArchivoChofer= 'src/baseDatos/temp/Chofer.pkl'
-    nombreArchivoEmpresa = 'src/baseDatos/temp/Empresa.pkl'
-    # Guardar datos 
-    guardar_datos(rutas, nombreArchivo)
-    guardar_datos(buses, nombreArchivoBus)
-    guardar_datos(choferes, nombreArchivoChofer)
-    guardar_datos(empresas, nombreArchivoEmpresa)
-    # Cargar datos
-    datos_cargados = cargar_datos(nombreArchivo)
-    datos_cargados_Bus = cargar_datos(nombreArchivoBus)
-    datos_cargados_Chofer = cargar_datos(nombreArchivoChofer)
-    datos_cargados_Empresa = cargar_datos(nombreArchivoEmpresa)
 
-    if datos_cargados:
-        print("Datos cargados:", datos_cargados)
-    return datos_cargados, datos_cargados_Bus, datos_cargados_Chofer, datos_cargados_Empresa
 
-def LlamarBDPasajeros():
-    import datetime as dt
-    from Pasajero import Pasajero
-    from Ruta import Ruta
-    from Maleta import Maleta
-    from Factura import Factura
-    from Contabilidad import Contabilidad
+
+
     pasajeros = []
 
     # Crear objetos Maleta y Factura para usar en los Pasajeros
     maletas_pasajero1 = [Maleta(peso=20), Maleta(peso=10)]
-    facturas_pasajero1 = [Factura(valor=100, fecha=dt.datetime(2023, 10, 26)), Factura(valor=50, fecha=dt.datetime(2023, 10, 27))]
-
+    #facturas_pasajero1 = [Factura("Juan Pérez", 101, 100000.0, 1, [asientos[]], datetime(2025, 2, 22), 2, ruta1, "Medellín", "Bogotá", "Tarjeta de Credito")
+    #], 2, None)]
+    facturas_pasajero1 = [Factura(valor=75, fecha=dt.datetime(2023, 10, 28))]
     maletas_pasajero2 = [Maleta(peso=5)]
     facturas_pasajero2 = [Factura(valor=75, fecha=dt.datetime(2023, 10, 28))]
 
@@ -297,25 +280,41 @@ def LlamarBDPasajeros():
     pasajero20 = Pasajero("Lucía Rodríguez", 37, 99002, [Maleta(peso=13)], 310, [Factura(valor=155, fecha=dt.datetime(2023, 11, 10))], 4, acompanante2)
     pasajeros.append(pasajero20)
 
-    nombreArchivo = 'src/baseDatos/temp/Pasajeros.pkl'
-    nombreArchivoFactura= 'src/baseDatos/temp/Facturas.pkl'
-    nombreArchivoContabilidad = 'src/baseDatos/temp/Contabilidad.pkl'
     facturas = []
+
     for pasajero in pasajeros:
         pasajeroFacturas =pasajero.getFacturas()
         for factura in pasajeroFacturas:
             facturas.append(factura)
-    
-    Contabilidad = Contabilidad(100000000,50000000, facturas,[])# la lista son las facturas reembolsadas (no hay)
-    # Guardar datos
+
+
+    nombreArchivo = 'src/baseDatos/temp/Pasajeros.pkl'
+    nombreArchivoFactura= 'src/baseDatos/temp/Facturas.pkl'
+    nombreArchivoContabilidad = 'src/baseDatos/temp/Contabilidad.pkl'
+    nombreArchivoRutas = 'src/baseDatos/temp/Rutas.pkl'
+    nombreArchivoBus= 'src/baseDatos/temp/Bus.pkl'
+    nombreArchivoChofer= 'src/baseDatos/temp/Chofer.pkl'
+    nombreArchivoEmpresa = 'src/baseDatos/temp/Empresa.pkl'
+
+    Contabilidad1 = Contabilidad(100000000,50000000, facturas,[])# la lista son las facturas reembolsadas (no hay)
+    # Guardar datos 
+    guardar_datos(rutas, nombreArchivoRutas)
+    guardar_datos(buses, nombreArchivoBus)
+    guardar_datos(choferes, nombreArchivoChofer)
+    guardar_datos(empresas, nombreArchivoEmpresa)
     guardar_datos(pasajeros, nombreArchivo)
     guardar_datos(facturas, nombreArchivoFactura)
-    guardar_datos(Contabilidad,nombreArchivoContabilidad)
+    guardar_datos(Contabilidad1,nombreArchivoContabilidad)
+
 
     # Cargar datos
     datos_Pasajeros = cargar_datos(nombreArchivo)
     datos_Facturas = cargar_datos(nombreArchivoFactura)
     datos_Contabilidad = cargar_datos(nombreArchivoContabilidad)
-    #if datos_cargados:
-    #    print("Datos cargados:", datos_cargados)
-    return datos_Pasajeros, datos_Facturas, datos_Contabilidad
+    datos_cargado_Rutas = cargar_datos(nombreArchivoRutas)
+    datos_cargados_Bus = cargar_datos(nombreArchivoBus)
+    datos_cargados_Chofer = cargar_datos(nombreArchivoChofer)
+    datos_cargados_Empresa = cargar_datos(nombreArchivoEmpresa)
+
+    return datos_Pasajeros, datos_Facturas, datos_Contabilidad, datos_cargado_Rutas, datos_cargados_Bus , datos_cargados_Chofer, datos_cargados_Empresa
+

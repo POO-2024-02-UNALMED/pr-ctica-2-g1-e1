@@ -68,27 +68,36 @@ class VentanaPrincipal(tk.Tk):
 
             from Pasajero import Pasajero
             from Excepciones import InexistenciaExcepcion, CampoFaltanteEx
+            from Persona import Persona
             nombrePasajero = None
             numeroDocumento = None
             numeroFactura = None
             for campo, valor in parametros:
                 if campo == "Nombre en factura":
                     nombrePasajero = valor
+
                 elif campo == "Número de documento":
                     numeroDocumento = valor
+
+                    
                 elif campo == "Número de factura":
                     numeroFactura = valor
+
             try:
                 if nombrePasajero and numeroDocumento:
-                    pasajero1 = Pasajero.buscarPasajero(numeroDocumento, numeroFactura)
+                    pasajero1 = Pasajero.buscarPasajero(nombrePasajero, numeroDocumento)
+
                     if pasajero1:
-                        respuestas= pasajero1.solicitarReembolso()
+
+                        respuestas= pasajero1.solicitarReembolso(numeroDocumento,numeroFactura,self.horaZero)
+                        print(respuestas[0])
                         if respuestas and len(respuestas) == 2:  # Verifica si la respuesta tiene 2 elementos
                             mensaje_reembolso = respuestas[0]
                             # Mostrar el mensaje en el frameContenido
                             tk.Label(self.frameContenido, text=mensaje_reembolso).pack(pady=10)
+                            
                     else:
-                        raise InexistenciaExcepcion.InexistenciaExcepcion(valor)
+                        raise InexistenciaExcepcion.InexistenciaExcepcion("Pasajero en el sistema")
                 else:
                     raise CampoFaltanteEx.CampoFaltanteEx(campo)
             except InexistenciaExcepcion.InexistenciaExcepcion as e:
