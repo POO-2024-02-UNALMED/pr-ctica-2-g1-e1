@@ -54,6 +54,7 @@ y luego recuperar, puedes hacerlo de la siguiente manera:
 4 todo gud 
 
 """
+
 def LlamarBDRuta():
         # rutas_data.py
     from Ruta import Ruta
@@ -185,21 +186,35 @@ def LlamarBDRuta():
                        rutas = [ruta18, ruta19, ruta20],
                        buses = [bus17, bus18, bus19, bus20])
     
+    buses= []
+    choferes= []
+    empresas = Empresa.getEmpresas()
+    for ruta in rutas:
+        buses.append(ruta.getBusAsociado())
+        choferes.append(ruta.getChoferAsociado())
+
     for empresa in Empresa.getEmpresas():
         for ruta in empresa.getRutas():
             empresa.asignarRuta(ruta)
 
     nombreArchivo = 'src/baseDatos/temp/Rutas.pkl'
-
-    # Guardar datos
+    nombreArchivoBus= 'src/baseDatos/temp/Bus.pkl'
+    nombreArchivoChofer= 'src/baseDatos/temp/Chofer.pkl'
+    nombreArchivoEmpresa = 'src/baseDatos/temp/Empresa.pkl'
+    # Guardar datos 
     guardar_datos(rutas, nombreArchivo)
-
+    guardar_datos(buses, nombreArchivoBus)
+    guardar_datos(choferes, nombreArchivoChofer)
+    guardar_datos(empresas, nombreArchivoEmpresa)
     # Cargar datos
     datos_cargados = cargar_datos(nombreArchivo)
+    datos_cargados_Bus = cargar_datos(nombreArchivoBus)
+    datos_cargados_Chofer = cargar_datos(nombreArchivoChofer)
+    datos_cargados_Empresa = cargar_datos(nombreArchivoEmpresa)
 
     if datos_cargados:
         print("Datos cargados:", datos_cargados)
-    return datos_cargados
+    return datos_cargados, datos_cargados_Bus, datos_cargados_Chofer, datos_cargados_Empresa
 
 def LlamarBDPasajeros():
     import datetime as dt
@@ -207,6 +222,7 @@ def LlamarBDPasajeros():
     from Ruta import Ruta
     from Maleta import Maleta
     from Factura import Factura
+    from Contabilidad import Contabilidad
     pasajeros = []
 
     # Crear objetos Maleta y Factura para usar en los Pasajeros
@@ -282,13 +298,24 @@ def LlamarBDPasajeros():
     pasajeros.append(pasajero20)
 
     nombreArchivo = 'src/baseDatos/temp/Pasajeros.pkl'
-
+    nombreArchivoFactura= 'src/baseDatos/temp/Facturas.pkl'
+    nombreArchivoContabilidad = 'src/baseDatos/temp/Contabilidad.pkl'
+    facturas = []
+    for pasajero in pasajeros:
+        pasajeroFacturas =pasajero.getFacturas()
+        for factura in pasajeroFacturas:
+            facturas.append(factura)
+    
+    Contabilidad = Contabilidad(100000000,50000000, facturas,[])# la lista son las facturas reembolsadas (no hay)
     # Guardar datos
     guardar_datos(pasajeros, nombreArchivo)
+    guardar_datos(facturas, nombreArchivoFactura)
+    guardar_datos(Contabilidad,nombreArchivoContabilidad)
 
     # Cargar datos
-    datos_cargados = cargar_datos(nombreArchivo)
-
-    if datos_cargados:
-        print("Datos cargados:", datos_cargados)
-    return datos_cargados
+    datos_Pasajeros = cargar_datos(nombreArchivo)
+    datos_Facturas = cargar_datos(nombreArchivoFactura)
+    datos_Contabilidad = cargar_datos(nombreArchivoContabilidad)
+    #if datos_cargados:
+    #    print("Datos cargados:", datos_cargados)
+    return datos_Pasajeros, datos_Facturas, datos_Contabilidad

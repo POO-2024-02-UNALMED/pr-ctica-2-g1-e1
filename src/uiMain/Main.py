@@ -14,10 +14,11 @@ from tkinter import Menu, messagebox, PhotoImage, ttk
 from EscritorLector import LlamarBDPasajeros, LlamarBDRuta
 import VentanaInicio as VI
 from Ruta import Ruta
+from Contabilidad import Contabilidad
 if __name__ == "__main__":
-    Pasajeros = LlamarBDPasajeros()
-    Rutas = LlamarBDRuta()
-    #print(Ruta._rutas)
+    Pasajeros, facturas, Contabilidad = LlamarBDPasajeros()
+    Rutas,Buses,Choferes, empresas = LlamarBDRuta()
+    print(Buses)
 
     app = VI.VentanaInicio()
     app.mainloop()
