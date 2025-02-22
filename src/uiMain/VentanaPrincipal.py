@@ -112,32 +112,32 @@ class VentanaPrincipal(tk.Tk):
                 try:
                     if not valor:
                         raise CampoFaltanteEx.CampoFaltanteEx(campo)  # Lanza la excepción con el campo
-
-                    if campo == "Nombre en factura":
-                        if not isinstance(valor, str):
-                            raise ErrorTipoDatoEx(campo, str)
-                    elif campo == "Número de documento":
-                        try:
-                            int(valor)  # Intenta convertir a entero
-                        except ValueError:
-                            raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
-                    elif campo == "Número de factura":
-                        try:
-                            int(valor)
-                        except ValueError:
-                            raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
-                    elif campo == "Número de maletas":
-                        try:
-                            int(valor)
-                        except ValueError:
-                            raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
-
+                    else:
+                        if campo == "Nombre en factura":
+                            if not isinstance(valor, str):
+                                raise ErrorTipoDatoEx(campo, str)
+                        elif campo == "Número de documento":
+                            try:
+                                int(valor)  # Intenta convertir a entero
+                            except ValueError:
+                                raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
+                        elif campo == "Número de factura":
+                            try:
+                                int(valor)
+                            except ValueError:
+                                raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
+                        elif campo == "Número de maletas":
+                            try:
+                                int(valor)
+                            except ValueError:
+                                raise ErrorTipoDatoEx.ErrorTipoDatoEx(campo, int)
+            
                     parametros.append((campo, valor))
 
-                except CampoFaltanteEx as e:
+                except CampoFaltanteEx.CampoFaltanteEx as e:
                     e.mostrar_advertencia()  # Muestra la advertencia usando el método de la excepción
                     return  # Sale de la función
-                except ErrorTipoDatoEx as e:
+                except ErrorTipoDatoEx.ErrorTipoDatoEx as e:
                     e.mostrar_advertencia()
                     return
             messagebox.showinfo("Proceso", "Su validación está en proceso.")

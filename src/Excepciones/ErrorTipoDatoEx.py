@@ -8,5 +8,5 @@ class ErrorTipoDatoEx(Exception):
 
 
     def mostrar_advertencia(self):
-        messagebox.showwarning("Error de Tipo de Dato", f"Error en el campo {self.args[0]}. Se esperava un valor de{self.tipo_esperado}")
+        messagebox.showwarning("Error de Tipo de Dato", f"Error en el campo {self.campo}. Se esperaba un valor de{self.tipo_esperado}")
         
