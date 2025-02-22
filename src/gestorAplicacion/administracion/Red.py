@@ -278,3 +278,29 @@ class Red(ABC):
         nuevoTrayecto.remove(ordinal)
 
         return nuevoTrayecto
+
+    @classmethod
+    def longitud(cls, trayecto: list[int]) -> int:
+        """
+        Retorna la duración temporal de un trayecto.
+
+        Parámetros:
+            - ordinalesTrayecto: int[],
+                Conjunto de paradas (Ordinales) a calcular su longitud.
+
+        Retorna:
+            - tiempo: int,
+                Duración del trayecto.
+        """
+
+        # Ordenando la lista.
+        trayecto = cls.ordenarParadas(trayecto)
+
+        # Calculando el tiempo.
+        tiempo = 0
+        for i in range(len(trayecto) - 1):
+            actual, siguiente = trayecto[i], trayecto[i + 1]
+            tiempo += cls.DISTANCIAS[actual][siguiente]
+
+        # Retornando.
+        return tiempo

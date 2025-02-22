@@ -26,7 +26,7 @@ class Bus:
         self.setPesoMaximo(pesoMaximo)
         self._estado = estado
         # Agregamos el bus a la lista de buses
-        if self.empresa is not None:
+        if self._empresa is not None:
             self._empresa.agregarBus(self)
 
     def getCantidadAsientos(self):
@@ -85,7 +85,7 @@ class Bus:
         return self._pesoMaximo
 
     def setPesoMaximo(self, pesoMaximo: float):
-        if pesoMaximo in Bus.PesoMaximo:
+        if pesoMaximo in Bus._PESO_MAXIMO:
             self._pesoMaximo = pesoMaximo
 
     def getEmpresa(self) -> "Empresa":
@@ -96,6 +96,10 @@ class Bus:
 
         if isinstance(empresa, Empresa):
             self._empresa = empresa
+        try:
+            self._empresa
+        except AttributeError:
+            self._empresa = None
 
     # Métodos de Clase
     @classmethod
@@ -166,8 +170,8 @@ class Bus:
 
         # Viendo si la nueva ruta tiene un horario compartido con una ya asignada. 
         for ruta in self._rutasFuturas:
-            if not (nuevaRuta.getFechaLlegada() + datetime.timedelta(hours = 1) < ruta.getFechaSalida() or
-                    nuevaRuta.getFechaSalida() - datetime.timedelta(hours = 1) > ruta.getFechaLlegada()):
+            if not (nuevaRuta.getFechaLlegada() + timedelta(hours = 1) < ruta.getFechaSalida() or
+                    nuevaRuta.getFechaSalida() - timedelta(hours = 1) > ruta.getFechaLlegada()):
                 return False
 
         # Asignando el bus.
@@ -217,7 +221,7 @@ class Bus:
                 return rutas[i].getFechaLlegada() + timedelta(hours = 1)
 
         # Si colisiona con todo el horario, se asigna una hora después del último lapso.
-        return rutas[len(rutas) - 1].getFechaLleada() + timedelta(hours = 1)
+        return rutas[len(rutas) - 1].getFechaLlegada() + timedelta(hours = 1)
 
     def asignarPasajero(self, pasajero: "Pasajero") -> str:
         from Asiento import Asiento

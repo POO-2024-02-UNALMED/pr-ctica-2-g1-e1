@@ -4,9 +4,8 @@ from datetime import timedelta
 class Empresa:
     _empresas = []
 
-    def __init__(self, nombre: str = "", empleados: list = [],
-                 buses: list["Bus"] = [], rutas: list["Ruta"] = [], dineroEmpresa: float = 0.0,
-                 transaccionEmpresa: list[float] = []):
+    def __init__(self, nombre, empleados: list = [], buses: list["Bus"] = [], rutas: list["Ruta"] = [],
+                 dineroEmpresa: float = 0.0, transaccionEmpresa: list[float] = []):
         self._nombre = nombre
         self.setEmpleados(empleados)
         self.setBuses(buses)
@@ -41,7 +40,7 @@ class Empresa:
 
         self._buses = []
         for bus in buses:
-            if isinstance(bus, "Bus"):
+            if isinstance(bus, Bus):
                 self._buses.append(bus)
 
     def getRutas(self) -> list["Ruta"]:
@@ -214,7 +213,7 @@ class Empresa:
         duracion = ruta.getTiempoEstimado()
 
         # Estableciendo una cota a la fecha.
-        horarioBusBase = self._buses[0] 
+        horarioBusBase = self._buses[0].hallarHueco(duracion)
         busEncontrado = self._buses[0]
 
         # Buscando la fecha más cercana con un bus disponible.

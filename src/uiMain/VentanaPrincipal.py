@@ -191,7 +191,7 @@ class VentanaPrincipal(tk.Tk):
         else:
             return InexistenciaExcepcion("No existe el objeto buscado en la lista.")
 
-    def ajustarParadas(self, empresa: "Empresa", trayecto: list[int], numeroParadas: int, factor: float, texto: tk.Text):
+    def ajustarParadas(self, empresa: "Empresa", trayecto: list[int], numeroParadas: int, factor: float, texto: tk.Text) -> list[int]:
         """
         Calcula el trayecto con parada origen -> parada destino, tal que
         se cumple (Si se puede) el número de paradas deseadas y un factor de crecimiento
@@ -217,8 +217,6 @@ class VentanaPrincipal(tk.Tk):
 
         # Iniciando las variables necesarias.
         promedios = empresa.flujosPromedio()
-        longitud = len(trayecto)
-
 
         # Ajustando para que se tenga la cantidad de paradas deseada.
         numeroParadasCreadas = len(trayecto)
@@ -230,8 +228,8 @@ class VentanaPrincipal(tk.Tk):
                                 " orden descendente de estos valores.\n")
         
             # Se buscará una ruta que maximice la cantidad de personas que usarán la ruta.
-            salientes = [(0, 0) for _ in range(longitud - 2)]
-            for i in range(longitud - 2):
+            salientes = [(0, 0) for _ in range(numeroParadasCreadas - 2)]
+            for i in range(numeroParadasCreadas - 2):
                 ordinalActual = trayecto[i + 1]
                 salientes[i] = (i + 1, promedios[trayecto[0]][ordinalActual])
 
@@ -254,7 +252,122 @@ class VentanaPrincipal(tk.Tk):
                                 "si el conjunto de paradas añadidas aumenta más del porcentaje " +
                                 "especificado.\n")
             primeraParada = trayecto[0]
-            ultimaParada = trayecto[longitud - 1]
+            ultimaParada = trayecto[numeroParadasCreadas - 1]
+
+            # Viendo la distancia del trayecto.
+            recorridoTotal = Red.DISTANCIAS[primeraParada][ultimaParada]
+
+            # Corrección de errores.
+            if numeroParadas > len(Red.PARADAS):
+                numeroParadas = len(Red.PARADAS)
+
+            # Viendo las paradas que ya están.
+            enRuta = sorted(trayecto.copy())
+            noEnRuta = []
+            desplazamiento = 0
+            for i in range(len(Red.PARADAS)):
+                if i < enRuta[desplazamiento]:
+                    noEnRuta[i - desplazamiento] = i
+                else:
+                    desplazamiento += 1
+
+            # Viendo los flujos entrantes desde el trayecto a paradas que no están en el trayecto.
+            rutaANoRuta = [0 for _ in noEnRuta]
+            separacion = 0
+            for i in range(len(noEnRuta)):
+                separacion = Red.posicion(trayecto, noEnRuta[i])
+                for j in range(len(enRuta)):
+                    # Viendo si la parada en la ruta está antes o después de la parada que no está en la ruta.
+                    if enRuta[j] <= separacion[0]:
+                        # Si está antes, import cuántos se bajan.
+                        rutaANoRuta[i] += promedios[enRuta[j]][noEnRuta[i]]
+                    else:
+                        # Si está despues, importa cuántos se suben.
+                        rutaANoRuta[i] += promedios[noEnRuta[i]][enRuta[j]]
+
+                # Imprimiendo los datos.
+                texto.insert("end", Red.Parada(noEnRuta[i]) + " es pedido por " +
+                                    rutaANoRuta[i] + " personas en promedio.\n")
+
+            # Visualizando la contribución individual de cada parada a añadir.
+            contribucionIndividual = [0 for _ in range(len(noEnRuta))]
+            posicion = [] # Para ver la posición que debería ocupar.
+            contribucion = 0 # Distancia que contribuye.
+            paradaAnterior, paradaPosterior = 0, 0 # Paradas donde se encuentra ensandwichado.
+            for i in range(len(noEnRuta)):
+                posicion = Red.posicion(trayecto, noEnRuta[i])
+                paradaAnterior = trayecto[posicion[0]]
+                paradaPosterior = trayecto[posicion[1]]
+                contribucion = Red.DISTANCIAS[paradaAnterior][noEnRuta[i]] + Red.DISTANCIAS[noEnRuta[i]][paradaPosterior] - Red.DISTANCIAS[paradaAnterior][paradaPosterior]
+                contribucionIndividual[i] = contribucion
+
+                texto.insert("end", "Al ubicar a " + Red.Parada(noEnRuta[i]) +
+                                    " entre las ciudades " + Red.Parada(paradaAnterior) + "-" +
+                                    Red.Parada(paradaPosterior) + " esta añade una distancia de " +
+                                    contribucion + "\n")
+
+            # Viendo si cumple que no sobrepasa la longitud máxima deseada.
+            cantidadFaltante = numeroParadas - numeroParadasCreadas
+            paradasEnOrden = sorted([(i, rutaANoRuta[i]) for i in range(len(rutaANoRuta))],
+                                    key = lambda x: x[1], reverse = True)
+            paradasEnOrden = [x[0] for x in paradasEnOrden]
+            nuevaParada = 0
+            nuevoTrayecto = trayecto.copy()
+            aporte = [0 for _ in range(cantidadFaltante)]
+            for i in range(cantidadFaltante):
+                nuevaParada = noEnRuta[paradasEnOrden[i]]
+                nuevoTrayecto = Red.agregarParada(nuevoTrayecto, nuevaParada)
+                aporte[i] = contribucionIndividual[i]
+                texto.insert("end", "Añadiendo a " + Red.Parada(nuevaParada) + " con " + aporte[i] + " distancia adicional.\n")
+
+            # Viendo si cumple que no sobrepasa la longitud máxima deseada.
+            nuevoRecorridoTotal = Red.longitud(nuevoTrayecto)
+            desfase = 0
+            ordendeAporte = []
+            paradaAEliminar = 0 # Parada a eliminar en el siguiente paso
+            while (nuevoRecorridoTotal > recorridoTotal * factor) and (desfase < len(paradasEnOrden) - cantidadFaltante):
+                texto.insert("end", "Como la distancia total al añadir las paradas es " +
+                                    nuevoRecorridoTotal + " se va a reemplazar la " +
+                                    "parada que más distancia aporta.")
+
+                # Eliminando la parada que más distancia individual contribuye.
+                ordendeAporte = sorted([(i, aporte[i]) for i in range(len(aporte))],
+                                       key = lambda x: x[1], reverse = True)
+                ordendeAporte = [x[0] for x in ordendeAporte]
+                paradaAEliminar = paradasEnOrden[desfase + ordendeAporte[0]]
+                nuevoTrayecto = Red.eliminarParada(nuevoTrayecto, paradaAEliminar)
+
+                # Añadiendo la siguiente parada a analizar.
+                nuevaParada = noEnRuta[paradasEnOrden[cantidadFaltante + desfase]]
+                nuevoTrayecto = Red.agregarParada(nuevoTrayecto, nuevaParada)
+
+                # Imprimeidno lo que pasa.
+                texto.insert("end", "Cambiando " + Red.Parada(paradaAEliminar) + " por " + Red.Parada(nuevaParada) + "\n")
+
+                # Viendo la siguiente iteración.
+                aporte[ordendeAporte[0]] = contribucionIndividual[nuevaParada]
+                nuevoRecorridoTotal = Red.longitud(nuevoTrayecto)
+                desfase += 1
+
+            if desfase >= len(paradasEnOrden) - cantidadFaltante:
+                cuentaRegresiva = 0
+                texto.insert("end", "Como la distancia total no ha disminuido al valor " +
+                                    "deseado, se van a ir eliminando paradas.\n")
+                while (nuevoRecorridoTotal > recorridoTotal * factor) and cuentaRegresiva < cantidadFaltante:
+                    # Eliminando progresivamente las paradas.
+                    paradaAEliminar = paradasEnOrden[desfase + ordendeAporte[cuentaRegresiva]]
+                    nuevoTrayecto = Red.eliminarParada(nuevoTrayecto, paradaAEliminar)
+
+                    texto.insert("end", "Eliminando " + Red.Parada(paradaAEliminar) + ".\n")
+
+                    # Viendo la siguiente iteración.
+                    nuevoRecorridoTotal = Red.longitud(nuevoTrayecto)
+                    cuentaRegresiva += 1
+
+            if numeroParadas > len(nuevoTrayecto):
+                texto.insert("end", "Lo sentimos, pero el porcentaje no permitió alcanzar el número de paradas.")
+
+        return nuevoTrayecto
 
     def creacionRuta(self):
         from Empresa import Empresa
@@ -426,8 +539,8 @@ class VentanaPrincipal(tk.Tk):
                     paradaOrigen = i
                     break
             else:
-                textoResultado.insert("end", "No existe la parada " + inputs[1] + "\n")
-                textoResultado.insert("end", "Vuelva a intentar")
+                textoResultado.insert("end", "No existe la parada " + inputs[1] + ".\n")
+                textoResultado.insert("end", "Vuelva a intentar.\n")
                 return None
 
                 # Lugar destino.
@@ -437,7 +550,7 @@ class VentanaPrincipal(tk.Tk):
                     break
             else:
                 textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
-                textoResultado.insert("end", "Vuelva a intentar")
+                textoResultado.insert("end", "Vuelva a intentar.\n")
                 return None
 
                 # Empresa
@@ -455,17 +568,71 @@ class VentanaPrincipal(tk.Tk):
                     break
             else:
                 textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
-                textoResultado.insert("end", "Vuelva a intentar")
+                textoResultado.insert("end", "Vuelva a intentar.\n")
+                return None
+        
+        def datosAjuste():
+            # Borrando todas las entradas
+            textoResultado.delete(1.0, "end")
+
+            # Imprimiendo el proceso.
+            textoResultado.insert(1.0, "Cargando los datos para:\n")
+            inputs = [simplificarPalabra(entrada) for entrada in formulario.getEntries()]
+            for i in range(len(inputs)):
+                textoResultado.insert(2 * i + 2.0, formulario.criterios[i] + ": ")
+                textoResultado.insert(2 * i + 3.0, inputs[i] + "\n")
+
+            # Viendo si las opciones son correctas.
+                # Lugar inicio.
+            for i in range(len(paradas)):
+                if simplificarPalabra(paradas[i]) == inputs[1]:
+                    paradaOrigen = i
+                    break
+            else:
+                textoResultado.insert("end", "No existe la parada " + inputs[1] + "\n")
+                textoResultado.insert("end", "Vuelva a intentar.\n")
+                return None
+
+                # Lugar destino.
+            for i in range(len(paradas)):
+                if simplificarPalabra(paradas[i]) == inputs[2]:
+                    paradaDestino = i
+                    break
+            else:
+                textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
+                textoResultado.insert("end", "Vuelva a intentar.\n")
+                return None
+
+                # Empresa
+            for empresa in empresas:
+                if simplificarPalabra(empresa.getNombre()) == inputs[0]:
+                    # Hallando la ruta óptima.
+                    trayecto = Red.algoritmoBellmanFord(paradaOrigen, paradaDestino)
+
+                    # Mostrando la ruta óptima.
+                    for ordinal in trayecto[:-1]:
+                        textoResultado.insert("end", Red.Parada(ordinal) + " --> ")
+                    textoResultado.insert("end", Red.Parada(trayecto[-1]))
+                    primerosDatos.append(empresa)
+                    primerosDatos.append(trayecto)
+                    break
+            else:
+                textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
+                textoResultado.insert("end", "Vuelva a intentar.\n")
                 return None
 
         def continuarDatos():
-            if len(primerosDatos) != 0:
+            print(primerosDatos)
+            if len(primerosDatos) == 3:
                 formulario.destroy()
                 criterios = ["Número de paradas", "Factor"]
                 formulario = FF.FieldFrame(frameBusqueda, "Criterio", criterios, "Valor")
                 formulario.pack(side = "left", padx = 10, pady = 10)
                 textoResultado.delete(1.0, "end")
                 botonContinuar.config(command = continuarAjuste)
+                botonInputs.config(command = datosAjuste)
+            else:
+                textoResultado.insert("end", "Faltan campos por rellenar.")
 
         def continuarAjuste():
             pass
