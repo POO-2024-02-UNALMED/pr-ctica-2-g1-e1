@@ -8,14 +8,14 @@ class Pasajero(Persona):
                  maletas: list["Maleta"] = [], wallet: float = 0.0,
                  facturas: list["Factura"] = [], numReembolsoDisp: int = 0,
                  acompanante: Persona = None):
-        super.__init__(nombre, edad, id)
+        super().__init__(nombre, edad, id)
         self._maletas = maletas
         self._wallet = wallet
         self._facturas = facturas
         self._numReembolsoDisp = numReembolsoDisp
         if acompanante != None:
             self._acompanante = acompanante
-            Pasajero._pasajeroRegistrados.append(self)
+        Pasajero._pasajeroRegistrados.append(self)
 
     # Defiendo Getters y Setters ¡¡Los getters y Setters de nombre, edad y id ya se heredaron por Persona!!
     def getMaletas(self) -> list["Maleta"]:

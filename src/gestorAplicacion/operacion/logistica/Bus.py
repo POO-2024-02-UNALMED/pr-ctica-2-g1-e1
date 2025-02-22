@@ -22,9 +22,9 @@ class Bus:
         self.setEmpresa(empresa)
         self.setEquipaje(equipaje)
         self._consumo = consumo
+        self._pesoMaximo = None
         self.setPesoMaximo(pesoMaximo)
         self._estado = estado
-
         # Agregamos el bus a la lista de buses
         if self.empresa is not None:
             self._empresa.agregarBus(self)
