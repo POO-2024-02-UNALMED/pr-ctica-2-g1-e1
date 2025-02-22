@@ -1,11 +1,9 @@
-#from  Factura import Factura
-
 class Contabilidad:
     _costoCompensacion: int = 10
     _ventas: list = []
     _transacionesReembolsadas: list = []
 
-    def __init__(self, ingresos: float = 0.0, costosOperativos: float = 0.0, ventas: list = [],
+    def __init__(self, ingresos: float = 0.0, costosOperativos: float = 0.0, ventas: list["Factura"] = [],
                  transacionesReembolsadas: list = []):
         self._ingresos = ingresos
         self._costosOperativos = costosOperativos
@@ -19,7 +17,7 @@ class Contabilidad:
     def getCostosOperativos(self) -> float:
         return self._costosOperativos
 
-    def getVentas(self) -> list:
+    def getVentas(self) -> list["Factura"]:
         return self._ventas
 
     def getTransaccionesReembolsadas(self) -> list:
@@ -32,7 +30,12 @@ class Contabilidad:
         self._costosOperativos = costosOperativos
 
     def setVentas(self, ventas):
-        self._ventas = ventas
+        from Factura import Factura
+
+        self._ventas = []
+        for venta in ventas:
+            if isinstance(venta, Factura):
+                self._ventas.append(venta)
 
     def setTransaccionesReembolsadas(self, transaccionesReembolsadas):
         self._transaccionesReembolsadas = transaccionesReembolsadas

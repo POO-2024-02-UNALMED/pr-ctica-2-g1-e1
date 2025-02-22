@@ -191,6 +191,71 @@ class VentanaPrincipal(tk.Tk):
         else:
             return InexistenciaExcepcion("No existe el objeto buscado en la lista.")
 
+    def ajustarParadas(self, empresa: "Empresa", trayecto: list[int], numeroParadas: int, factor: float, texto: tk.Text):
+        """
+        Calcula el trayecto con parada origen -> parada destino, tal que
+        se cumple (Si se puede) el número de paradas deseadas y un factor de crecimiento
+        (Medido con base a la ruta óptima dada por el algoritmo de Bellman-Ford).
+
+        Parámetros:
+            - empresa: Empresa,
+                Empresa a la cual se le hallará la ruta.
+            - numeroParadas: int,
+                Cantidad de paradas que se quiere tenga la ruta.
+            - factor: float,
+                Indica la cantidad máxima de expansión permitida en la ruta.
+            - texto: Tk.Text,
+                El encargado de mostrar el proceso.
+
+        Retorna:
+            - paradasReales: list[int],
+                Ordinales de las paradas en el trayecto que cumplen
+                (En la medida de lo posible) los requisitos.
+        """
+
+        from Red import Red
+
+        # Iniciando las variables necesarias.
+        promedios = empresa.flujosPromedio()
+        longitud = len(trayecto)
+
+
+        # Ajustando para que se tenga la cantidad de paradas deseada.
+        numeroParadasCreadas = len(trayecto)
+        paradasReales = [0 for _ in range(numeroParadas)]
+        if numeroParadasCreadas > numeroParadas:
+            texto.insert("end", "Como se necesita reducir el número de paradas, " +
+                                "se va a calcular cuántas personas se bajan en la " +
+                                "parada desde el origen, y se van a ir quitando en" +
+                                " orden descendente de estos valores.\n")
+        
+            # Se buscará una ruta que maximice la cantidad de personas que usarán la ruta.
+            salientes = [(0, 0) for _ in range(longitud - 2)]
+            for i in range(longitud - 2):
+                ordinalActual = trayecto[i + 1]
+                salientes[i] = (i + 1, promedios[trayecto[0]][ordinalActual])
+
+            # Hallando el orden de la cantidad de personas que se bajan en esa parada.
+            concurrencia = sorted(salientes, key = lambda x: x[1], reverse = True)
+
+            # Mostrando las paradas en orden de cantidad de salida.
+            for i in range(len(concurrencia)):
+                texto.insert("end", Red.Parada(trayecto[concurrencia[i][0]]) +
+                                    " tiene " + salientes[concurrencia[i]][1] + 
+                                    " personas saliendo en promedio desde " +
+                                    Red.Parada(trayecto[0]) + "\n")
+
+        elif numeroParadasCreadas < numeroParadas:
+            texto.insert("end", "Como se necesita aumentar el número de paradas, " +
+                                "se va a calcular qué tantas personas se subirían o bajarían " +
+                                "en promedio para cada parada no añadida en el trayecto si " +
+                                "esta fuera añadida. Luego se irán incluyendo para completar " +
+                                "las paradas pedidas. Y por último se irán quitando o añadiendo " +
+                                "si el conjunto de paradas añadidas aumenta más del porcentaje " +
+                                "especificado.\n")
+            primeraParada = trayecto[0]
+            ultimaParada = trayecto[longitud - 1]
+
     def creacionRuta(self):
         from Empresa import Empresa
         from Red import Red
@@ -327,15 +392,12 @@ class VentanaPrincipal(tk.Tk):
         formulario.pack(side = "left", padx = 10, pady = 10)
 
             # Definición de los valores aceptables.
-        #empresas = Empresa.getEmpresas()
-        empresas = ["Rapido", "Boli", "Ali"]
-        #paradas = Red.Paradas
-        paradas = ["BOGOTA", "MEDELLIN", "BARRANQUILLA", "CALI", "PEREIRA", "TUNJA"]
+        empresas = Empresa.getEmpresas()
+        paradas = Red.PARADAS.copy()
 
         def simplificarPalabra(palabra: str) -> str:
             # Se quitan todas las tildes y se pone en minúscula una palabra.
             palabra = palabra.lower()
-
             palabra = palabra.replace("á", "a")
             palabra = palabra.replace("é", "e")
             palabra = palabra.replace("í", "i")
@@ -346,7 +408,7 @@ class VentanaPrincipal(tk.Tk):
 
         # Aquí tengo que arrojar el error en caso de no existir la ciudad.
             # Ingresando los datos para hacer una búsqueda.
-        def funcionalidad4():
+        def datosPrincipales():
             # Borrando todas las entradas
             textoResultado.delete(1.0, "end")
 
@@ -358,46 +420,74 @@ class VentanaPrincipal(tk.Tk):
                 textoResultado.insert(2 * i + 3.0, inputs[i] + "\n")
 
             # Viendo si las opciones son correctas.
-            error = False
-                # Empresa.
-            for empresa in empresas:
-                if simplificarPalabra(empresa) == inputs[0]:
-                    break
-            else:
-                error = True
-                textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
-            
                 # Lugar inicio.
-            for parada in paradas:
-                if simplificarPalabra(parada) == inputs[1]:
+            for i in range(len(paradas)):
+                if simplificarPalabra(paradas[i]) == inputs[1]:
+                    paradaOrigen = i
                     break
             else:
-                error = True
                 textoResultado.insert("end", "No existe la parada " + inputs[1] + "\n")
-            
-                # Lugar destino.
-            for parada in paradas:
-                if simplificarPalabra(parada) == inputs[2]:
-                    break
-            else:
-                error = True
-                textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
-
-                # Impresión si surge error.
-            if error:
                 textoResultado.insert("end", "Vuelva a intentar")
                 return None
+
+                # Lugar destino.
+            for i in range(len(paradas)):
+                if simplificarPalabra(paradas[i]) == inputs[2]:
+                    paradaDestino = i
+                    break
+            else:
+                textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
+                textoResultado.insert("end", "Vuelva a intentar")
+                return None
+
+                # Empresa
+            for empresa in empresas:
+                if simplificarPalabra(empresa.getNombre()) == inputs[0]:
+                    # Hallando la ruta óptima.
+                    trayecto = Red.algoritmoBellmanFord(paradaOrigen, paradaDestino)
+
+                    # Mostrando la ruta óptima.
+                    for ordinal in trayecto[:-1]:
+                        textoResultado.insert("end", Red.Parada(ordinal) + " --> ")
+                    textoResultado.insert("end", Red.Parada(trayecto[-1]))
+                    primerosDatos.append(empresa)
+                    primerosDatos.append(trayecto)
+                    break
+            else:
+                textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
+                textoResultado.insert("end", "Vuelva a intentar")
+                return None
+
+        def continuarDatos():
+            if len(primerosDatos) != 0:
+                formulario.destroy()
+                criterios = ["Número de paradas", "Factor"]
+                formulario = FF.FieldFrame(frameBusqueda, "Criterio", criterios, "Valor")
+                formulario.pack(side = "left", padx = 10, pady = 10)
+                textoResultado.delete(1.0, "end")
+                botonContinuar.config(command = continuarAjuste)
+
+        def continuarAjuste():
+            pass
 
             # Botones.
         frameBotones = tk.Frame(frameBusqueda, bg = "black", height = 20, width = 10)
         frameBotones.pack(side = "right")
-        botonInputs  = tk.Button(frameBotones, text = "Buscar", command = funcionalidad4)
-        bototnBorrar = tk.Button(frameBotones, text = "Borrar", command = formulario.limpiarCampos)
+        botonInputs  = tk.Button(frameBotones, text = "Buscar", command = datosPrincipales)
+        botonContinuar = tk.Button(frameBotones, text = "Continuar", command = continuarDatos)
+        botonBorrar = tk.Button(frameBotones, text = "Borrar", command = formulario.limpiarCampos)
         botonInputs.pack(side = "top", padx = 10, pady = 10)
-        bototnBorrar.pack(side = "bottom", padx = 10, pady = 10)
+        botonContinuar.pack(side = "top", padx = 10, pady = 10)
+        botonBorrar.pack(side = "bottom", padx = 10, pady = 10)
 
         # Resultado.
         textoResultado = tk.Text(frameResultado)
         textoResultado.pack(side = "top", fill = "x")
+
+        # Recolectando la empresa y trayecto.
+        primerosDatos = []
+
+        # Ingresando el factor y número de paradas deseado.
+        
 
         #self.title("Sistema - Ventana Principal")

@@ -242,5 +242,49 @@ class Empresa:
             self.contratarEmpleado(horario = (ruta.getFechaSalida(), ruta.getFechaLlegada()))
             ruta.setChoferAsociado(self._empleados[-1])
 
-    def reasignarPasajero(self):
-        pass
+    def flujoPromedio(self):
+        """
+        Calcula el promedio de personas por viaje desde una parada a otra.
+
+        Retorna:
+            - promedios: int[# Paradas][# Paradas],
+                Matriz de cantidad de personas que compran este viaje. Las entradas i, j
+                representan el flujo desde la ciudad con ordinal i hasta la ciudad con ordinal j.
+        """
+
+        from Red import Red
+        from Contabilidad import Contabilidad
+
+        # Matriz de personas que realizan el viaje.
+        flujoDemanda = [[0 for _1 in range(len(Red.PARADAS))] for _2 in range(len(Red.PARADAS))]
+        # Matriz de viajes totales realizados
+        flujoOferta = [[0 for _1 in range(len(Red.PARADAS))] for _2 in range(len(Red.PARADAS))]
+        # Contador de rytas ya analizadas.
+        rutasCopia = self._rutas.copy()
+
+        # Contando el número de personas que realizaron el viajes.
+        facturas = Contabilidad.getVentas()
+        for factura in facturas:
+            # Definiendo el origen y destino.
+            rutaAsociada = factura.getRutaElegida()
+            origen = Red.ordinal(factura.getOrigen())
+            destino = Red.ordinal(factura.getDestino())
+
+            # Viendo si la ruta fue realizada por esta empresa.
+            if rutaAsociada in self._rutas:
+                flujoDemanda[origen][destino] += factura.getNumAsientosAsignados()
+
+                # Viendo si ya se tomó en cuenta.
+                if rutaAsociada in rutasCopia:
+                    flujoOferta[origen][destino] += 1
+                    flujoOferta[destino][origen] += 1
+                    rutasCopia.remove(rutaAsociada)
+
+        # Definiendo los promedios de flujo entre paradas.
+        promedios = [[0 for _1 in range(len(Red.PARADAS))] for _2 in range(len(Red.PARADAS))]
+        for i in range(len(Red.PARADAS)):
+            for j in range(len(Red.PARADAS)):
+                if flujoOferta[i][j] != 0:
+                    promedios[i][j] = flujoDemanda[i][j] / flujoOferta[i][j]
+
+        return promedios
