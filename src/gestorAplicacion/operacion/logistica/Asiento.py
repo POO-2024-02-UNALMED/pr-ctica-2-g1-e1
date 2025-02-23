@@ -5,7 +5,7 @@ class Asiento:
 
     def __init__(self, bus: "Bus" = None, estado: bool = True, usuario: "s" = None,
                  integridad: str = "Perfecto Estado"):
-        self._idAsiento = Asiento.cantidadAsientos + 1
+        self._idAsiento = len(Asiento._asientos) + 1
         self._bus = bus
         self._estado = estado
         self._usuario = usuario
