@@ -215,8 +215,12 @@ class VentanaPrincipal(tk.Tk):
 
         from Red import Red
 
+        if factor < 1:
+            texto.insert("end", "Como el factor es menor a 1, el trayecto se va a quedar igual.")
+            return None
+
         # Iniciando las variables necesarias.
-        promedios = empresa.flujosPromedio()
+        promedios = empresa.flujoPromedio()
 
         # Ajustando para que se tenga la cantidad de paradas deseada.
         numeroParadasCreadas = len(trayecto)
@@ -239,7 +243,7 @@ class VentanaPrincipal(tk.Tk):
             # Mostrando las paradas en orden de cantidad de salida.
             for i in range(len(concurrencia)):
                 texto.insert("end", Red.Parada(trayecto[concurrencia[i][0]]) +
-                                    " tiene " + salientes[concurrencia[i]][1] + 
+                                    " tiene " + str(salientes[concurrencia[i]][1]) +
                                     " personas saliendo en promedio desde " +
                                     Red.Parada(trayecto[0]) + "\n")
 
@@ -264,12 +268,9 @@ class VentanaPrincipal(tk.Tk):
             # Viendo las paradas que ya están.
             enRuta = sorted(trayecto.copy())
             noEnRuta = []
-            desplazamiento = 0
             for i in range(len(Red.PARADAS)):
-                if i < enRuta[desplazamiento]:
-                    noEnRuta[i - desplazamiento] = i
-                else:
-                    desplazamiento += 1
+                if i not in enRuta:
+                    noEnRuta.append(i)
 
             # Viendo los flujos entrantes desde el trayecto a paradas que no están en el trayecto.
             rutaANoRuta = [0 for _ in noEnRuta]
@@ -287,7 +288,7 @@ class VentanaPrincipal(tk.Tk):
 
                 # Imprimiendo los datos.
                 texto.insert("end", Red.Parada(noEnRuta[i]) + " es pedido por " +
-                                    rutaANoRuta[i] + " personas en promedio.\n")
+                                    str(rutaANoRuta[i]) + " personas en promedio.\n")
 
             # Visualizando la contribución individual de cada parada a añadir.
             contribucionIndividual = [0 for _ in range(len(noEnRuta))]
@@ -296,19 +297,34 @@ class VentanaPrincipal(tk.Tk):
             paradaAnterior, paradaPosterior = 0, 0 # Paradas donde se encuentra ensandwichado.
             for i in range(len(noEnRuta)):
                 posicion = Red.posicion(trayecto, noEnRuta[i])
-                paradaAnterior = trayecto[posicion[0]]
-                paradaPosterior = trayecto[posicion[1]]
-                contribucion = Red.DISTANCIAS[paradaAnterior][noEnRuta[i]] + Red.DISTANCIAS[noEnRuta[i]][paradaPosterior] - Red.DISTANCIAS[paradaAnterior][paradaPosterior]
+
+                # Separando por casos.
+                if posicion[0] < 0:
+                    # Se incluye la parada al inicio.
+                    paradaPosterior = trayecto[posicion[1]]
+                    contribucion = Red.DISTANCIAS[noEnRuta[i]][paradaPosterior]
+                elif posicion[1] >= len(trayecto):
+                    # Se incluye la parada al final.
+                    paradaAnterior = trayecto[posicion[0]]
+                    contribucion = Red.DISTANCIAS[paradaAnterior][noEnRuta[i]]
+                else:
+                    # Se incluye la parada en el intermedio.
+                    paradaAnterior = trayecto[posicion[0]]
+                    paradaPosterior = trayecto[posicion[1]]
+                    contribucion = (Red.DISTANCIAS[paradaAnterior][noEnRuta[i]] +
+                                    Red.DISTANCIAS[noEnRuta[i]][paradaPosterior] -
+                                    Red.DISTANCIAS[paradaAnterior][paradaPosterior])
+
                 contribucionIndividual[i] = contribucion
 
                 texto.insert("end", "Al ubicar a " + Red.Parada(noEnRuta[i]) +
                                     " entre las ciudades " + Red.Parada(paradaAnterior) + "-" +
                                     Red.Parada(paradaPosterior) + " esta añade una distancia de " +
-                                    contribucion + "\n")
+                                    str(contribucion) + "\n")
 
             # Viendo si cumple que no sobrepasa la longitud máxima deseada.
             cantidadFaltante = numeroParadas - numeroParadasCreadas
-            paradasEnOrden = sorted([(i, rutaANoRuta[i]) for i in range(len(rutaANoRuta))],
+            paradasEnOrden = sorted([(i, noEnRuta[i]) for i in range(len(rutaANoRuta))],
                                     key = lambda x: x[1], reverse = True)
             paradasEnOrden = [x[0] for x in paradasEnOrden]
             nuevaParada = 0
@@ -318,44 +334,44 @@ class VentanaPrincipal(tk.Tk):
                 nuevaParada = noEnRuta[paradasEnOrden[i]]
                 nuevoTrayecto = Red.agregarParada(nuevoTrayecto, nuevaParada)
                 aporte[i] = contribucionIndividual[i]
-                texto.insert("end", "Añadiendo a " + Red.Parada(nuevaParada) + " con " + aporte[i] + " distancia adicional.\n")
+                texto.insert("end", "Añadiendo a " + Red.Parada(nuevaParada) + " con " +
+                                    str(aporte[i]) + " distancia adicional.\n")
 
             # Viendo si cumple que no sobrepasa la longitud máxima deseada.
             nuevoRecorridoTotal = Red.longitud(nuevoTrayecto)
-            desfase = 0
             ordendeAporte = []
-            paradaAEliminar = 0 # Parada a eliminar en el siguiente paso
-            while (nuevoRecorridoTotal > recorridoTotal * factor) and (desfase < len(paradasEnOrden) - cantidadFaltante):
+            paradaAEliminar = 0 # Parada a eliminar en el siguiente paso.
+            while (nuevoRecorridoTotal > recorridoTotal * factor) and (len(paradasEnOrden) > cantidadFaltante):
                 texto.insert("end", "Como la distancia total al añadir las paradas es " +
-                                    nuevoRecorridoTotal + " se va a reemplazar la " +
-                                    "parada que más distancia aporta.")
+                                    str(nuevoRecorridoTotal) + " se va a reemplazar la " +
+                                    "parada que más distancia aporta.\n")
 
                 # Eliminando la parada que más distancia individual contribuye.
                 ordendeAporte = sorted([(i, aporte[i]) for i in range(len(aporte))],
                                        key = lambda x: x[1], reverse = True)
                 ordendeAporte = [x[0] for x in ordendeAporte]
-                paradaAEliminar = paradasEnOrden[desfase + ordendeAporte[0]]
+                paradaAEliminar = noEnRuta[paradasEnOrden[ordendeAporte[0]]]
+                paradasEnOrden.pop(ordendeAporte[0])
                 nuevoTrayecto = Red.eliminarParada(nuevoTrayecto, paradaAEliminar)
 
                 # Añadiendo la siguiente parada a analizar.
-                nuevaParada = noEnRuta[paradasEnOrden[cantidadFaltante + desfase]]
+                nuevaParada = noEnRuta[paradasEnOrden[cantidadFaltante - 1]]
                 nuevoTrayecto = Red.agregarParada(nuevoTrayecto, nuevaParada)
 
                 # Imprimeidno lo que pasa.
                 texto.insert("end", "Cambiando " + Red.Parada(paradaAEliminar) + " por " + Red.Parada(nuevaParada) + "\n")
 
                 # Viendo la siguiente iteración.
-                aporte[ordendeAporte[0]] = contribucionIndividual[nuevaParada]
+                aporte[ordendeAporte[0]] = contribucionIndividual[paradasEnOrden[cantidadFaltante - 1]]
                 nuevoRecorridoTotal = Red.longitud(nuevoTrayecto)
-                desfase += 1
 
-            if desfase >= len(paradasEnOrden) - cantidadFaltante:
+            if len(paradasEnOrden) == cantidadFaltante:
                 cuentaRegresiva = 0
                 texto.insert("end", "Como la distancia total no ha disminuido al valor " +
                                     "deseado, se van a ir eliminando paradas.\n")
                 while (nuevoRecorridoTotal > recorridoTotal * factor) and cuentaRegresiva < cantidadFaltante:
                     # Eliminando progresivamente las paradas.
-                    paradaAEliminar = paradasEnOrden[desfase + ordendeAporte[cuentaRegresiva]]
+                    paradaAEliminar = paradasEnOrden[ordendeAporte[cuentaRegresiva]]
                     nuevoTrayecto = Red.eliminarParada(nuevoTrayecto, paradaAEliminar)
 
                     texto.insert("end", "Eliminando " + Red.Parada(paradaAEliminar) + ".\n")
@@ -372,6 +388,7 @@ class VentanaPrincipal(tk.Tk):
     def creacionRuta(self):
         from Empresa import Empresa
         from Red import Red
+        from Ruta import Ruta
 
         # Teniendo el control de la pantalla.
         frame = self.frameContenido
@@ -549,25 +566,26 @@ class VentanaPrincipal(tk.Tk):
                     paradaDestino = i
                     break
             else:
-                textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
+                textoResultado.insert("end", "No existe la parada " + inputs[2] + ".\n")
                 textoResultado.insert("end", "Vuelva a intentar.\n")
                 return None
 
                 # Empresa
             for empresa in empresas:
                 if simplificarPalabra(empresa.getNombre()) == inputs[0]:
+                    primerosDatos.clear()
                     # Hallando la ruta óptima.
                     trayecto = Red.algoritmoBellmanFord(paradaOrigen, paradaDestino)
 
                     # Mostrando la ruta óptima.
                     for ordinal in trayecto[:-1]:
                         textoResultado.insert("end", Red.Parada(ordinal) + " --> ")
-                    textoResultado.insert("end", Red.Parada(trayecto[-1]))
+                    textoResultado.insert("end", Red.Parada(trayecto[-1]) + "\n")
                     primerosDatos.append(empresa)
                     primerosDatos.append(trayecto)
                     break
             else:
-                textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
+                textoResultado.insert("end", "No existe la empresa " + inputs[0] + ".\n")
                 textoResultado.insert("end", "Vuelva a intentar.\n")
                 return None
         
@@ -577,72 +595,52 @@ class VentanaPrincipal(tk.Tk):
 
             # Imprimiendo el proceso.
             textoResultado.insert(1.0, "Cargando los datos para:\n")
-            inputs = [simplificarPalabra(entrada) for entrada in formulario.getEntries()]
+            inputs = [entrada for entrada in formularioAjustes.getEntries()]
             for i in range(len(inputs)):
-                textoResultado.insert(2 * i + 2.0, formulario.criterios[i] + ": ")
-                textoResultado.insert(2 * i + 3.0, inputs[i] + "\n")
+                textoResultado.insert(2 * i + 2.0, formularioAjustes.criterios[i] + ": ")
+                textoResultado.insert(2 * i + 3.0, inputs[i] + ".\n")
 
             # Viendo si las opciones son correctas.
-                # Lugar inicio.
-            for i in range(len(paradas)):
-                if simplificarPalabra(paradas[i]) == inputs[1]:
-                    paradaOrigen = i
-                    break
-            else:
-                textoResultado.insert("end", "No existe la parada " + inputs[1] + "\n")
-                textoResultado.insert("end", "Vuelva a intentar.\n")
+                # Número de paradas.
+            try:
+                inputs[0] = int(inputs[0])
+            except:
+                textoResultado.insert("end", "Inserte un número entero de paradas.\n")
+                return None
+            try:
+                inputs[1] = float(inputs[1])
+            except:
+                textoResultado.insert("end", "Inserte un número para el factor.\n")
                 return None
 
-                # Lugar destino.
-            for i in range(len(paradas)):
-                if simplificarPalabra(paradas[i]) == inputs[2]:
-                    paradaDestino = i
-                    break
-            else:
-                textoResultado.insert("end", "No existe la parada " + inputs[2] + "\n")
-                textoResultado.insert("end", "Vuelva a intentar.\n")
-                return None
-
-                # Empresa
-            for empresa in empresas:
-                if simplificarPalabra(empresa.getNombre()) == inputs[0]:
-                    # Hallando la ruta óptima.
-                    trayecto = Red.algoritmoBellmanFord(paradaOrigen, paradaDestino)
-
-                    # Mostrando la ruta óptima.
-                    for ordinal in trayecto[:-1]:
-                        textoResultado.insert("end", Red.Parada(ordinal) + " --> ")
-                    textoResultado.insert("end", Red.Parada(trayecto[-1]))
-                    primerosDatos.append(empresa)
-                    primerosDatos.append(trayecto)
-                    break
-            else:
-                textoResultado.insert("end", "No existe la empresa " + inputs[0] + "\n")
-                textoResultado.insert("end", "Vuelva a intentar.\n")
-                return None
+            # Hallando el nuevo camino.
+            trayectoReal = self.ajustarParadas(empresa = primerosDatos[0], trayecto = primerosDatos[1],
+                                               numeroParadas = inputs[0], factor = inputs[1],
+                                               texto = textoResultado)
 
         def continuarDatos():
-            print(primerosDatos)
-            if len(primerosDatos) == 3:
+            if len(primerosDatos) != 0:
                 formulario.destroy()
-                criterios = ["Número de paradas", "Factor"]
-                formulario = FF.FieldFrame(frameBusqueda, "Criterio", criterios, "Valor")
-                formulario.pack(side = "left", padx = 10, pady = 10)
+                formularioAjustes.pack(side = "left", padx = 10, pady = 10)
                 textoResultado.delete(1.0, "end")
                 botonContinuar.config(command = continuarAjuste)
                 botonInputs.config(command = datosAjuste)
             else:
-                textoResultado.insert("end", "Faltan campos por rellenar.")
+                textoResultado.insert("end", "Faltan campos por rellenar.\n")
 
         def continuarAjuste():
+            if trayectoReal is not None:
+                if len(trayectoReal) != 0:
+                    rutaNueva = Ruta(lugarInicio = Red.Parada(trayectoReal[0]),
+                                     lugarFin = Red.Parada(trayectoReal[len(trayectoReal) - 1]))
             pass
 
             # Botones.
         frameBotones = tk.Frame(frameBusqueda, bg = "black", height = 20, width = 10)
         frameBotones.pack(side = "right")
         botonInputs  = tk.Button(frameBotones, text = "Buscar", command = datosPrincipales)
-        botonContinuar = tk.Button(frameBotones, text = "Continuar", command = continuarDatos)
         botonBorrar = tk.Button(frameBotones, text = "Borrar", command = formulario.limpiarCampos)
+        botonContinuar = tk.Button(frameBotones, text = "Continuar", command = continuarDatos)
         botonInputs.pack(side = "top", padx = 10, pady = 10)
         botonContinuar.pack(side = "top", padx = 10, pady = 10)
         botonBorrar.pack(side = "bottom", padx = 10, pady = 10)
@@ -655,6 +653,8 @@ class VentanaPrincipal(tk.Tk):
         primerosDatos = []
 
         # Ingresando el factor y número de paradas deseado.
-        
+        criteriosAjustes = ["Número de paradas", "Factor"]
+        formularioAjustes = FF.FieldFrame(frameBusqueda, "Criterio", criteriosAjustes, "Valor")
+        trayectoReal = []
 
         #self.title("Sistema - Ventana Principal")

@@ -32,16 +32,28 @@ class Red(ABC):
     Finalmente se calculan todas las distancias mínimas entre trayecto.
     """
  
-    CARRETERAS.append(((0, 1), 60))
-    CARRETERAS.append(((0, 2), 120))
-    CARRETERAS.append(((0, 3), 85))
-    CARRETERAS.append(((0, 4), 300))
-    CARRETERAS.append(((0, 5), 30))
-    CARRETERAS.append(((1, 2), 360))
-    CARRETERAS.append(((2, 3), 380))
-    CARRETERAS.append(((3, 4), 120))
-    CARRETERAS.append(((4, 5), 180))
-    CARRETERAS.append(((5, 1), 15))
+    CARRETERAS.append(((0, 1), 500))
+    CARRETERAS.append(((0, 2), 1100))
+    CARRETERAS.append(((0, 5), 130))
+    CARRETERAS.append(((0, 6), 170))
+    CARRETERAS.append(((0, 7), 1110))
+    CARRETERAS.append(((0, 8), 240))
+    CARRETERAS.append(((0, 9), 1110))
+    CARRETERAS.append(((1, 2), 800))
+    CARRETERAS.append(((1, 4), 330))
+    CARRETERAS.append(((1, 5), 530))
+    CARRETERAS.append(((1, 7), 730))
+    CARRETERAS.append(((2, 4), 1050))
+    CARRETERAS.append(((2, 5), 1110))
+    CARRETERAS.append(((2, 7), 1110))
+    CARRETERAS.append(((2, 8), 1040))
+    CARRETERAS.append(((3, 4), 200))
+    CARRETERAS.append(((3, 8), 290))
+    CARRETERAS.append(((3, 9), 520))
+    CARRETERAS.append(((4, 8), 170))
+    CARRETERAS.append(((5, 7), 1000))
+    CARRETERAS.append(((7, 8), 1140))
+    
 
     # Hallando las distancias mínimas para cada trayecto.
     DISTANCIAS = []
