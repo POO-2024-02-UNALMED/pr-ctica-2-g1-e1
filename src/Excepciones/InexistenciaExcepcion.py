@@ -4,7 +4,10 @@ from tkinter import messagebox
 class InexistenciaExcepcion(Exception):
     def __init__(self, dato):
         self.dato = dato
-        super().__init__(f"No Existe el dato llamado {dato}")
+        if dato == "Pasajero en el sistema": # No hacer en casa XD
+            super().__init__(f"No Existe el {dato} por favor ingrese nuevamente sus datos e vuelva a intentar")
+        else:
+            super().__init__(f"No Existe el dato llamado {dato}")
 
 
     def mostrar_advertencia(self):

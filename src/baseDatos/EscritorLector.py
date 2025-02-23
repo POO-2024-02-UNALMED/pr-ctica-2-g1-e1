@@ -1,5 +1,15 @@
 import pickle
-
+import datetime as dt
+from Pasajero import Pasajero
+from Ruta import Ruta
+from Maleta import Maleta
+from Factura import Factura
+from Contabilidad import Contabilidad
+from Bus import Bus
+from Chofer import Chofer
+from Empresa import Empresa
+from Asiento import Asiento
+from datetime import datetime, timedelta
 def guardar_datos(datos, nombreArchivo):
     """
     Guarda los datos en un archivo utilizando pickle.
@@ -55,59 +65,139 @@ y luego recuperar, puedes hacerlo de la siguiente manera:
 
 """
 
-def LlamarBDRuta():
-        # rutas_data.py
-    from Ruta import Ruta
-    from Bus import Bus
-    from Chofer import Chofer
-    from Empresa import Empresa
-    from datetime import datetime, timedelta
 
+
+def LlamarBD():
     rutas = []
 
+
+    asiento1 = Asiento(None,True,"Perfecto Estado")
+    asiento2 = Asiento(None,True,"Necesita Reparacion")
+    asiento3 = Asiento(None,True,"Perfecto Estado")
+    asientos1 = [asiento1,asiento2,asiento3]
+    asiento4 = Asiento(None,True,"Perfecto Estado")
+    asiento5 = Asiento(None,True,"Necesita Reparacion")
+    asiento6 = Asiento(None,True,"En Mantenimiento")
+    asientos2 = [asiento4,asiento5,asiento6]
+    asiento7 = Asiento(None,True,"Perfecto Estado")
+    asiento8 = Asiento(None,True,"Necesita Reparacion")
+    asiento9 = Asiento(None,True,"En Mantenimiento")
+    asientos3 = [asiento7,asiento8,asiento9]
+    asiento10 = Asiento(None,True,"Perfecto Estado")
+    asiento11 = Asiento(None,True,"Perfecto Estado")
+    asiento12 = Asiento(None,True,"En Mantenimientoacion")
+    asientos4 = [asiento10,asiento11,asiento12]
+    asiento13 = Asiento(None,True,"Perfecto Estado")
+    asiento14 = Asiento(None,True,"Perfecto Estado")
+    asiento15 = Asiento(None,True,"Necesita Reparacion")
+    asientos5 = [asiento13,asiento14,asiento15]
+    asiento16 = Asiento(None,True,"En Mantenimiento")
+    asiento17 = Asiento(None,True,"Perfecto Estado")
+    asiento18 = Asiento(None,True,"Necesita Reparacion")
+    asientos6 = [asiento16,asiento17,asiento18]
+    asiento19 = Asiento(None,True,"En Mantenimiento")
+    asiento20 = Asiento(None,True,"Perfecto Estado")
+    asiento21 = Asiento(None,True,"Necesita Reparacion")
+    asientos7 = [asiento19,asiento20,asiento21]
+    asiento22 = Asiento(None,True,"En Mantenimiento")
+    asiento23 = Asiento(None,False,"Perfecto Estado")
+    asiento24 = Asiento(None,True,"NecesitaEn Mantenimiento")  
+    asientos8 = [asiento22,asiento23,asiento24]
+    asiento25 = Asiento(None,False,"Perfecto Estado")
+    asiento26 = Asiento(None,True,"Necesita Reparacion")
+    asiento27 = Asiento(None,False,"En Mantenimiento")
+    asientos9 = [asiento25,asiento26,asiento27]
+    asiento28 = Asiento(None,True,"Perfecto Estado")
+    asiento29 = Asiento(None,True,"Necesita Reparacion")
+    asiento30 = Asiento(None,False,"En Mantenimiento")
+    asientos10 = [asiento28,asiento29,asiento30]
+    asiento31 = Asiento(None,True,"Perfecto Estado")
+    asiento32 = Asiento(None,True,"Necesita Reparacion")
+    asiento33 = Asiento(None,False,"En Mantenimiento")
+    asientos11 = [asiento31,asiento32,asiento33]
+    asiento34 = Asiento(None,True,"Perfecto Estado")
+    asiento35 = Asiento(None,True,"Necesita Reparacion")
+    asiento36 = Asiento(None,False,"En Mantenimiento")
+    asientos12 = [asiento34,asiento35,asiento36]
+    asiento37 = Asiento(None,True,"Perfecto Estado")
+    asiento38 = Asiento(None,False,"Necesita Reparacion")
+    asiento39 = Asiento(None,True,"En Mantenimiento")
+    asientos13 = [asiento37,asiento38,asiento39]
+    asiento40 = Asiento(None,True,"Perfecto Estado")
+    asiento41 = Asiento(None,False,"Necesita Reparacion")
+    asiento42 = Asiento(None,True,"En Mantenimiento")
+    asientos14 = [asiento40,asiento41,asiento42]
+    asiento43 = Asiento(None,True,"Perfecto Estado")
+    asiento44 = Asiento(None,True,"Necesita Reparacion")
+    asiento45 = Asiento(None,False,"En Mantenimiento")
+    asientos15 = [asiento43,asiento44,asiento45]
+    asiento46 = Asiento(None,True,"Perfecto Estado")
+    asiento47 = Asiento(None,False,"Perfecto Estado")
+    asiento48 = Asiento(None,True,"En Mantenimiento")
+    asientos16 = [asiento46,asiento47,asiento48]
+
+    asiento49 = Asiento(None,True,"Perfecto Estado")
+    asiento50 = Asiento(None,False,"Perfecto Estado")
+    asiento51 = Asiento(None,True,"En Mantenimiento")
+
+    asiento53 = Asiento(None,True,"Perfecto Estado")
+    asiento54 = Asiento(None,False,"Perfecto Estado")
+    asiento55 = Asiento(None,True,"En Mantenimiento")
+    asientos18 = [asiento51,asiento53,asiento54]        
+    asiento57 = Asiento(None,True,"Perfecto Estado")
+    asiento58 = Asiento(None,False,"Perfecto Estado")
+    asiento59 = Asiento(None,True,"En Mantenimiento")
+    asientos19 = [asiento55,asiento57,asiento59]
+    asiento61 = Asiento(None,True,"Perfecto Estado")
+    asiento62 = Asiento(None,False,"Perfecto Estado")
+    asiento63 = Asiento(None,True,"En Mantenimiento")
+    asientos20 = [asiento61,asiento62,asiento63]
+    asientos17 = [asiento49,asiento58,asiento50]
+
+
     # Crear objetos Bus
-    bus1 = Bus(placa="ABC-123", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus2 = Bus(placa="DEF-456", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus3 = Bus(placa="GHI-789", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus4 = Bus(placa="JKL-012", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus5 = Bus(placa="MNO-345", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus6 = Bus(placa="PQR-678", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus7 = Bus(placa="STU-901", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus8 = Bus(placa="VWX-234", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus9 = Bus(placa="YZA-567", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus10 = Bus(placa="BCD-890", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus11 = Bus(placa="EFG-123", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus12 = Bus(placa="HIJ-456", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus13 = Bus(placa="KLM-789", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus14 = Bus(placa="NOP-012", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus15 = Bus(placa="QRS-345", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus16 = Bus(placa="TUV-678", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
-    bus17 = Bus(placa="WXY-901", cantidadAsientos=30, pesoMaximo=500, estado="Perfecto Estado")
-    bus18 = Bus(placa="ZAB-234", cantidadAsientos=40, pesoMaximo=750, estado="Necesita Reparación")
-    bus19 = Bus(placa="CDE-567", cantidadAsientos=35, pesoMaximo=1000, estado="Perfecto Estado")
-    bus20 = Bus(placa="FGH-890", cantidadAsientos=45, pesoMaximo=1250, estado="En Mantenimiento")
+    bus1 = Bus(placa="ABC-123", cantidadAsientos=30,kilometrosRecorridos =1000, asientos = asientos1 ,consumo= 21.0,pesoMaximo=500, estado="Perfecto Estado")
+    bus2 = Bus(placa="DEF-456", cantidadAsientos=40,kilometrosRecorridos =1052, asientos = asientos2 ,consumo= 22.0,pesoMaximo=750, estado="Necesita Reparación")
+    bus3 = Bus(placa="GHI-789", cantidadAsientos=35,kilometrosRecorridos =1052, asientos = asientos3 ,consumo= 23.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus4 = Bus(placa="JKL-012", cantidadAsientos=45, kilometrosRecorridos =1520,asientos = asientos4 ,consumo= 24.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus5 = Bus(placa="MNO-345", cantidadAsientos=30, kilometrosRecorridos =1520,asientos = asientos5 ,consumo= 25.0,pesoMaximo=500, estado="Perfecto Estado")
+    bus6 = Bus(placa="PQR-678", cantidadAsientos=40, kilometrosRecorridos =1052,asientos = asientos6 ,consumo= 26.0,pesoMaximo=750, estado="Necesita Reparación")
+    bus7 = Bus(placa="STU-901", cantidadAsientos=35, kilometrosRecorridos =2000,asientos = asientos7 ,consumo= 27.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus8 = Bus(placa="VWX-234", cantidadAsientos=45,kilometrosRecorridos =2000, asientos = asientos8 ,consumo= 28.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus9 = Bus(placa="YZA-567", cantidadAsientos=30, kilometrosRecorridos =2000,asientos = asientos9 ,consumo= 29.0,pesoMaximo=500, estado="Perfecto Estado")
+    bus10 = Bus(placa="BCD-890", cantidadAsientos=40,kilometrosRecorridos =1200,asientos = asientos10 ,consumo= 30.0, pesoMaximo=750, estado="Necesita Reparación")
+    bus11 = Bus(placa="EFG-123", cantidadAsientos=35, kilometrosRecorridos =1200,asientos = asientos11 ,consumo= 31.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus12 = Bus(placa="HIJ-456", cantidadAsientos=45,kilometrosRecorridos =3000,asientos = asientos12 ,consumo= 32.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus13 = Bus(placa="KLM-789", cantidadAsientos=30,kilometrosRecorridos =3000,asientos = asientos13 ,consumo= 33.0, pesoMaximo=500, estado="Perfecto Estado")
+    bus14 = Bus(placa="NOP-012", cantidadAsientos=40,kilometrosRecorridos =3000,asientos = asientos14 ,consumo= 34.0, pesoMaximo=750, estado="Necesita Reparación")
+    bus15 = Bus(placa="QRS-345", cantidadAsientos=35,kilometrosRecorridos =3000,asientos = asientos15 ,consumo= 35.0, pesoMaximo=1000, estado="Perfecto Estado")
+    bus16 = Bus(placa="TUV-678", cantidadAsientos=45,kilometrosRecorridos =3000,asientos = asientos16 ,consumo= 36.0,pesoMaximo=1250, estado="En Mantenimiento")
+    bus17 = Bus(placa="WXY-901", cantidadAsientos=30,kilometrosRecorridos =1000,asientos = asientos17 ,consumo= 37.0, pesoMaximo=500, estado="Perfecto Estado")
+    bus18 = Bus(placa="ZAB-234", cantidadAsientos=40,kilometrosRecorridos =1000,asientos = asientos18 ,consumo= 38.0, pesoMaximo=750, estado="Necesita Reparación")
+    bus19 = Bus(placa="CDE-567", cantidadAsientos=35,kilometrosRecorridos =1000,asientos = asientos19 ,consumo= 39.0,pesoMaximo=1000, estado="Perfecto Estado")
+    bus20 = Bus(placa="FGH-890", cantidadAsientos=45,kilometrosRecorridos =1000,asientos = asientos20 ,consumo= 40.0, pesoMaximo=1250, estado="En Mantenimiento")
 
     # Crear objetos Chofer
-    chofer1 = Chofer(nombre="Carlos Pérez", edad=40, id=1001)
-    chofer2 = Chofer(nombre="Ana Gómez", edad=35, id=1002)
-    chofer3 = Chofer(nombre="Luis Martínez", edad=45, id=1003)
-    chofer4 = Chofer(nombre="Sofía Díaz", edad=38, id=1004)
-    chofer5 = Chofer(nombre="Andrés Sánchez", edad=42, id=1005)
-    chofer6 = Chofer(nombre="Valentina Torres", edad=39, id=1006)
-    chofer7 = Chofer(nombre="Diego Ramírez", edad=41, id=1007)
-    chofer8 = Chofer(nombre="Isabella Vargas", edad=37, id=1008)
-    chofer9 = Chofer(nombre="Mateo Castro", edad=43, id=1009)
-    chofer10 = Chofer(nombre="Camila Herrera", edad=36, id=1010)
-    chofer11 = Chofer(nombre="Sebastián Rodríguez", edad=44, id=1011)
-    chofer12 = Chofer(nombre="Daniela Jiménez", edad=39, id=1012)
-    chofer13 = Chofer(nombre="Nicolás Silva", edad=40, id=1013)
-    chofer14 = Chofer(nombre="Gabriela Torres", edad=38, id=1014)
-    chofer15 = Chofer(nombre="Alejandro Vargas", edad=41, id=1015)
-    chofer16 = Chofer(nombre="Renata Castro", edad=37, id=1016)
-    chofer17 = Chofer(nombre="Martín Herrera", edad=43, id=1017)
-    chofer18 = Chofer(nombre="Lucía Rodríguez", edad=36, id=1018)
-    chofer19 = Chofer(nombre="Juan Díaz", edad=44, id=1019)
-    chofer20 = Chofer(nombre="Laura Pérez", edad=39, id=1020)
+    chofer1 = Chofer(nombre="Carlos Pérez", edad=40, id=1001,bus=bus20)
+    chofer2 = Chofer(nombre="Ana Gómez", edad=35, id=1002,bus=bus1)
+    chofer3 = Chofer(nombre="Luis Martínez", edad=45, id=1003,bus=bus2)
+    chofer4 = Chofer(nombre="Sofía Díaz", edad=38, id=1004,bus=bus3)
+    chofer5 = Chofer(nombre="Andrés Sánchez", edad=42, id=1005,bus=bus4)
+    chofer6 = Chofer(nombre="Valentina Torres", edad=39, id=1006,bus=bus5)
+    chofer7 = Chofer(nombre="Diego Ramírez", edad=41, id=1007,bus=bus6)
+    chofer8 = Chofer(nombre="Isabella Vargas", edad=37, id=1008,bus=bus7)
+    chofer9 = Chofer(nombre="Mateo Castro", edad=43, id=1009,bus=bus8)
+    chofer10 = Chofer(nombre="Camila Herrera", edad=36, id=1010,bus=bus9)
+    chofer11 = Chofer(nombre="Sebastián Rodríguez", edad=44, id=1011,bus=bus10)
+    chofer12 = Chofer(nombre="Daniela Jiménez", edad=39, id=1012,bus=bus11)
+    chofer13 = Chofer(nombre="Nicolás Silva", edad=40, id=1013,bus=bus12)
+    chofer14 = Chofer(nombre="Gabriela Torres", edad=38, id=1014,bus=bus13)
+    chofer15 = Chofer(nombre="Alejandro Vargas", edad=41, id=1015,bus=bus14)
+    chofer16 = Chofer(nombre="Renata Castro", edad=37, id=1016,bus=bus15)
+    chofer17 = Chofer(nombre="Martín Herrera", edad=43, id=1017,bus=bus16)
+    chofer18 = Chofer(nombre="Lucía Rodríguez", edad=36, id=1018,bus=bus17)
+    chofer19 = Chofer(nombre="Juan Díaz", edad=44, id=1019,bus=bus18)
+    chofer20 = Chofer(nombre="Laura Pérez", edad=39, id=1020,bus=bus19)
 
     # Crear 20 objetos Ruta
     fecha_base = datetime(2023, 11, 15, 8, 0, 0)  # Fecha base para las rutas
@@ -174,20 +264,21 @@ def LlamarBDRuta():
 
     # Creando 4 objetos empresa.
     empresa1 = Empresa("RápidoOchoa", empleados = [chofer1, chofer2, chofer3],
-                       rutas = [ruta1, ruta2, ruta3, ruta4, ruta5, ruta6],
-                       buses = [bus1, bus2, bus3, bus4])
+                        rutas = [ruta1, ruta2, ruta3, ruta4, ruta5, ruta6],
+                        buses = [bus1, bus2, bus3, bus4])
     empresa2 = Empresa("Bolivariano", empleados = [chofer4, chofer5, chofer6, chofer7, chofer8, chofer9, chofer10],
-                       rutas = [ruta7, ruta8, ruta9, ruta10, ruta11, ruta12, ruta13],
-                       buses = [bus5, bus6, bus7, bus8, bus9, bus10, bus11])
+                        rutas = [ruta7, ruta8, ruta9, ruta10, ruta11, ruta12, ruta13],
+                        buses = [bus5, bus6, bus7, bus8, bus9, bus10, bus11])
     empresa3 = Empresa("Brasilia", empleados = [chofer11, chofer12, chofer13, chofer14],
-                       rutas = [ruta14, ruta15, ruta16, ruta17],
-                       buses = [bus12, bus13, bus14, bus15, bus16])
+                        rutas = [ruta14, ruta15, ruta16, ruta17],
+                        buses = [bus12, bus13, bus14, bus15, bus16])
     empresa4 = Empresa("Continental", empleados = [chofer15, chofer16, chofer17, chofer18, chofer19, chofer20],
-                       rutas = [ruta18, ruta19, ruta20],
-                       buses = [bus17, bus18, bus19, bus20])
-    
+                        rutas = [ruta18, ruta19, ruta20],
+                        buses = [bus17, bus18, bus19, bus20])
+
     buses= []
     choferes= []
+    asientos =[]
     empresas = Empresa.getEmpresas()
     for ruta in rutas:
         buses.append(ruta.getBusAsociado())
@@ -196,39 +287,22 @@ def LlamarBDRuta():
     for empresa in Empresa.getEmpresas():
         for ruta in empresa.getRutas():
             empresa.asignarRuta(ruta)
+        for bus in empresa.getBuses():
+            buses.append(bus)
+            for asiento in bus.getAsientos():
+                asientos.append(asiento)
+                asiento.setBus(bus)
 
-    nombreArchivo = 'src/baseDatos/temp/Rutas.pkl'
-    nombreArchivoBus= 'src/baseDatos/temp/Bus.pkl'
-    nombreArchivoChofer= 'src/baseDatos/temp/Chofer.pkl'
-    nombreArchivoEmpresa = 'src/baseDatos/temp/Empresa.pkl'
-    # Guardar datos 
-    guardar_datos(rutas, nombreArchivo)
-    guardar_datos(buses, nombreArchivoBus)
-    guardar_datos(choferes, nombreArchivoChofer)
-    guardar_datos(empresas, nombreArchivoEmpresa)
-    # Cargar datos
-    datos_cargados = cargar_datos(nombreArchivo)
-    datos_cargados_Bus = cargar_datos(nombreArchivoBus)
-    datos_cargados_Chofer = cargar_datos(nombreArchivoChofer)
-    datos_cargados_Empresa = cargar_datos(nombreArchivoEmpresa)
 
-    if datos_cargados:
-        print("Datos cargados:", datos_cargados)
-    return datos_cargados, datos_cargados_Bus, datos_cargados_Chofer, datos_cargados_Empresa
 
-def LlamarBDPasajeros():
-    import datetime as dt
-    from Pasajero import Pasajero
-    from Ruta import Ruta
-    from Maleta import Maleta
-    from Factura import Factura
-    from Contabilidad import Contabilidad
+
     pasajeros = []
 
     # Crear objetos Maleta y Factura para usar en los Pasajeros
     maletas_pasajero1 = [Maleta(peso=20), Maleta(peso=10)]
-    facturas_pasajero1 = [Factura(valor=100, fecha=dt.datetime(2023, 10, 26)), Factura(valor=50, fecha=dt.datetime(2023, 10, 27))]
-
+    #facturas_pasajero1 = [Factura("Juan Pérez", 101, 100000.0, 1, [asientos[]], datetime(2025, 2, 22), 2, ruta1, "Medellín", "Bogotá", "Tarjeta de Credito")
+    #], 2, None)]
+    facturas_pasajero1 = [Factura(valor=75, fecha=dt.datetime(2023, 10, 28))]
     maletas_pasajero2 = [Maleta(peso=5)]
     facturas_pasajero2 = [Factura(valor=75, fecha=dt.datetime(2023, 10, 28))]
 
@@ -297,25 +371,41 @@ def LlamarBDPasajeros():
     pasajero20 = Pasajero("Lucía Rodríguez", 37, 99002, [Maleta(peso=13)], 310, [Factura(valor=155, fecha=dt.datetime(2023, 11, 10))], 4, acompanante2)
     pasajeros.append(pasajero20)
 
-    nombreArchivo = 'src/baseDatos/temp/Pasajeros.pkl'
-    nombreArchivoFactura= 'src/baseDatos/temp/Facturas.pkl'
-    nombreArchivoContabilidad = 'src/baseDatos/temp/Contabilidad.pkl'
     facturas = []
+
     for pasajero in pasajeros:
         pasajeroFacturas =pasajero.getFacturas()
         for factura in pasajeroFacturas:
             facturas.append(factura)
-    
-    Contabilidad = Contabilidad(100000000,50000000, facturas,[])# la lista son las facturas reembolsadas (no hay)
-    # Guardar datos
+        for asientofor in asientos:
+            asiento.setUsuario(pasajero)
+
+    nombreArchivo = 'src/baseDatos/temp/Pasajeros.pkl'
+    nombreArchivoFactura= 'src/baseDatos/temp/Facturas.pkl'
+    nombreArchivoContabilidad = 'src/baseDatos/temp/Contabilidad.pkl'
+    nombreArchivoRutas = 'src/baseDatos/temp/Rutas.pkl'
+    nombreArchivoBus= 'src/baseDatos/temp/Bus.pkl'
+    nombreArchivoChofer= 'src/baseDatos/temp/Chofer.pkl'
+    nombreArchivoEmpresa = 'src/baseDatos/temp/Empresa.pkl'
+    nombreArchivoAsientos= 'src/baseDatos/temp/Asientos.pkl'
+    Contabilidad1 = Contabilidad(100000000,50000000, facturas,[])# la lista son las facturas reembolsadas (no hay)
+    # Guardar datos 
+    guardar_datos(rutas, nombreArchivoRutas)
+    guardar_datos(buses, nombreArchivoBus)
+    guardar_datos(choferes, nombreArchivoChofer)
+    guardar_datos(empresas, nombreArchivoEmpresa)
     guardar_datos(pasajeros, nombreArchivo)
     guardar_datos(facturas, nombreArchivoFactura)
-    guardar_datos(Contabilidad,nombreArchivoContabilidad)
+    guardar_datos(Contabilidad1,nombreArchivoContabilidad)
+    guardar_datos(asientos,nombreArchivoAsientos)
 
     # Cargar datos
     datos_Pasajeros = cargar_datos(nombreArchivo)
     datos_Facturas = cargar_datos(nombreArchivoFactura)
     datos_Contabilidad = cargar_datos(nombreArchivoContabilidad)
-    #if datos_cargados:
-    #    print("Datos cargados:", datos_cargados)
-    return datos_Pasajeros, datos_Facturas, datos_Contabilidad
+    datos_cargado_Rutas = cargar_datos(nombreArchivoRutas)
+    datos_cargados_Bus = cargar_datos(nombreArchivoBus)
+    datos_cargados_Chofer = cargar_datos(nombreArchivoChofer)
+    datos_cargados_Empresa = cargar_datos(nombreArchivoEmpresa)
+    datos_cargados_Asientos = cargar_datos(nombreArchivoAsientos)    
+    return datos_Pasajeros, datos_Facturas, datos_Contabilidad, datos_cargado_Rutas, datos_cargados_Bus , datos_cargados_Chofer, datos_cargados_Empresa,datos_cargados_Asientos

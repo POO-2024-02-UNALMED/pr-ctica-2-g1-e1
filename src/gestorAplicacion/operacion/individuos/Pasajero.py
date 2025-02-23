@@ -69,15 +69,14 @@ class Pasajero(Persona):
         Busca un pasajero por nombre y/o ID.
         """
         for pasajero in Pasajero._pasajeroRegistrados:
-            if nombre is not None and id is not None:
-                if pasajero.getNombre() == nombre and pasajero.getId() == id:
+
+            if nombre is not None and int(id) is not None:
+                if pasajero.getNombre() == nombre and pasajero.getId() == int(id):
                     return pasajero
-            elif nombre is not None:
-                if pasajero.getNombre() == nombre:
-                    return pasajero
-            elif id is not None:
-                if pasajero.getId() == id:
-                    return pasajero
+            elif nombre is not None and pasajero.getNombre() == nombre:
+                return pasajero
+            elif int(id) is not None and pasajero.getId() == int(id):
+                return pasajero
         return None
     # Metodo de Instacia
     def mostrarDatos(self) -> str:
@@ -93,7 +92,7 @@ class Pasajero(Persona):
             facturas.remove(factura)
             return f"Pasajero {self.getNombre()} ha eliminado su factura {factura.getIdFactura()}"
 
-    def solicitarReembolso(self, idPasajeroUser: int, idFacturaUser: int, horaZero: datetime) -> list:
+    def solicitarReembolso(self, idPasajeroUser: int, idFactura: int, horaZero: datetime) -> list:
         """
         Procesa una solicitud de reembolso.
 
@@ -101,6 +100,8 @@ class Pasajero(Persona):
 
         from Contabilidad import Contabilidad
 
+
+        idFacturaUser = int(idFactura) # lo casteamos a int
         respuesta = []
         ratio = 86400.0 / 10.0  # 10 segundos reales = 1 día
 
@@ -128,7 +129,9 @@ class Pasajero(Persona):
 
         facturas = Contabilidad.getVentas() 
         for factura in facturas:
-            if factura.getId() == idFacturaUser:
+            print  (factura.getNombreUsuario())
+            print (factura.getIdFactura())
+            if factura.getIdFactura() == idFacturaUser:
                 if factura.getIdUsuario() == idPasajeroUser:
                     timeCreation = (
                         factura.fecha
