@@ -5,9 +5,9 @@ class Pasajero(Persona):
     _pasajeroRegistrados = []
 
     def __init__(self, nombre: str = "", edad: int = 0, id: int = 0,
-                 maletas: list["Maleta"] = [], wallet: float = 0.0,
-                 facturas: list["Factura"] = [], numReembolsoDisp: int = 0,
-                 acompanante: Persona = None):
+                maletas: list = [], wallet: float = 0.0,
+                facturas: list = [], numReembolsoDisp: int = 0,
+                acompanante: Persona = None):
         super().__init__(nombre, edad, id)
         self._maletas = maletas
         self._wallet = wallet
