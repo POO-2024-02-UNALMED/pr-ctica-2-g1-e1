@@ -5,15 +5,15 @@ class Bus:
     # Esto nos dira la cantidad maxima de equipaje que soporta cada bus ¡¡Peso en Kg!!
     _PESO_MAXIMO = [500, 750, 1000, 1250]
     _COSTO_REPARACIONES = [("RUEDA_PINCHADA", 100000), ("SOPORTE_MOTOR", 1500000),
-                           ("SOPORTE_TIPO_COMBUSTIBLE", 50000), ("LLANTA_DANADA", 100000),
-                           ("RETROVISOR_DANADO", 50000), ("TAPA_LLANTA_DANADA", 50000)]
+                        ("SOPORTE_TIPO_COMBUSTIBLE", 50000), ("LLANTA_DANADA", 100000),
+                        ("RETROVISOR_DANADO", 50000), ("TAPA_LLANTA_DANADA", 50000)]
     _buses = []
 
     # Este es el constructor de la clase, donde inicializamos los atributos
-    def __init__(self, placa: str = "", cantidadAsientos: int = 20, asientos: list["Asiento"] = [],
-                 kilometrosRecorridos: float = 0.0, rutasFuturas: list["Ruta"] = [],
-                 empresa: "Empresa" = None, equipaje: list["Maleta"] = [], consumo: float = 0.0,
-                 pesoMaximo: float = 0.0, estado: str = "Perfecto Estado"):
+    def __init__(self, placa: str = "", cantidadAsientos: int = 20, asientos: list = [],
+                kilometrosRecorridos: float = 0.0, rutasFuturas: list = [],
+                empresa= None, equipaje: list = [], consumo: float = 0.0,
+                pesoMaximo: float = 0.0, estado: str = "Perfecto Estado"):
         self.placa = placa
         self._cantidadAsientos = cantidadAsientos
         self.setAsientos(asientos)
