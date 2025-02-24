@@ -2,10 +2,15 @@ from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 import VentanaPrincipal as VP
+import Datos_biografias
 
 class VentanaInicio(tk.Tk):
     def __init__(self):
         super().__init__()
+        
+        self.biografias = Datos_biografias.biografias
+        self.index = 0  # Índice para recorrer biografías
+        
         screenWidth = self.winfo_screenwidth()
         screenHeight = self.winfo_screenheight()
         self.title("Sistema - Ventana de Inicio")
@@ -63,80 +68,145 @@ class VentanaInicio(tk.Tk):
         # P2 - Contiene P5 y P6
         p2 = tk.Frame(self, bg="white", bd=2, relief="solid")
         p2.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
-
-        # P5 - Hoja de vida de desarrolladores (solo lectura)
+        
         p5 = tk.Frame(p2, bg="white")
         p5.pack(expand=True, fill="both", padx=5, pady=5)
-        botonHojaDeVida = tk.Button(p5)
-        botonHojaDeVida.pack(expand=True, fill="both")
-        
-        tituloHojaDeVida = tk.Label(botonHojaDeVida,text="Biografia",font=("Times New Roman",50))
+
+        self.botonHojaDeVida = tk.Frame(p5)
+        self.botonHojaDeVida.pack(expand=True, fill="both")
+
+        # Texto "Biografía" clickeable
+        tituloHojaDeVida = tk.Label(
+            self.botonHojaDeVida,
+            text="Biografía",
+            font=("Times New Roman", 50),
+            fg="blue",
+            cursor="hand2",
+        )
         tituloHojaDeVida.pack()
+        tituloHojaDeVida.bind("<Button-1>", lambda event: self.recorrerBiografias())
 
-        
-              
-        nombreHojaDeVida = tk.Label(botonHojaDeVida,text="Nombre:"+" "+"Juan Camilo Moreano",font=("Times New Roman",25))
-        nombreHojaDeVida.pack(side="top",pady=10)
-        
-        
-        fechaNaHojaDeVida = tk.Label(botonHojaDeVida,text="Fecha de nacimiento:"+" "+"5 de junio de 2002",font=("Times New Roman",25))
-        fechaNaHojaDeVida.pack(side="top",pady=10)
-        
-        
-        
-        descripcionHojaDeVida = tk.Label(botonHojaDeVida,text="Descripcion:"" "+"realizar descripcion",font=("Times New Roman",25))
-        descripcionHojaDeVida.pack(side="top",pady=10)
-        
-        cambiarHojaDevida = tk.Label(botonHojaDeVida,text="Click sobre la biografia para cambiar de autor",font=("Cursiva",15),fg="blue")
-        cambiarHojaDevida.pack(side="bottom",pady=10)
-        
+        self.p6 = tk.Frame(
+            p2, bg="lightblue", width=600, height=300
+        )  # Se establece un tamaño fijo
+        self.p6.pack_propagate(False)  # Evita que el tamaño cambie automáticamente
+        self.p6.pack(expand=True, fill="both", padx=5, pady=5)
 
-        # P6 - Fotos de desarrolladores
-        # Cargar las imágenes y redimensionarlas
-        def load_image(path, width, height):
+        self.cargarBiografia()
+
+
+        self.cargarImagenes()
+
+    def recorrerBiografias(self):
+        """Actualiza la información de la biografía."""
+        self.index = (self.index + 1) % len(self.biografias)
+        self.cargarBiografia()
+
+    def cargarBiografia(self):
+        """Carga la información de la biografía actual sin modificar el Frame padre."""
+        for widget in self.botonHojaDeVida.winfo_children():
+            widget.destroy()
+
+        # Mantén el título fijo
+        tituloHojaDeVida = tk.Label(
+            self.botonHojaDeVida,
+            text="Biografía",
+            font=("Times New Roman", 50),
+            fg="blue",
+            cursor="hand2",
+        )
+        tituloHojaDeVida.pack()
+        tituloHojaDeVida.bind("<Button-1>", lambda event: self.recorrerBiografias())
+
+        # Obtener la biografía actual
+        biografia = self.biografias[self.index]
+
+        # Crear los nuevos labels pero sin modificar el tamaño del Frame padre
+        tk.Label(
+            self.botonHojaDeVida,
+            text=f"Nombre: {biografia['nombre']}",
+            font=("Times New Roman", 25),
+        ).pack(pady=10, fill="both")
+        tk.Label(
+            self.botonHojaDeVida,
+            text=f"Fecha de nacimiento: {biografia['fechaNacimiento']}",
+            font=("Times New Roman", 25),
+        ).pack(pady=10, fill="both")
+        tk.Label(
+            self.botonHojaDeVida,
+            text=f"Descripción:\n{biografia['descripcion']}",
+            font=("Times New Roman", 25),
+        ).pack(pady=10, fill="both")
+        
+        tk.Label(
+            self.botonHojaDeVida,
+            text=f"Presionar sobre BIOGRAFIA para cambiar",
+            font=("cursiva", 15),
+            fg="red"
+        ).pack(fill="both",side="bottom")
+
+        self.cargarImagenes()
+        
+#########
+    def load_image(self, path, width, height):
+        """Carga y redimensiona imágenes."""
+        try:
             image = Image.open(path)
             image = image.resize((width, height), Image.LANCZOS)
             return ImageTk.PhotoImage(image)
+        except Exception as e:
+            print(f"Error al cargar la imagen {path}: {e}")
+            return None
+########
 
-        # Tamaño deseado para las imágenes
-        image_width = 150
-        image_height = 150
+    def cargarImagenes(self):
+        """Carga las imágenes de la biografía actual y las distribuye de manera uniforme."""
+        for widget in self.p6.winfo_children():
+            widget.destroy()
 
-        # Cargar las imágenes redimensionadas
-        imagen1 = load_image("src\\Imagenes\\foto1.png", image_width, image_height)
-        imagen2 = load_image("src\\Imagenes\\foto2.png", image_width, image_height)
-        imagen3 = load_image("src\\Imagenes\\foto3.png", image_width, image_height)
-        imagen4 = load_image("src\\Imagenes\\foto4.png", image_width, image_height)
+        biografia = self.biografias[self.index]
 
-        p6 = tk.Frame(p2, bg="lightblue")
-        p6.pack(expand=True, fill="both", padx=5, pady=5)
+        columnas = 2
+        filas = 2
+        width = self.p6.winfo_width() // columnas
+        height = self.p6.winfo_height() // filas
 
-        # Crear y posicionar etiquetas manualmente
-        foto1 = tk.Label(p6, image=imagen1, bg="white", relief="solid")
-        foto1.image = imagen1  # Evitar que se elimine la imagen
-        foto1.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        if width == 0 or height == 0:
+            width = 150
+            height = 150
+            
+        else:
+            width = 150
+            height = 150
+            
+        if not hasattr(self, "imagenes"):
+            self.imagenes = {}
 
-        foto2 = tk.Label(p6, image=imagen2, bg="white", relief="solid")
-        foto2.image = imagen2
-        foto2.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        for i in range(1, 5):
+            img_path = biografia[f"imagen{i}"]
+            if img_path not in self.imagenes:
+                self.imagenes[img_path] = self.load_image(img_path, width, height)
 
-        foto3 = tk.Label(p6, image=imagen3, bg="white", relief="solid")
-        foto3.image = imagen3
-        foto3.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+            imagen_label = tk.Label(self.p6, image=self.imagenes[img_path], bg="white")
+            imagen_label.image = self.imagenes[img_path]
+            imagen_label.grid(
+                row=(i - 1) // columnas,
+                column=(i - 1) % columnas,
+                padx=5,
+                pady=5,
+                sticky="nsew",
+            )
 
-        foto4 = tk.Label(p6, image=imagen4, bg="white", relief="solid")
-        foto4.image = imagen4
-        foto4.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
-
-        # Configurar pesos de filas y columnas para distribuir correctamente
-        p6.columnconfigure(0, weight=1, uniform="group1")
-        p6.columnconfigure(1, weight=1, uniform="group1")
-        p6.rowconfigure(0, weight=1, uniform="group1")
-        p6.rowconfigure(1, weight=1, uniform="group1")
+        for col in range(columnas):
+            self.p6.columnconfigure(col, weight=1)
+        for row in range(filas):
+            self.p6.rowconfigure(row, weight=1)
 
     def cambiarImagen(self, event):
+        """Cambia el texto de la imagen en `p4`."""
         self.imgLabel.config(text="Imagen cambiada")
 
     def abrirVentanaPrincipal(self):
+        """Abre la ventana principal."""
         self.destroy()
         VP.VentanaPrincipal()
