@@ -240,8 +240,6 @@ class Empresa:
         else:
             self.contratarEmpleado(horario = (ruta.getFechaSalida(), ruta.getFechaLlegada()))
             ruta.setChoferAsociado(self._empleados[-1])
-        print(busEncontrado)
-        print(ruta.getChoferAsociado())
 
     def flujoPromedio(self):
         """
