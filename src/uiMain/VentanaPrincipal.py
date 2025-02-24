@@ -24,8 +24,8 @@ class VentanaPrincipal(tk.Tk):
         menuArchivo.add_command(label="Salir", command=self.cerrarSesion)
 
         menuProcesos = Menu(menuBar, tearoff=0)
-        menuProcesos.add_command(label="Funcionalidad 1")
-        menuProcesos.add_command(label="Funcionalidad 2")
+        #menuProcesos.add_command(label="Funcionalidad 1")
+        #menuProcesos.add_command(label="Funcionalidad 2")
         menuProcesos.add_command(label="Funcionalidad 3", command=self.mostrarReembolsos)
         menuProcesos.add_command(label = "Funcionalidad 4", command = self.creacionRuta)
         
@@ -463,10 +463,11 @@ class VentanaPrincipal(tk.Tk):
                 nuevoRecorridoTotal = Red.longitud(nuevoTrayecto)
 
             if len(paradasEnOrden) == cantidadFaltante:
+                ordendeAporte.pop(0)
                 cuentaRegresiva = 0
                 texto.insert("end", "Como la distancia total no ha disminuido al valor " +
                                     "deseado, se van a ir eliminando paradas.\n")
-                while (nuevoRecorridoTotal > recorridoTotal * factor) and cuentaRegresiva < cantidadFaltante:
+                while (nuevoRecorridoTotal > recorridoTotal * factor) and cuentaRegresiva < cantidadFaltante - 1:
                     # Eliminando progresivamente las paradas.
                     paradaAEliminar = paradasEnOrden[ordendeAporte[cuentaRegresiva]]
                     nuevoTrayecto = Red.eliminarParada(nuevoTrayecto, paradaAEliminar)
@@ -478,7 +479,10 @@ class VentanaPrincipal(tk.Tk):
                     cuentaRegresiva += 1
 
             if numeroParadas > len(nuevoTrayecto):
-                texto.insert("end", "Lo sentimos, pero el porcentaje no permitió alcanzar el número de paradas.")
+                texto.insert("end", "Lo sentimos, pero el porcentaje no permitió alcanzar el número de paradas.\n")
+
+        else:
+            nuevoTrayecto = trayecto
 
         return nuevoTrayecto
 
@@ -701,19 +705,21 @@ class VentanaPrincipal(tk.Tk):
                 # Número de paradas.
             try:
                 inputs[0] = int(inputs[0])
-            except:
+            except ValueError:
                 textoResultado.insert("end", "Inserte un número entero de paradas.\n")
                 return None
             try:
                 inputs[1] = float(inputs[1])
-            except:
+            except ValueError:
                 textoResultado.insert("end", "Inserte un número para el factor.\n")
                 return None
 
             # Hallando el nuevo camino.
-            trayectoReal = self.ajustarParadas(empresa = primerosDatos[0], trayecto = primerosDatos[1],
-                                               numeroParadas = inputs[0], factor = inputs[1],
-                                               texto = textoResultado)
+            ruta = self.ajustarParadas(empresa = primerosDatos[0], trayecto = primerosDatos[1],
+                                       numeroParadas = inputs[0], factor = inputs[1],
+                                       texto = textoResultado)
+            for parada in ruta:
+                trayectoReal.append(parada)
 
         def continuarDatos():
             if len(primerosDatos) != 0:
@@ -728,9 +734,30 @@ class VentanaPrincipal(tk.Tk):
         def continuarAjuste():
             if trayectoReal is not None:
                 if len(trayectoReal) != 0:
+                    # Modificando la función de los botones.
+                    formularioAjustes.destroy()
+                    botonInputs.destroy()
+                    botonBorrar.destroy()
+                    botonContinuar.config(text = "Terminar", command = pasarInfo)
+
+                    # Borrando todo el texto.
+                    textoResultado.delete(1.0, "end")
+
                     rutaNueva = Ruta(lugarInicio = Red.Parada(trayectoReal[0]),
                                      lugarFin = Red.Parada(trayectoReal[len(trayectoReal) - 1]))
-            pass
+                    empresa = primerosDatos[0]
+                    empresa.asignarRuta(rutaNueva)
+                    textoResultado.insert("end", "Tu ruta ha sido asignada al bus:\n" +
+                                          str(rutaNueva.getBusAsociado()) + "\nJunto al chofer:\n" +
+                                          str(rutaNueva.getChoferAsociado()) + "\n")
+                else:
+                    textoResultado.insert("end", "La ruta está vacía.\n")
+            else:
+                textoResultado.insert("end", "No se creó su ruta correctamente.\n")
+
+        def pasarInfo():
+            for widget in frame.winfo_children():
+                widget.destroy()
 
             # Botones.
         frameBotones = tk.Frame(frameBusqueda, bg = "black", height = 20, width = 10)

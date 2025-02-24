@@ -19,6 +19,9 @@ class Chofer(Persona):
         self.setHorario(horario)
         Chofer._choferes.append(self)
 
+    def __str__(self):
+        return "Chofer " + str(self.getNombre())
+
     # Definiendo Getters y Setters
     def getSueldo(self) -> int:
         return self._sueldo
@@ -63,6 +66,10 @@ class Chofer(Persona):
             self._empresa = None
         if isinstance(empresa, Empresa):
             self._empresa = empresa
+        try:
+            self._empresa
+        except AttributeError:
+            self._empresa = None
 
     def getBus(self) -> "Bus":
         return self._bus
@@ -74,6 +81,10 @@ class Chofer(Persona):
             self._bus = None
         if isinstance(bus, Bus):
             self._bus = bus
+        try:
+            self._bus
+        except AttributeError:
+            self._bus = None
 
     def getHorario(self) -> list[tuple[datetime]]:
         return self._horario

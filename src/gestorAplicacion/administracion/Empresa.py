@@ -233,13 +233,15 @@ class Empresa:
             return None
         for empleado in self._empleados:
             if empleado.isDisponible(ruta.getFechaSalida(), ruta.getFechaLlegada()):
-                retorno = empleado.anadirRuta(ruta.getFechaSalida(), ruta.getFechaLlegada())
+                retorno = empleado.anadirRuta([ruta.getFechaSalida(), ruta.getFechaLlegada()])
                 if retorno is None:
                     ruta.setChoferAsociado(empleado)
                     break
         else:
             self.contratarEmpleado(horario = (ruta.getFechaSalida(), ruta.getFechaLlegada()))
             ruta.setChoferAsociado(self._empleados[-1])
+        print(busEncontrado)
+        print(ruta.getChoferAsociado())
 
     def flujoPromedio(self):
         """

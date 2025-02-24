@@ -87,7 +87,7 @@ class Red(ABC):
 
             return palabra
 
-        for i in len(cls.PARADAS):
+        for i in range(len(cls.PARADAS)):
             if simplificarPalabra(parada) == simplificarPalabra(cls.PARADAS[i]):
                 return i
 
@@ -287,7 +287,8 @@ class Red(ABC):
     @classmethod
     def eliminarParada(cls, trayecto: list[int], ordinal: int) -> list[int]:
         nuevoTrayecto = trayecto.copy()
-        nuevoTrayecto.remove(ordinal)
+        if ordinal in nuevoTrayecto:
+            nuevoTrayecto.remove(ordinal)
 
         return nuevoTrayecto
 

@@ -29,6 +29,9 @@ class Bus:
         if self._empresa is not None:
             self._empresa.agregarBus(self)
 
+    def __str__(self):
+        return "Bus de placas " + str(self.placa)
+
     def getCantidadAsientos(self):
         return self._cantidadAsientos
 
@@ -87,6 +90,10 @@ class Bus:
     def setPesoMaximo(self, pesoMaximo: float):
         if pesoMaximo in Bus._PESO_MAXIMO:
             self._pesoMaximo = pesoMaximo
+        try:
+            self._pesoMaximo
+        except AttributeError:
+            self._pesoMaximo = Bus._PESO_MAXIMO[0]
 
     def getEmpresa(self) -> "Empresa":
         return self._empresa
@@ -138,8 +145,8 @@ class Bus:
         # Se busca si alguna de las rutas futuras
         # colisiona con el horario establecido.
         for ruta in self._rutasFuturas:
-            if ((fechaInicio < ruta.getFechaLlegada() + timedelta(days = 1)) and
-                (fechaFinal > ruta.getFechaSalida() - timedelta(days = 1))):
+            if ((fechaInicio <= ruta.getFechaLlegada() + timedelta(days = 1)) and
+                (fechaFinal >= ruta.getFechaSalida() - timedelta(days = 1))):
                 return False
 
         # Si no colisiona con nada, devuelve que está disponible.
@@ -170,8 +177,8 @@ class Bus:
 
         # Viendo si la nueva ruta tiene un horario compartido con una ya asignada. 
         for ruta in self._rutasFuturas:
-            if not (nuevaRuta.getFechaLlegada() + timedelta(hours = 1) < ruta.getFechaSalida() or
-                    nuevaRuta.getFechaSalida() - timedelta(hours = 1) > ruta.getFechaLlegada()):
+            if not (nuevaRuta.getFechaLlegada() + timedelta(hours = 1) <= ruta.getFechaSalida() or
+                    nuevaRuta.getFechaSalida() - timedelta(hours = 1) >= ruta.getFechaLlegada()):
                 return False
 
         # Asignando el bus.
@@ -211,13 +218,13 @@ class Bus:
             return datetime.now() + timedelta(hours = 1)
 
         # Viendo si hay un hueco ahora. 
-        if datetime.now() < self._rutasFuturas[0].getFechaSalida() - timedelta(hours = duracion + 2):
+        if datetime.now() <= self._rutasFuturas[0].getFechaSalida() - timedelta(hours = duracion + 2):
             return self._rutasFuturas[0].getFechaSalida() - timedelta(duracion + 2)
 
         # Viendo las colisiones con rutas asignadas.
         rutas = self._rutasFuturas
         for i in range(len(rutas) - 1):
-            if rutas[i].getFechaLlegada() < rutas[i].getFechaSalida() - timedelta(hours = duracion + 2):
+            if rutas[i].getFechaLlegada() <= rutas[i].getFechaSalida() - timedelta(hours = duracion + 2):
                 return rutas[i].getFechaLlegada() + timedelta(hours = 1)
 
         # Si colisiona con todo el horario, se asigna una hora después del último lapso.

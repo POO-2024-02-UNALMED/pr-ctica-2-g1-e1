@@ -9,7 +9,7 @@ class Ruta(Red):
     _DIFICULTAD_MUY_ALTA = 500  # Km
 
     def __init__(self, busAsociado: "Bus" = None, choferAsociado: "Chofer" = None,
-                 fechaSalida: datetime = None, fechaLlegada: datetime = None,
+                 fechaSalida: datetime = datetime.now(), fechaLlegada: datetime = datetime.now(),
                  lugarInicio: str = "", lugarFin: str = "", distancia: float = 0.0,
                  tiempoEstimado: float = 0.0):
         self._idRuta = len(Ruta._rutas)
@@ -20,7 +20,10 @@ class Ruta(Red):
         self._lugarInicio = lugarInicio
         self._lugarFin = lugarFin
         self._distancia = distancia
-        self._tiempoEstimado = (fechaLlegada - fechaSalida).total_seconds() / 3600 # Horas
+        if (fechaLlegada is not None) and (fechaSalida is not None):
+            self._tiempoEstimado = (fechaLlegada - fechaSalida).total_seconds() / 3600 # Horas
+        else:
+            self._tiempoEstimado = None
 
         # Agregando la ruta a las lista de rutas.
         Ruta.anadirRuta(self)
@@ -58,21 +61,47 @@ class Ruta(Red):
 
     def setBusAsociado(self, busAsociado: "Bus"):
         from Bus import Bus
+
         if isinstance(busAsociado, Bus):
             self._busAsociado = busAsociado
+        try:
+            self._busAsociado
+        except AttributeError:
+            self._busAsociado = None
 
     def setChoferAsociado(self, choferAsociado: "Chofer"):
         from Chofer import Chofer
+
         if isinstance(choferAsociado, Chofer):
             self._choferAsociado = choferAsociado
+        try:
+            self._choferAsociado
+        except AttributeError:
+            self._choferAsociado = None
 
     def setFechaSalida(self, fechaSalida: datetime):
-        self._fechaSalida = fechaSalida
-        self._tiempoEstimado = (self._fechaLlegada - self._fechaSalida).total_seconds() / 3600
+        try:
+            if fechaSalida is not None:
+                self._fechaSalida = fechaSalida
+            if (self._fechaLlegada is not None) and (fechaSalida is not None):
+                self._tiempoEstimado = (self._fechaLlegada - fechaSalida).total_seconds() / 3600 # Horas
+            else:
+                self._tiempoEstimado = None
+        except AttributeError:
+            if fechaSalida is not None:
+                self._fechaSalida = fechaSalida
 
     def setFechaLlegada(self, fechaLlegada: datetime):
-        self._fechaLlegada = fechaLlegada
-        self._tiempoEstimado = (self._fechaLlegada - self._fechaSalida).total_seconds() / 3600
+        try:
+            if fechaLlegada is not None:
+                self._fechaLlegada = fechaLlegada
+            if (fechaLlegada is not None) and (self._fechaSalida is not None):
+                self._tiempoEstimado = (fechaLlegada - self._fechaSalida).total_seconds() / 3600 # Horas
+            else:
+                self._tiempoEstimado = None
+        except AttributeError:
+            if fechaLlegada is not None:
+                self._fechaLlegada = fechaLlegada
 
     def setLugarInicio(self, lugarInicio: str):
         self._lugarInicio = lugarInicio
