@@ -5,9 +5,9 @@ class Chofer(Persona):
     _choferes = []
 
     def __init__(self, nombre: str = "", edad: int = 0, id: int = 0, sueldo: int = 0,
-                 cantidadHorasConducidas: int = 0, empresa: "Empresa" = None,
-                 puntajeEficienciaTiempos: int = 0, puntajeConsumoCombustible: int = 0,
-                 puntajeDefinitivo: float = 0, bus: "Bus" = None, horario: list[tuple[datetime]] = []):
+                cantidadHorasConducidas: int = 0, empresa = None,
+                puntajeEficienciaTiempos: int = 0, puntajeConsumoCombustible: int = 0,
+                puntajeDefinitivo: float = 0, bus = None, horario: list[tuple[datetime]] = []):
         super().__init__(nombre, edad, id)
         self.setEmpresa(empresa)
         self._sueldo = sueldo
