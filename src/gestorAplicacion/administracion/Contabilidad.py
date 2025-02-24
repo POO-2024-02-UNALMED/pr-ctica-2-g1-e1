@@ -3,8 +3,8 @@ class Contabilidad:
     _ventas: list = []
     _transacionesReembolsadas: list = []
 
-    def __init__(self, ingresos: float = 0.0, costosOperativos: float = 0.0, ventas: list["Factura"] = [],
-                 transacionesReembolsadas: list = []):
+    def __init__(self, ingresos: float = 0.0, costosOperativos: float = 0.0, ventas: list = [],
+                transacionesReembolsadas: list = []):
         self._ingresos = ingresos
         self._costosOperativos = costosOperativos
         Contabilidad._ventas = ventas
