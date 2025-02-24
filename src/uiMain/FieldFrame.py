@@ -2,18 +2,18 @@ import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
 
 class FieldFrame(tk.Frame):
-    def __init__(self, parent, tituloCriterios, criterios, tituloValores, valores=None, habilitado=None):
-        super().__init__(parent, bd=2, relief="solid")
+    def __init__(self, parent, tituloCriterios, criterios, tituloValores, valores=None, habilitado=None, bg="lightgray"):
+        super().__init__(parent, bd=2, relief="solid", background=bg)
         self.criterios = criterios
         self.valores = valores if valores else ["" for _ in criterios]
         self.habilitado = habilitado if habilitado else [True for _ in criterios]
         
-        tk.Label(self, text=tituloCriterios, font=("Arial", 10, "bold")).grid(row=0, column=0, padx=5, pady=5)
-        tk.Label(self, text=tituloValores, font=("Arial", 10, "bold")).grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(self, text=tituloCriterios, font=("Arial", 10, "bold"), bg="lightgray").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(self, text=tituloValores, font=("Arial", 10, "bold"),bg= "lightgray").grid(row=0, column=1, padx=5, pady=5)
         
         self.entries = {}
         for i, criterio in enumerate(criterios):
-            tk.Label(self, text=criterio).grid(row=i+1, column=0, padx=5, pady=5, sticky="w")
+            tk.Label(self, text=criterio,bg="lightgray").grid(row=i+1, column=0, padx=5, pady=5, sticky="w")
             entry = tk.Entry(self)
             entry.grid(row=i+1, column=1, padx=5, pady=5, sticky="ew")
             entry.insert(0, self.valores[i])

@@ -83,8 +83,11 @@ class Pasajero(Persona):
         return f"Soy el pasajero {self.getNombre()} tengo {self.getEdad()} años y mi ID es {self.getId()}"
 
     def revertirPasajes(self):
-        bus = self.factura.get_ruta_elegida().get_bus_asociado()
-        bus.asignar_pasajero(self)
+        facturas = self.getFacturas()
+        if len(facturas) != 0 and facturas is not None:
+            for factura in facturas:
+                bus = factura.getRutaElegida().getBusAsociado()
+                bus.asignarPasajero(self)
 
     def eliminarPasaje(self, factura: "Factura") -> str:
         facturas = self.getFacturas()
@@ -92,7 +95,7 @@ class Pasajero(Persona):
             facturas.remove(factura)
             return f"Pasajero {self.getNombre()} ha eliminado su factura {factura.getIdFactura()}"
 
-    def solicitarReembolso(self, idPasajeroUser: int, idFactura: int, horaZero: datetime) -> list:
+    def solicitarReembolso(self, idPasajero: int, idFactura: int, horaZero: datetime) -> list:
         """
         Procesa una solicitud de reembolso.
 
@@ -101,7 +104,9 @@ class Pasajero(Persona):
         from Contabilidad import Contabilidad
 
 
-        idFacturaUser = int(idFactura) # lo casteamos a int
+        idFacturaUser = int(idFactura)
+        idPasajeroUser = int(idPasajero)
+         # lo casteamos a int
         respuesta = []
         ratio = 86400.0 / 10.0  # 10 segundos reales = 1 día
 
@@ -129,12 +134,12 @@ class Pasajero(Persona):
 
         facturas = Contabilidad.getVentas() 
         for factura in facturas:
-            print  (factura.getNombreUsuario())
-            print (factura.getIdFactura())
+            print(factura.getNombreUsuario())
+            print(factura.getIdFactura())
             if factura.getIdFactura() == idFacturaUser:
                 if factura.getIdUsuario() == idPasajeroUser:
                     timeCreation = (
-                        factura.fecha
+                        factura._fecha
                     )  
                     
 
@@ -150,7 +155,7 @@ class Pasajero(Persona):
                         mensaje = "El reembolso no es posible, el metodo de pago utilizado fue en efectivo, un metodo de pago invalido para un reembolso"
                         respuesta.append(mensaje)
                     else:
-                        mensaje = "Su solicitud sigue en proceso, valoramos su paciencia y gracias por escojernos"
+                        mensaje = "Su solicitud sigue en proceso, valoramos su paciencia y gracias por escojernos, ahora pasaremos a validar las maletas, Para esto ingrese los ID de las maletas"
                         # Actualizar el número de reembolsos disponibles
                         numReembolsoDispUser -= 1 
                         respuesta.append(mensaje)

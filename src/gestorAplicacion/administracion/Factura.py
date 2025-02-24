@@ -112,7 +112,7 @@ class Factura:
     # Métodos de clase
     # Métodos de Instancia
     def verificarBusAsociado(self):
-        bus = self.ruta_elegida.get_bus_asociado()
+        bus = self._rutaElegida.getBusAsociado()
         if bus is not None:
             mensaje = "Existe un Bus Asociado a la ruta de la factura, Su solicitud seguira en proceso"
         else:
@@ -121,15 +121,17 @@ class Factura:
         return mensaje
     
     def verificarRutaAsociada(self):
-        bus = self.ruta_elegida.get_bus_asociado()
+        bus = self._rutaElegida.getBusAsociado()
         mensaje = ""
 
-        asientos_bus = bus.get_asientos()
+        asientos_bus = bus.getAsientos()
         for asiento in asientos_bus:
-            if asiento.get_usuario().get_nombre() == self.usuario_nombre:
+            print(asiento.getUsuario().getNombre())
+            print(self._nombreUsuario)
+            if asiento.getUsuario().getNombre() == self._nombreUsuario:
                 mensaje = "El usuario ya tiene una reserva asociada a esta ruta"
-                ruta_elegida = self.get_ruta_elegida()
-                fecha_salida = ruta_elegida.get_fecha_salida()
+                _rutaElegida = self.getRutaElegida()
+                fecha_salida = _rutaElegida.getFechaSalida()
                 if datetime.now() < fecha_salida:
                     return("El asiento liberado puede ser reservado nuevamente, Su reembolso sigue en proceso")
                 else:
@@ -140,22 +142,23 @@ class Factura:
         return mensaje
 
     def verificarMaletaBusAsociado(self, nums_maleta):
-        bus = self.ruta_elegida.get_bus_asociado()
+        bus = self._rutaElegida.getBusAsociado()
+        print(bus)
         verificacion = False
-        for maleta in bus.get_equipaje():
-            if maleta.get_id_maleta() == nums_maleta:
+        for maleta in bus.getEquipaje():
+            if maleta.getIdMaleta() == int(nums_maleta):
                 verificacion = True
                 break
         return verificacion
 
     def eliminarMaletaBusAsociado(self, nums_maletas):
-        bus = self.ruta_elegida.get_bus_asociado()
+        bus = self._rutaElegida.getBusAsociado()
         mensaje = ""
         
         for integer in nums_maletas:
-            for maleta in bus.get_equipaje():
-                if maleta.get_id_maleta() == integer:
-                    bus.get_equipaje().remove(maleta)
+            for maleta in bus.getEquipaje():
+                if maleta.getIdMaleta() == integer:
+                    bus.getEquipaje().remove(maleta)
                     mensaje = f"La maleta con el numero de identificacion {integer} ha sido eliminada del equipaje del bus"
                     break 
             else:

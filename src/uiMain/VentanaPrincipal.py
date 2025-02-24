@@ -39,19 +39,25 @@ class VentanaPrincipal(tk.Tk):
         self.config(menu=menuBar)
 
     def crearWidgets(self):
-        self.frameContenido = tk.Frame(self, bg="white", bd=2, relief="solid")
+        self.frameContenido = tk.Frame(self, bg="#3B1C32", bd=2, relief="solid")
         self.frameContenido.pack(expand=True, fill="both", padx=10, pady=10)
 
     def mostrarReembolsos(self):
 
         for widget in self.frameContenido.winfo_children():
             widget.destroy()
-        FrPrincipal= tk.Frame(self.frameContenido)
-        tk.Label(FrPrincipal, text="Bienvenido al Sistema de Reembolsos de Tickets",
-                 font=("Arial", 16)).pack(pady=10)
+        FrPrincipal= tk.Frame(self.frameContenido,bg="#3B1C32")
+        tk.Label(FrPrincipal, text="Bienvenido al Sistema de Reembolsos de Tickets", bg="#A64D79",fg="white",
+                 font=("Arial", 16)).pack(side=tk.TOP,pady=10)
+        frame_forms = tk.Frame(FrPrincipal, bg="#6A1E55")
+        frame_forms.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        frame_respuestas = tk.Frame(FrPrincipal, bg="#A64D79")
+        frame_respuestas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
 
         criterios = ["Nombre en factura", "Número de documento", "Número de factura", "Número de maletas"]
-        formulario = FF.FieldFrame(FrPrincipal, "Criterio", criterios, "Valor")
+        formulario = FF.FieldFrame(frame_forms, "Criterio", criterios, "Valor", bg="#A64D79")
 
         def analizarParametros(Parametros):
             ordenEsperado1 = ["Nombre en factura", "Número de documento", "Número de factura", "Número de maletas"]
@@ -67,8 +73,9 @@ class VentanaPrincipal(tk.Tk):
             """
 
             from Pasajero import Pasajero
-            from Excepciones import InexistenciaExcepcion, CampoFaltanteEx
+            from Excepciones import InexistenciaExcepcion, CampoFaltanteEx, ErrorTipoDatoEx
             from Persona import Persona
+            from Contabilidad import Contabilidad
             nombrePasajero = None
             numeroDocumento = None
             numeroFactura = None
@@ -83,6 +90,8 @@ class VentanaPrincipal(tk.Tk):
                 elif campo == "Número de factura":
                     numeroFactura = valor
 
+                elif campo == "Número de maletas":
+                    numeroMaletas = valor
             try:
                 if nombrePasajero and numeroDocumento:
                     pasajero1 = Pasajero.buscarPasajero(nombrePasajero, numeroDocumento)
@@ -90,12 +99,91 @@ class VentanaPrincipal(tk.Tk):
                     if pasajero1:
 
                         respuestas= pasajero1.solicitarReembolso(numeroDocumento,numeroFactura,self.horaZero)
-                        print(respuestas[0])
+                        mensaje_reembolso = respuestas[0]
+                        mensaje_reembolso = respuestas[0]
+                        tk.Label(frame_respuestas, text=mensaje_reembolso, bg="#6A1E55",fg="white").pack(pady=10)
                         if respuestas and len(respuestas) == 2:  # Verifica si la respuesta tiene 2 elementos
-                            mensaje_reembolso = respuestas[0]
-                            # Mostrar el mensaje en el frameContenido
-                            tk.Label(self.frameContenido, text=mensaje_reembolso).pack(pady=10)
-                            
+                            facturaUser= respuestas[1]
+                            nums_maletas=[]
+                            mensaje_2 = facturaUser.verificarBusAsociado()
+                            tk.Label(frame_respuestas, text=mensaje_2, bg="#6A1E55",fg="white").pack(pady=10)
+                            if "Existe un Bus Asociado a la ruta de la factura" in mensaje_2:
+                                # Mostrar el mensaje en el frameContenido  
+                                mensaje_3 = facturaUser.verificarRutaAsociada()
+                                tk.Label(frame_respuestas, text=mensaje_3, bg="#6A1E55",fg="white").pack(pady=10)
+                                
+                                if "El asiento liberado puede ser reservado nuevament" in mensaje_3:
+
+                                    def validarMaletas():
+                                        from Excepciones.CampoFaltanteEx import CampoFaltanteEx
+                                        a = 0
+                                        total_maletas = int(numeroMaletas)
+                                        maletas_verificadas = []  # Lista de identificadores de maletas válidas
+
+                                        while a < total_maletas:
+                                            try:
+                                                entry_maleta = formulario2.entries[f"Maleta {a+1}"]  # Recupera el campo correcto
+                                                IdMaletaUser = entry_maleta.get().strip()
+
+                                                if not IdMaletaUser:
+                                                    raise CampoFaltanteEx("Número de maleta")
+
+                                                IdMaletaUser = int(IdMaletaUser)  # Asegurar que es un número entero
+                                                verificacion = facturaUser.verificarMaletaBusAsociado(IdMaletaUser)
+
+                                                if verificacion:
+                                                    maletas_verificadas.append(IdMaletaUser)
+                                                    tk.Label(frame_respuestas, text=f"La maleta con número {IdMaletaUser} está en el bus de la factura",
+                                                            bg="#6A1E55", fg="white").pack(pady=10)
+                                                    a += 1  # Solo avanzar si la maleta es válida
+
+                                                else:
+                                                    respuesta = messagebox.askyesno("Maleta no encontrada", "¿Desea volver a ingresar el identificador de la maleta?")
+                                                    if not respuesta:
+                                                        a += 1  # Solo avanzar si el usuario no quiere reingresar
+                                                    else:
+                                                        return
+
+                                            except KeyError:
+                                                messagebox.showerror("Error", f"No se encontró la entrada 'Maleta {a+1}' en el formulario.")
+                                                return
+                                            except ValueError:
+                                                messagebox.showerror("Error de formato", "El número de maleta debe ser un número entero.")
+                                                return
+                                            except CampoFaltanteEx as e:
+                                                e.mostrar_advertencia()
+                                                return
+
+                                        # Verificar que se obtuvieron todas las maletas antes de hacer el reembolso
+                                        if len(maletas_verificadas) == total_maletas:
+                                            mensaje_4 = facturaUser.eliminarMaletaBusAsociado(maletas_verificadas)
+                                            tk.Label(frame_respuestas, text=mensaje_4, bg="#6A1E55", fg="white").pack(pady=10)
+
+                                            if "ha sido eliminada del equipaje del bus" in mensaje_4: 
+                                                pasajero1.setFacturas([])
+                                                for widget in frame_respuestas.winfo_children():
+                                                    widget.destroy()
+                                                tk.Label(frame_respuestas, text="¡Reembolso exitoso! Su factura ha sido invalidada y el monto ha sido acreditado a su cuenta.", 
+                                                        bg="#6A1E55", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+                                                tk.Label(frame_respuestas, text=Contabilidad.generarDesglose(facturaUser), 
+                                                        bg="#6A1E55", fg="white").pack(pady=10)
+                                                tk.Label(frame_respuestas, text=f"El monto reembolsado es: ${Contabilidad.montoReembolso(facturaUser)}", 
+                                                        bg="#6A1E55", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+                                                tk.Label(frame_respuestas, text=f"Su nuevo saldo en wallet es: ${pasajero1.getWallet()}",
+                                                        bg="#6A1E55", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+
+                                    btnAceptar.config(command= validarMaletas)
+                                    btnAceptar.pack(side="bottom")
+                                    btnBorrar.pack(side="bottom")
+                                    criterios_maletas = [f"Maleta {i+1}" for i in range(int(numeroMaletas))]
+                                    formulario2 = FF.FieldFrame(frame_forms, "Criterio", criterios_maletas, "Valor", bg="#A64D79")
+                                    formulario2.pack(pady=10, padx=10, expand=False, fill="both")
+                                else:
+                                    pasajero1.revertirPasajes()
+                            mensaje = facturaUser.eliminarMaletaBusAsociado(nums_maletas) 
+                            if "No se pudo hacer el reembolso, La maleta con el numero de identificacion" in mensaje :
+                                pasajero1.revertirPasajes()          
+
                     else:
                         raise InexistenciaExcepcion.InexistenciaExcepcion("Pasajero en el sistema")
                 else:
@@ -155,13 +243,13 @@ class VentanaPrincipal(tk.Tk):
         FrPrincipal.pack(pady=10, padx=10, expand=True, fill="both")
         formulario.pack(pady=10, padx=10, expand=False, fill="both")
 
-        frame_botones = tk.Frame(FrPrincipal)
-        frame_botones.pack(pady=20)  # Centra verticalmente el frame contenedor
+        frame_botones = tk.Frame(frame_forms, bg="")
+        frame_botones.pack(side="bottom", pady=20)  # Centra verticalmente el frame contenedor
 
-        btnAceptar = tk.Button(frame_botones, text="Aceptar", command=obtenerParametros)
+        btnAceptar = tk.Button(frame_botones, text="Aceptar", command=obtenerParametros,bg="lightgray")
         btnAceptar.pack(side=tk.LEFT, padx=10)
 
-        btnBorrar = tk.Button(frame_botones, text="Borrar", command=borrarCampos)
+        btnBorrar = tk.Button(frame_botones, text="Borrar", command=borrarCampos, bg="lightgray")
         btnBorrar.pack(side=tk.LEFT, padx=10) 
 
     def mostrarInfo(self):

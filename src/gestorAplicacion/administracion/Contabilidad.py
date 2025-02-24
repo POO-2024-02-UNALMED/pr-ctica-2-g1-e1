@@ -7,7 +7,7 @@ class Contabilidad:
                  transacionesReembolsadas: list = []):
         self._ingresos = ingresos
         self._costosOperativos = costosOperativos
-        self._ventas = ventas
+        Contabilidad._ventas = ventas
         self._transacionesReembolsadas = transacionesReembolsadas
 
     # Definiendo Getters y Setters
@@ -17,8 +17,8 @@ class Contabilidad:
     def getCostosOperativos(self) -> float:
         return self._costosOperativos
 
-    def getVentas(self) -> list["Factura"]:
-        return self._ventas
+    def getVentas(cls) :
+        return Contabilidad._ventas
 
     def getTransaccionesReembolsadas(self) -> list:
         return self._transacionesReembolsadas
@@ -74,8 +74,8 @@ class Contabilidad:
         from Factura import Factura
 
         tarifa_base = 5.0  
-        porcentaje_reembolso = 0.02 * factura.get_valor()  # 2% descuento
-        tarifa_por_metodo = 2.0 if factura.get_metodo_pago() == Factura.MetodoPagos.TarjetadeCredito else 0.0
+        porcentaje_reembolso = 0.02 * factura.getValor()  # 2% descuento
+        tarifa_por_metodo = 2.0 if factura.getMetodoPago() == "Tarjeta de Credito" else 0.0
 
         return tarifa_base + porcentaje_reembolso + tarifa_por_metodo
 
@@ -86,14 +86,14 @@ class Contabilidad:
         descuento = 0.0
         apariciones = 0
         
-        for f in Contabilidad.get_ventas():
-            if f.get_id_usuario() == factura.get_id_usuario():
+        for f in Contabilidad.getVentas():
+            if f.getIdUsuario() == factura.getIdUsuario():
                 apariciones += 1
 
         if apariciones > 10:
             descuento += 0.1  # 10% descuento
 
-        if factura.get_metodo_pago() == Factura.MetodoPagos.Transferencia:
+        if factura.getMetodoPago() == "Transferencia":
             descuento += 0.05  #  5% adicional descuento
 
         return descuento

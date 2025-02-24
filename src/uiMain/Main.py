@@ -16,6 +16,6 @@ import VentanaInicio as VI
 from Ruta import Ruta
 from Contabilidad import Contabilidad
 if __name__ == "__main__":
-    Pasajeros, facturas, Contabilidad ,Rutas, Buses,Choferes, empresas, asientos= LlamarBD()
+    Pasajeros, facturas, Contabilidad ,Rutas, Buses,Choferes, empresas, asientos, maletas= LlamarBD()
     app = VI.VentanaInicio()
     app.mainloop()

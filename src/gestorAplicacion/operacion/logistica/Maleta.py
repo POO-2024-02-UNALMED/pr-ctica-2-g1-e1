@@ -6,6 +6,7 @@ class Maleta:
         self._idMaleta = len(Maleta._maletas) + 1
         self.propietario = propietario
         self.peso = peso
+        Maleta._maletas.append(self)
 
     # Definiendo Getters y Setters
     def getIdMaleta(self):

@@ -7,4 +7,4 @@ class CampoFaltanteEx(Exception):
 
 
     def mostrar_advertencia(self):
-        messagebox.showwarning("Campo Faltante", f"El Campo {self.args[0]} falta ser llenado por favor ingrese un valor")  # Usa el mensaje almacenado en self.args
+        messagebox.showwarning("Campo Faltante", f"{self.args[0]} falta ser llenado por favor ingrese un valor")  # Usa el mensaje almacenado en self.args

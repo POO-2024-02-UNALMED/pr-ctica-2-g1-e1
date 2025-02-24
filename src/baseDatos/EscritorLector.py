@@ -300,9 +300,8 @@ def LlamarBD():
 
     # Crear objetos Maleta y Factura para usar en los Pasajeros
     maletas_pasajero1 = [Maleta(peso=20), Maleta(peso=10)]
-    #facturas_pasajero1 = [Factura("Juan Pérez", 101, 100000.0, 1, [asientos[]], datetime(2025, 2, 22), 2, ruta1, "Medellín", "Bogotá", "Tarjeta de Credito")
-    #], 2, None)]
-    facturas_pasajero1 = [Factura(valor=75, fecha=dt.datetime(2023, 10, 28))]
+    
+    facturas_pasajero1 = [Factura(nombreUsuario= "Juan Pérez",idUsuario = 12345 ,rutaElegida= ruta1,numAsientosAsignados = 1,valor=75,cantidadMaletas = 2, fecha=dt.datetime(2023, 10, 28))]
     maletas_pasajero2 = [Maleta(peso=5)]
     facturas_pasajero2 = [Factura(valor=75, fecha=dt.datetime(2023, 10, 28))]
 
@@ -351,7 +350,7 @@ def LlamarBD():
     pasajeros.append(pasajero13)
 
     pasajero14 = Pasajero("Daniela Jiménez", 43, 33446, [Maleta(peso=28), Maleta(peso=6)], 290, [Factura(valor=160, fecha=dt.datetime(2023, 11, 6))], 2, acompanante2)
-    pasajeros.append(pasajero14)
+    pasajeros.append(pasajero14)  
 
     pasajero15 = Pasajero("Nicolás Silva", 26, 44557, [], 380, [], 3, None)
     pasajeros.append(pasajero15)
@@ -372,13 +371,23 @@ def LlamarBD():
     pasajeros.append(pasajero20)
 
     facturas = []
+    maletas= []
 
-    for pasajero in pasajeros:
+    for i in range(len(pasajeros)):
+
+        pasajero=pasajeros[i]
+        if pasajero.getMaletas():
+            for maleta in pasajero.getMaletas():
+                maletas.append(maleta)
+
         pasajeroFacturas =pasajero.getFacturas()
         for factura in pasajeroFacturas:
             facturas.append(factura)
-        for asientofor in asientos:
-            asiento.setUsuario(pasajero)
+        asientofor = asientos[i]
+
+
+        asientofor.setUsuario(pasajero)
+        asientofor.getBus().getEquipaje().extend(pasajero.getMaletas())
 
     nombreArchivo = 'src/baseDatos/temp/Pasajeros.pkl'
     nombreArchivoFactura= 'src/baseDatos/temp/Facturas.pkl'
@@ -388,6 +397,8 @@ def LlamarBD():
     nombreArchivoChofer= 'src/baseDatos/temp/Chofer.pkl'
     nombreArchivoEmpresa = 'src/baseDatos/temp/Empresa.pkl'
     nombreArchivoAsientos= 'src/baseDatos/temp/Asientos.pkl'
+    nombreArchivoMaletas= 'src/baseDatos/temp/Maletas.pkl'
+    
     Contabilidad1 = Contabilidad(100000000,50000000, facturas,[])# la lista son las facturas reembolsadas (no hay)
     # Guardar datos 
     guardar_datos(rutas, nombreArchivoRutas)
@@ -398,7 +409,7 @@ def LlamarBD():
     guardar_datos(facturas, nombreArchivoFactura)
     guardar_datos(Contabilidad1,nombreArchivoContabilidad)
     guardar_datos(asientos,nombreArchivoAsientos)
-
+    guardar_datos(maletas,nombreArchivoMaletas)
     # Cargar datos
     datos_Pasajeros = cargar_datos(nombreArchivo)
     datos_Facturas = cargar_datos(nombreArchivoFactura)
@@ -407,5 +418,6 @@ def LlamarBD():
     datos_cargados_Bus = cargar_datos(nombreArchivoBus)
     datos_cargados_Chofer = cargar_datos(nombreArchivoChofer)
     datos_cargados_Empresa = cargar_datos(nombreArchivoEmpresa)
-    datos_cargados_Asientos = cargar_datos(nombreArchivoAsientos)    
-    return datos_Pasajeros, datos_Facturas, datos_Contabilidad, datos_cargado_Rutas, datos_cargados_Bus , datos_cargados_Chofer, datos_cargados_Empresa,datos_cargados_Asientos
+    datos_cargados_Asientos = cargar_datos(nombreArchivoAsientos) 
+    datos_cargados_Maletas = cargar_datos(nombreArchivoMaletas)   
+    return datos_Pasajeros, datos_Facturas, datos_Contabilidad, datos_cargado_Rutas, datos_cargados_Bus , datos_cargados_Chofer, datos_cargados_Empresa,datos_cargados_Asientos, datos_cargados_Maletas
