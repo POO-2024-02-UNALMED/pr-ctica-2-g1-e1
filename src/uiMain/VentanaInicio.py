@@ -90,7 +90,7 @@ class VentanaInicio(tk.Tk):
             p2, bg="lightblue", width=600, height=300
         )  # Se establece un tamaño fijo
         self.p6.pack_propagate(False)  # Evita que el tamaño cambie automáticamente
-        self.p6.pack(expand=True, fill="both", padx=5, pady=5)
+        self.p6.pack(expand=False, fill="both", padx=5, pady=5)
 
         self.cargarBiografia()
 
@@ -114,7 +114,7 @@ class VentanaInicio(tk.Tk):
             font=("Times New Roman", 50),
             fg="blue",
             cursor="hand2",
-        )
+        wraplength=500)
         tituloHojaDeVida.pack()
         tituloHojaDeVida.bind("<Button-1>", lambda event: self.recorrerBiografias())
 
@@ -125,27 +125,29 @@ class VentanaInicio(tk.Tk):
         tk.Label(
             self.botonHojaDeVida,
             text=f"Nombre: {biografia['nombre']}",
-            font=("Times New Roman", 25),
-        ).pack(pady=10, fill="both")
+            font=("Times New Roman", 20),
+        wraplength=500).pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
+        
         tk.Label(
             self.botonHojaDeVida,
             text=f"Fecha de nacimiento: {biografia['fechaNacimiento']}",
-            font=("Times New Roman", 25),
-        ).pack(pady=10, fill="both")
+            font=("Times New Roman", 20),
+        wraplength=500).pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
         tk.Label(
             self.botonHojaDeVida,
             text=f"Descripción:\n{biografia['descripcion']}",
-            font=("Times New Roman", 25),
-        ).pack(pady=10, fill="both")
+            font=("Times New Roman", 20),
+        wraplength=500).pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
         
         tk.Label(
             self.botonHojaDeVida,
             text=f"Presionar sobre BIOGRAFIA para cambiar",
             font=("cursiva", 15),
-            fg="red"
-        ).pack(fill="both",side="bottom")
+            fg="red",
+        wraplength=500).pack(side="bottom", fill="none", expand=False, anchor="center", padx=5, pady=5)
 
         self.cargarImagenes()
+        
         
 #########
     def load_image(self, path, width, height):
@@ -158,6 +160,7 @@ class VentanaInicio(tk.Tk):
             print(f"Error al cargar la imagen {path}: {e}")
             return None
 ########
+
 
     def cargarImagenes(self):
         """Carga las imágenes de la biografía actual y las distribuye de manera uniforme."""
@@ -172,12 +175,12 @@ class VentanaInicio(tk.Tk):
         height = self.p6.winfo_height() // filas
 
         if width == 0 or height == 0:
-            width = 150
-            height = 150
+            width = 250
+            height = 250
             
         else:
-            width = 150
-            height = 150
+            width = 250
+            height = 250
             
         if not hasattr(self, "imagenes"):
             self.imagenes = {}
