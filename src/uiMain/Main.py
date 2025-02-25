@@ -6,19 +6,24 @@ def importacion(direccion: str) -> None:
         if not((".git" in element) or ("__pycache__" in element)):
             if os.path.isdir(direccion + "\\" + element):
                 importacion(direccion + "\\" + element)
-# path = os.getcwd().split("\\")
-# if "src" in path:
-#     while path[len(path) - 1] != "src":
-#         path.pop(len(path) - 1)
-#     path.pop(len(path) - 1)
 
-# path = "\\".join(path)
-# importacion(path)
+path = os.getcwd().split("\\")
+if "src" in path:
+    while path[len(path) - 1] != "src":
+        path.pop(len(path) - 1)
+    path.pop(len(path) - 1)
 
-importacion(os.getcwd())
+path = "\\".join(path)
+importacion(path)
 
+import PIL
+from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import Menu, messagebox, PhotoImage, ttk
+from abc import ABC, abstractmethod
+import pickle
+import datetime
+
 from EscritorLector import LlamarBD
 import VentanaInicio as VI
 from Ruta import Ruta
