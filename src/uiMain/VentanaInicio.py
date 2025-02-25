@@ -4,6 +4,7 @@ from tkinter import Menu, messagebox, PhotoImage, ttk
 import VentanaPrincipal as VP
 import Datos_biografias
 from PIL import Image, ImageTk
+import os
 class VentanaInicio(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -15,7 +16,7 @@ class VentanaInicio(tk.Tk):
         screenHeight = self.winfo_screenheight()
         self.title("Sistema - Ventana de Inicio")
         self.geometry(f"{screenWidth}x{screenHeight}")
-        self.configure(padx=5, pady=5)
+        self.configure(padx=5, pady=5,bg="#0D0D0D")
         self.configurarMenu()
         self.crearEstructura()
 
@@ -45,34 +46,49 @@ class VentanaInicio(tk.Tk):
         self.rowconfigure(1, weight=0)  # Set to 0 to avoid extra space
 
         # P1 - Contiene P3 y P4
-        p1 = tk.Frame(self, bg="lightgray", bd=2, relief="solid")
+        p1 = tk.Frame(self, bg="#251F44", bd=2, relief="solid")
         p1.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # P3 - Saludo del sistema
-        p3 = tk.Frame(p1, bg="lightgray")
+        p3 = tk.Frame(p1, bg="#1A1A2E")
         p3.pack(expand=True, fill="both", padx=5, pady=5)
         tk.Label(p3, text="Bienvenido al sistema", font=("Arial", 16)).pack(pady=10)
-
+        tk.Label(
+            p3, 
+            text="Bienvenidos al Terminal de Buses donde vas a poder gestionar todo lo relacionado con el funcionamiento tanto interno como externo de la terminal",
+            font=("Arial", 14), wraplength=400, bg="#1A1A2E", fg="white",justify="center").pack(expand=True, fill="both", padx=10, pady=10)
         # P4 - Imágenes asociadas y botón de ingreso
-        p4 = tk.Frame(p1, bg="gray")
+        p4 = tk.Frame(p1, bg="#1A1A2E")
         p4.pack(expand=True, fill="both", padx=5, pady=5)
-        self.imgLabel = tk.Label(p4, text="Imagen aquí", bg="white", relief="solid")
-        self.imgLabel.pack(pady=10)
-        self.imgLabel.bind("<Enter>", self.cambiarImagen)
+    # Cargar imágenes para el efecto de cambio
+        self.imagenes_cambio = [
+            self.load_image(os.getcwd() + "\\src\\Imagenes\\imagenTerminal1.jpeg", 300, 250),
+            self.load_image(os.getcwd() + "\\src\\Imagenes\\imagenTerminal2.jpeg", 300, 250),
+            self.load_image(os.getcwd() + "\\src\\Imagenes\\imagenTerminal3.jpeg", 300, 250),
+            self.load_image(os.getcwd() + "\\src\\Imagenes\\imagenTerminal4.png",  300, 250),
+            self.load_image(os.getcwd() + "\\src\\Imagenes\\imagenTerminal5.jpg",  300, 250),
+        ]
+        self.index_imagen = 0  # Índice de la imagen actual
 
+        # Label para mostrar la imagen
+        self.imgLabel = tk.Label(p4, image=self.imagenes_cambio[self.index_imagen], bg="#1A1A2E", relief="solid")
+        self.imgLabel.pack(pady=10)
+
+        # Evento para cambiar imagen al pasar el cursor
+        self.imgLabel.bind("<Enter>", self.cambiarImagen_2)
         btnIngresar = tk.Button(
             p4, text="Ingresar", command=self.abrirVentanaPrincipal
         )
         btnIngresar.pack(pady=20)
 
         # P2 - Contiene P5 y P6
-        p2 = tk.Frame(self, bg="white", bd=2, relief="solid")
+        p2 = tk.Frame(self, bg="#251F44", bd=2, relief="solid")
         p2.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
         
-        p5 = tk.Frame(p2, bg="white")
+        p5 = tk.Frame(p2, bg="#1A1A2E")
         p5.pack(expand=True, fill="both", padx=5, pady=5)
 
-        self.botonHojaDeVida = tk.Frame(p5)
+        self.botonHojaDeVida = tk.Frame(p5,bg="#1A1A2E")
         self.botonHojaDeVida.pack(expand=True, fill="both")
 
         # Texto "Biografía" clickeable
@@ -80,14 +96,15 @@ class VentanaInicio(tk.Tk):
             self.botonHojaDeVida,
             text="Biografía",
             font=("Times New Roman", 50),
-            fg="blue",
+            fg="#F0F",
             cursor="hand2",
+            bg= "#1A1A2E"
         )
         tituloHojaDeVida.pack()
         tituloHojaDeVida.bind("<Button-1>", lambda event: self.recorrerBiografias())
 
         self.p6 = tk.Frame(
-            p2, bg="lightblue", width=600, height=300
+            p2, bg="#1A1A2E", width=600, height=300
         )  # Se establece un tamaño fijo
         self.p6.pack_propagate(False)  # Evita que el tamaño cambie automáticamente
         self.p6.pack(expand=False, fill="both", padx=5, pady=5)
@@ -112,9 +129,10 @@ class VentanaInicio(tk.Tk):
             self.botonHojaDeVida,
             text="Biografía",
             font=("Times New Roman", 50),
-            fg="blue",
+            fg="#F0F",
             cursor="hand2",
-        wraplength=500)
+        wraplength=500,
+        bg="#1A1A2E")
         tituloHojaDeVida.pack()
         tituloHojaDeVida.bind("<Button-1>", lambda event: self.recorrerBiografias())
 
@@ -126,18 +144,18 @@ class VentanaInicio(tk.Tk):
             self.botonHojaDeVida,
             text=f"Nombre: {biografia['nombre']}",
             font=("Times New Roman", 20),
-        wraplength=500).pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
+        wraplength=500, bg="#1A1A2E", fg="#F0F").pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
         
         tk.Label(
             self.botonHojaDeVida,
             text=f"Fecha de nacimiento: {biografia['fechaNacimiento']}",
             font=("Times New Roman", 20),
-        wraplength=500).pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
+        wraplength=500, bg="#1A1A2E", fg="#F0F").pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
         tk.Label(
             self.botonHojaDeVida,
             text=f"Descripción:\n{biografia['descripcion']}",
             font=("Times New Roman", 20),
-        wraplength=500).pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
+        wraplength=500,bg="#1A1A2E", fg="#F0F").pack(fill="none", expand=False, anchor="center", padx=5, pady=5)
         
         tk.Label(
             self.botonHojaDeVida,
@@ -190,7 +208,7 @@ class VentanaInicio(tk.Tk):
             if img_path not in self.imagenes:
                 self.imagenes[img_path] = self.load_image(img_path, width, height)
 
-            imagen_label = tk.Label(self.p6, image=self.imagenes[img_path], bg="white")
+            imagen_label = tk.Label(self.p6, image=self.imagenes[img_path], bg="#1A1A2E")
             imagen_label.image = self.imagenes[img_path]
             imagen_label.grid(
                 row=(i - 1) // columnas,
@@ -213,3 +231,8 @@ class VentanaInicio(tk.Tk):
         """Abre la ventana principal."""
         self.destroy()
         VP.VentanaPrincipal()
+    def cambiarImagen_2(self, event):
+        """Cambia la imagen de la etiqueta cuando el cursor pasa sobre ella."""
+        self.index_imagen = (self.index_imagen + 1) % len(self.imagenes_cambio)
+        self.imgLabel.config(image=self.imagenes_cambio[self.index_imagen])
+        self.imgLabel.image = self.imagenes_cambio[self.index_imagen]  # Para evitar que se elimine la imagen en el recolector de basura

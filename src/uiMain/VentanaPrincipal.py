@@ -41,7 +41,15 @@ class VentanaPrincipal(tk.Tk):
     def crearWidgets(self):
         self.frameContenido = tk.Frame(self, bg="#3B1C32", bd=2, relief="solid")
         self.frameContenido.pack(expand=True, fill="both", padx=10, pady=10)
-
+        tk.Label(
+        self.frameContenido, 
+        text="Seleccione una funcionalidad en el menú 'Procesos y Consultas' para comenzar.", 
+        font=("Arial", 14), 
+        wraplength=500, 
+        bg="#3B1C32", 
+        fg="white",
+        justify="center"
+       ).pack(expand=True, padx=20, pady=20)
     def mostrarReembolsos(self):
 
         for widget in self.frameContenido.winfo_children():
