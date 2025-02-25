@@ -619,11 +619,11 @@ class VentanaPrincipal(tk.Tk):
         labelMapa.pack(padx = 10, pady = 10)"""
 
         # Frame izquierdo
-        frameResultado = tk.Frame(frame, bg = "white")
+        frameResultado = tk.Frame(frame, bg = "#7A2E65")
         frameResultado.pack(side = "left", fill = "y")
 
         # Búsqueda:
-        frameBusqueda = tk.Frame(frameResultado, bg = "white")
+        frameBusqueda = tk.Frame(frameResultado, bg = "#7A2E65")
         frameBusqueda.pack(side = "top", pady = 10, padx = 10)
             # Criterios y Frame de Búsqueda.
         criterios = ["Empresa", "Lugar origen", "Lugar destino"]
@@ -778,7 +778,7 @@ class VentanaPrincipal(tk.Tk):
         botonBorrar.pack(side = "bottom", padx = 10, pady = 10)
 
         # Resultado.
-        textoResultado = tk.Text(frameResultado)
+        textoResultado = tk.Text(frameResultado,bg="#7A2E65")
         textoResultado.pack(side = "top", fill = "x")
 
         # Recolectando la empresa y trayecto.
