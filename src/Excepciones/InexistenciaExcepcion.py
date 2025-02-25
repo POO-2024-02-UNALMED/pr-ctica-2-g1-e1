@@ -1,7 +1,7 @@
 from ErrorAplicacion import ErrorAplicacion
 from tkinter import messagebox
 # Para el futuro.
-class InexistenciaExcepcion(Exception):
+class InexistenciaExcepcion(ErrorAplicacion):
     def __init__(self, dato):
         self.dato = dato
         if dato == "Pasajero en el sistema": # No hacer en casa XD

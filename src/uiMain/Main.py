@@ -6,6 +6,14 @@ def importacion(direccion: str) -> None:
         if not((".git" in element) or ("__pycache__" in element)):
             if os.path.isdir(direccion + "\\" + element):
                 importacion(direccion + "\\" + element)
+# path = os.getcwd().split("\\")
+# if "src" in path:
+#     while path[len(path) - 1] != "src":
+#         path.pop(len(path) - 1)
+#     path.pop(len(path) - 1)
+
+# path = "\\".join(path)
+# importacion(path)
 
 importacion(os.getcwd())
 

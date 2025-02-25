@@ -1,6 +1,6 @@
 from ErrorAplicacion import ErrorAplicacion
 from tkinter import messagebox
-class CampoFaltanteEx(Exception):
+class CampoFaltanteEx(ErrorAplicacion):
     def __init__(self, campo):
         self.campo = campo
         super().__init__(f"El campo '{campo}' falta ser llenado.")

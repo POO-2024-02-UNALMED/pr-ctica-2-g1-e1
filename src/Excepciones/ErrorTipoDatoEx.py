@@ -1,6 +1,6 @@
 from ErrorAplicacion import ErrorAplicacion
 from tkinter import messagebox
-class ErrorTipoDatoEx(Exception):
+class ErrorTipoDatoEx(ErrorAplicacion):
     def __init__(self, campo, tipo_esperado):
         self.campo = campo
         self.tipo_esperado = tipo_esperado
